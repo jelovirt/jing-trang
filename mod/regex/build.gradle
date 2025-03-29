@@ -1,0 +1,75 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.thaiopensource'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':util')
+    implementation project(':regex-gen')
+    implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main', 'build/generated/sources/java/main'
+        }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+tasks.named('compileJava').configure {
+    dependsOn project(':regex-gen').tasks.named('compileJava'), generateCategoriesGen, generateNamingExceptionsGen
+}
+
+tasks.register('generateCategoriesGen', JavaExec) {
+    doFirst {
+        project.mkdir("${buildDir}/generated/sources/java/main/com/thaiopensource/datatype/xsd/regex/java")
+    }
+    mainClass = 'com.thaiopensource.datatype.xsd.regex.java.gen.CategoriesGen'
+    classpath = project(':regex-gen').sourceSets.main.runtimeClasspath
+    args = [
+            'com.thaiopensource.datatype.xsd.regex.java.Categories',
+            "${buildDir}/generated/sources/java/main",
+            "${project(':regex-gen').projectDir}/../../lib/UnicodeData-3.1.0.txt"
+    ]
+}
+
+tasks.register('generateNamingExceptionsGen', JavaExec) {
+    doFirst {
+        project.mkdir("${buildDir}/generated/sources/java/main/com/thaiopensource/datatype/xsd/regex/java")
+    }
+    mainClass = 'com.thaiopensource.datatype.xsd.regex.java.gen.NamingExceptionsGen'
+    classpath = project(':regex-gen').sourceSets.main.runtimeClasspath
+    args = [
+            'com.thaiopensource.datatype.xsd.regex.java.NamingExceptions',
+            "${buildDir}/generated/sources/java/main"
+    ]
+}
+
+tasks.register('generateServices') {
+    def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/com.thaiopensource.datatype.xsd.regex.RegexEngine")
+
+    outputs.file(serviceFile)
+
+    doLast {
+        serviceFile.parentFile.mkdirs()
+        serviceFile.text = [
+                'com.thaiopensource.datatype.xsd.regex.java.RegexEngineImpl',
+                'com.thaiopensource.datatype.xsd.regex.xerces2.RegexEngineImpl'
+        ].join('\n')
+    }
+}
+processResources.dependsOn(generateServices)
