@@ -24,3 +24,11 @@ jobs:
         run: ./ant ant-jar
       - name: Validate
         run: ./ant validate
+      - name: Build Jing distribution
+        run: ./ant jing-dist
+      - name: Build Trang distribution
+        run: ./ant trang-dist
+      - name: Build DTDinst distribution
+        run: ./ant dtdinst-dist
+      - name: Build website
+        run: ./ant website
