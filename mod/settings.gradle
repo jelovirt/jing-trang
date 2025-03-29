@@ -1,3 +1,12 @@
 rootProject.name = "jingtrang"
 
-include ':util', ':resolver', ':datatype', ':catalog', ':dtd-parse', ':jaxp', ':validate', ':xerces'
+include ':util'
+include ':resolver'
+include ':datatype'
+include ':catalog'
+include ':dtd-parse'
+include ':jaxp'
+include ':regex-gen'
+include ':validate'
+include ':xerces'
+//include ':rng-parse'
