@@ -1,0 +1,23 @@
+name: Test
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - name: Build modules
+        run: ./ant modbuild
+      - name: Build JAR
+        run: ./ant ant-jar
+      - name: Validate
+        run: ./ant validate
