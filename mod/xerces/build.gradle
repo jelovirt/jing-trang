@@ -1,0 +1,45 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.thaiopensource'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':util')
+    implementation project(':validate')
+    implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+tasks.register('generateServices') {
+    def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/com.thaiopensource.validate.SchemaReaderFactory")
+
+    outputs.file(serviceFile)
+
+    doLast {
+        serviceFile.parentFile.mkdirs()
+        serviceFile.text = [
+                'com.thaiopensource.validate.xerces.XsdSchemaReaderFactory',
+        ].join('\n')
+    }
+}
+processResources.dependsOn(generateServices)
