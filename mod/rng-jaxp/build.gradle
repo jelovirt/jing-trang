@@ -1,0 +1,35 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.thaiopensource'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':datatype')
+    implementation project(':xsd-datatype')
+    implementation project(':regex')
+    implementation project(':rng-parse')
+    implementation project(':pattern')
+    implementation project(':jaxp')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+    
+      
