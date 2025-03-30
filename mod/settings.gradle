@@ -1,6 +1,8 @@
 rootProject.name = "jingtrang"
 
 include ':catalog'
+include ':convert-from-dtd'
+//include ':convert-from-xml'
 include ':convert-to-dtd'
 include ':convert-to-xsd'
 include ':datatype'
