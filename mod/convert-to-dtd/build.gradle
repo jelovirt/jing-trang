@@ -1,13 +1,3 @@
-plugins {
-    id 'java-library'
-}
-
-group = 'com.thaiopensource'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(':util')
     implementation project(':rng-schema')

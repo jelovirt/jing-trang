@@ -4,4 +4,20 @@ version = new XmlSlurper().parse(file('../version.xml')).text()
 
 allprojects {
     version = rootProject.version
+    group = 'com.thaiopensource'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+
+    tasks.register('copyProperties', Copy) {
+        from 'src/main'
+        include '**/*.properties'
+        into 'build/resources/main'
+    }
+    processResources.dependsOn copyProperties
 }
