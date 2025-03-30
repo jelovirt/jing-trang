@@ -31,15 +31,22 @@ sourceSets {
 }
 
 tasks.register('generateServices') {
-    def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/com.thaiopensource.validate.auto.SchemaReceiverFactory")
+    def services = [
+            'com.thaiopensource.validate.auto.SchemaReceiverFactory': [
+                    'com.thaiopensource.validate.picl.PiclSchemaReceiverFactory'
+            ],
+    ]
 
-    outputs.file(serviceFile)
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
 
     doLast {
-        serviceFile.parentFile.mkdirs()
-        serviceFile.text = [
-                'com.thaiopensource.validate.picl.PiclSchemaReceiverFactory',
-        ].join('\n')
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
     }
 }
 processResources.dependsOn(generateServices)

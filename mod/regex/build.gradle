@@ -60,16 +60,23 @@ tasks.register('generateNamingExceptionsGen', JavaExec) {
 }
 
 tasks.register('generateServices') {
-    def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/com.thaiopensource.datatype.xsd.regex.RegexEngine")
+    def services = [
+            'com.thaiopensource.datatype.xsd.regex.RegexEngine': [
+                    'com.thaiopensource.datatype.xsd.regex.java.RegexEngineImpl',
+                    'com.thaiopensource.datatype.xsd.regex.xerces2.RegexEngineImpl'
+            ],
+    ]
 
-    outputs.file(serviceFile)
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
 
     doLast {
-        serviceFile.parentFile.mkdirs()
-        serviceFile.text = [
-                'com.thaiopensource.datatype.xsd.regex.java.RegexEngineImpl',
-                'com.thaiopensource.datatype.xsd.regex.xerces2.RegexEngineImpl'
-        ].join('\n')
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
     }
 }
 processResources.dependsOn(generateServices)

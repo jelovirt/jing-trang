@@ -34,15 +34,22 @@ sourceSets {
 }
 
 tasks.register('generateServices') {
-    def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader")
+    def services = [
+            'services/org.iso_relax.verifier.VerifierFactoryLoader': [
+                    'com.thaiopensource.relaxng.jarv.VerifierFactoryLoaderImpl',
+            ],
+    ]
 
-    outputs.file(serviceFile)
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
 
     doLast {
-        serviceFile.parentFile.mkdirs()
-        serviceFile.text = [
-                'com.thaiopensource.relaxng.jarv.VerifierFactoryLoaderImpl',
-        ].join('\n')
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
     }
 }
 processResources.dependsOn(generateServices)

@@ -58,7 +58,7 @@ tasks.register('generateServices') {
             ],
             'org.relaxng.datatype.DatatypeLibraryFactory'      : [
                     'com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl'
-            ]
+            ],
     ]
 
     outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
@@ -67,7 +67,6 @@ tasks.register('generateServices') {
         services.each { entry ->
             {
                 def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
-
                 serviceFile.parentFile.mkdirs()
                 serviceFile.text = entry.value.join('\n')
             }
@@ -75,16 +74,3 @@ tasks.register('generateServices') {
     }
 }
 processResources.dependsOn(generateServices)
-
-// <jar>
-//    <manifest>
-//      <attribute name="Main-Class" value="com/thaiopensource/relaxng/translate/Driver"/>
-//      <attribute name="Class-Path" value="resolver.jar"/>
-//    </manifest>
-//    <service type="com.thaiopensource.datatype.xsd.regex.RegexEngine">
-//      <provider classname="com.thaiopensource.datatype.xsd.regex.xerces2.RegexEngineImpl"/>
-//      <provider classname="com.thaiopensource.datatype.xsd.regex.java.RegexEngineImpl"/>
-//    </service>
-//    <service type="org.relaxng.datatype.DatatypeLibraryFactory"
-//	     provider="com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl"/>
-//  </jar>
