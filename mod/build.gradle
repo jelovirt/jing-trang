@@ -1,7 +1,7 @@
-plugins {
-    id 'java'
-}
+import groovy.xml.XmlSlurper
 
-jar {
-    enabled = false
+version = new XmlSlurper().parse(file('../version.xml')).text()
+
+allprojects {
+    version = rootProject.version
 }

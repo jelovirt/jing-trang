@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 group = 'com.thaiopensource'
@@ -33,6 +34,9 @@ sourceSets {
         java {
             srcDir 'src/main'
         }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
     }
     test {
         java {
@@ -49,10 +53,36 @@ jar {
     }
 }
 
+shadowJar {
+    archiveFileName = 'jing.jar'
+//    archiveBaseName = 'jing'
+//    archiveClassifier = ''
+//    archiveVersion = rootProject.version
+}
+
+tasks.build {
+    dependsOn shadowJar
+}
+
+jar {
+    enabled = false
+}
+
+tasks.register('generateVersion') {
+    def propertyFile = file("${buildDir}/generated/sources/resources/main/com/thaiopensource/relaxng/util/resources/Version.properties")
+
+    outputs.files propertyFile
+
+    doLast {
+        propertyFile.parentFile.mkdirs()
+        propertyFile.text = "version=${project.version}"
+    }
+}
+processResources.dependsOn(generateVersion)
 
 //    <service type="com.thaiopensource.datatype.xsd.regex.RegexEngine"/>
 //    <service type="org.relaxng.datatype.DatatypeLibraryFactory"/>
 //    <service type="org.iso_relax.verifier.VerifierFactoryLoader"/>
 //    <service type="com.thaiopensource.validate.SchemaReaderFactory"/>
 //    <service type="com.thaiopensource.validate.auto.SchemaReceiverFactory"/>
-      
+//

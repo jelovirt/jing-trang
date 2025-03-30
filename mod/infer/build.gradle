@@ -14,6 +14,7 @@ dependencies {
     implementation project(':datatype')
     implementation project(':xsd-datatype')
     implementation project(':regex')
+    testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
 }
 
 sourceSets {

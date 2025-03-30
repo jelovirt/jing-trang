@@ -17,6 +17,7 @@ dependencies {
     implementation project(':rng-parse')
     implementation project(':pattern')
     implementation project(':jaxp')
+    testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
 }
 
 sourceSets {

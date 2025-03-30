@@ -18,6 +18,9 @@ sourceSets {
         java {
             srcDir 'src/main'
         }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
     }
     test {
         java {

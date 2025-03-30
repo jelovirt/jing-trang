@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
+    testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
 }
 
 sourceSets {
