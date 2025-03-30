@@ -1,0 +1,32 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.thaiopensource'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':infer')
+    implementation project(':datatype')
+    implementation project(':rng-schema')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+    
+      
