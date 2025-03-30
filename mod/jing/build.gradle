@@ -52,10 +52,7 @@ shadowJar {
 //    archiveClassifier = ''
 //    archiveVersion = rootProject.version
 }
-
-tasks.build {
-    dependsOn shadowJar
-}
+build.dependsOn shadowJar
 
 jar {
     enabled = false

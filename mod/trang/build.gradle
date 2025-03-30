@@ -1,3 +1,7 @@
+plugins {
+    id("com.gradleup.shadow") version "8.3.6"
+}
+
 dependencies {
     implementation project(':util')
     implementation project(':resolver')
@@ -39,6 +43,30 @@ jar {
                 'Class-Path': 'resolver.jar')
     }
 }
+
+shadowJar {
+    archiveFileName = 'trang.jar'
+//    archiveBaseName = 'trang'
+//    archiveClassifier = ''
+//    archiveVersion = rootProject.version
+}
+build.dependsOn shadowJar
+
+jar {
+    enabled = false
+}
+
+tasks.register('generateVersion') {
+    def propertyFile = file("${buildDir}/generated/sources/resources/main/com/thaiopensource/relaxng/translate/resources/Version.properties")
+
+    outputs.files propertyFile
+
+    doLast {
+        propertyFile.parentFile.mkdirs()
+        propertyFile.text = "version=${project.version}"
+    }
+}
+processResources.dependsOn(generateVersion)
 
 tasks.register('generateServices') {
     def services = [
