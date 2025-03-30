@@ -1,3 +1,7 @@
+plugins {
+    id("com.gradleup.shadow") version "8.3.6"
+}
+
 dependencies {
     implementation project(':util')
     implementation project(':dtd-parse')
@@ -25,6 +29,31 @@ jar {
                 'Main-Class': 'com/thaiopensource/xml/dtd/app/Driver')
     }
 }
+
+
+shadowJar {
+    archiveFileName = "${project.name}.jar"
+//    archiveBaseName = project.name
+//    archiveClassifier = ''
+//    archiveVersion = rootProject.version
+}
+build.dependsOn shadowJar
+
+jar {
+    enabled = false
+}
+
+tasks.register('generateVersion') {
+    def propertyFile = file("${buildDir}/generated/sources/resources/main/com/thaiopensource/xml/dtd/app/resources/Version.properties")
+
+    outputs.files propertyFile
+
+    doLast {
+        propertyFile.parentFile.mkdirs()
+        propertyFile.text = "version=${project.version}"
+    }
+}
+processResources.dependsOn(generateVersion)
 
 tasks.register('generateServices') {
     def services = [

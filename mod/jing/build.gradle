@@ -47,8 +47,8 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'jing.jar'
-//    archiveBaseName = 'jing'
+    archiveFileName = "${project.name}.jar"
+//    archiveBaseName = project.name
 //    archiveClassifier = ''
 //    archiveVersion = rootProject.version
 }

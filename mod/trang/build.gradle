@@ -45,8 +45,8 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'trang.jar'
-//    archiveBaseName = 'trang'
+    archiveFileName = "${project.name}.jar"
+//    archiveBaseName = project.name
 //    archiveClassifier = ''
 //    archiveVersion = rootProject.version
 }
