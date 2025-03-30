@@ -1,0 +1,51 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.thaiopensource'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':validate')
+    implementation project(':rng-validate')
+    implementation group: 'net.sf.saxon', name: 'Saxon-HE', version: '9.8.0-7'
+    implementation group: 'xalan', name: 'xalan', version: '2.7.3'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+tasks.register('generateServices') {
+    def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/com.thaiopensource.validate.SchemaReaderFactory")
+
+    outputs.file(serviceFile)
+
+    doLast {
+        serviceFile.parentFile.mkdirs()
+        serviceFile.text = [
+                'com.thaiopensource.validate.schematron.NewSaxonSchemaReaderFactory',
+                'com.thaiopensource.validate.schematron.OldSaxonSchemaReaderFactory',
+                'com.thaiopensource.validate.schematron.XalanSchemaReaderFactory',
+                'com.thaiopensource.validate.schematron.SchematronSchemaReaderFactory',
+        ].join('\n')
+    }
+}
+processResources.dependsOn(generateServices)
