@@ -1,0 +1,22 @@
+name: Gradle
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+      - name: Compile modules
+        run: gradle compileJava
+        working-directory: mod
+      - name: Test modules
+        run: gradle test
+        working-directory: mod
