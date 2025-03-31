@@ -14,10 +14,25 @@ allprojects {
 subprojects {
     apply plugin: 'java-library'
 
+    dependencies {
+        testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
+    }
+
     tasks.register('copyProperties', Copy) {
         from 'src/main'
-        include '**/*.properties'
+        include '**/*.*'
+        exclude '**/*.java'
         into 'build/resources/main'
     }
     processResources.dependsOn copyProperties
+
+    tasks.register('copyTestProperties', Copy) {
+        from 'src/test'
+        include '**/*.*'
+        exclude '**/*.java'
+        into 'build/resources/test'
+    }
+    processTestResources.dependsOn copyTestProperties
+
+    test.useTestNG()
 }

@@ -3,7 +3,6 @@ dependencies {
     implementation project(':resolver')
     implementation project(':datatype')
     implementation project(':rng-parse')
-    testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
 }
 
 sourceSets {
@@ -15,6 +14,9 @@ sourceSets {
     test {
         java {
             srcDir 'src/test'
+        }
+        resources {
+            srcDir 'build/resources/test'
         }
     }
 }

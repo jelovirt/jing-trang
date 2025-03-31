@@ -2,10 +2,7 @@ dependencies {
     implementation project(':util')
     implementation project(':resolver')
     implementation group: 'xml-resolver', name: 'xml-resolver', version: '1.2'
-    testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
 }
-
-// ??? <test name="unit" type="testng"/>
 
 sourceSets {
     main {
@@ -16,6 +13,9 @@ sourceSets {
     test {
         java {
             srcDir 'src/test'
+        }
+        resources {
+            srcDir 'build/resources/test'
         }
     }
 }
