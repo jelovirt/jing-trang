@@ -49,6 +49,26 @@ shadowJar {
 //    archiveBaseName = project.name
 //    archiveClassifier = ''
 //    archiveVersion = rootProject.version
+    configurations = [project.configurations.runtimeClasspath]
+
+    from(project(':util').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':resolver').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':catalog').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':regex').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':datatype').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':xsd-datatype').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':rng-parse').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':dtd-parse').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':infer').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':rng-schema').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':convert-from-xml').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':convert-to-xsd').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':convert-from-dtd').sourceSets.main.output) { exclude('META-INF/services/*') }
+    from(project(':convert-to-dtd').sourceSets.main.output) { exclude('META-INF/services/*') }
+
+    dependencies {
+        exclude(dependency('.*:.*'))
+    }
 }
 build.dependsOn shadowJar
 

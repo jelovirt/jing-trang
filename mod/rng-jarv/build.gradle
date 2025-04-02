@@ -25,7 +25,7 @@ sourceSets {
 
 tasks.register('generateServices') {
     def services = [
-            'services/org.iso_relax.verifier.VerifierFactoryLoader': [
+            'org.iso_relax.verifier.VerifierFactoryLoader': [
                     'com.thaiopensource.relaxng.jarv.VerifierFactoryLoaderImpl',
             ],
     ]
