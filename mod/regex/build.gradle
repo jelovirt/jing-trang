@@ -27,6 +27,9 @@ tasks.named('compileJava').configure {
     dependsOn project(':regex-gen').tasks.named('compileJava'), generateCategoriesGen, generateNamingExceptionsGen
 }
 
+// Unicode data can be downloaded from:
+// * https://www.unicode.org/Public/3.1-Update/UnicodeData-3.1.0.txt
+// * https://www.unicode.org/Public/4.0-Update/UnicodeData-4.0.0.txt
 tasks.register('generateCategoriesGen', JavaExec) {
     doFirst {
         project.mkdir("${buildDir}/generated/sources/java/main/com/thaiopensource/datatype/xsd/regex/java")
