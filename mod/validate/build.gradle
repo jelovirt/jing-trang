@@ -40,4 +40,4 @@ tasks.register('generateServices') {
         }
     }
 }
-processResources.dependsOn(generateServices)
+processResources.dependsOn tasks.named("generateServices")

@@ -70,7 +70,7 @@ shadowJar {
         exclude(dependency('.*:.*'))
     }
 }
-build.dependsOn shadowJar
+tasks.build.dependsOn tasks.named('shadowJar')
 
 jar {
     enabled = false
@@ -86,7 +86,7 @@ tasks.register('generateVersion') {
         propertyFile.text = "version=${project.version}"
     }
 }
-processResources.dependsOn(generateVersion)
+processResources.dependsOn tasks.named("generateVersion")
 
 tasks.register('generateServices') {
     def services = [
@@ -111,4 +111,4 @@ tasks.register('generateServices') {
         }
     }
 }
-processResources.dependsOn(generateServices)
+processResources.dependsOn tasks.named("generateServices")

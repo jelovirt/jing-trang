@@ -45,7 +45,7 @@ tasks.register('generateServices') {
         }
     }
 }
-processResources.dependsOn(generateServices)
+processResources.dependsOn tasks.named("generateServices")
 
 // FIXME
 // <ant rescompile="mod.schematron.compile-res">
