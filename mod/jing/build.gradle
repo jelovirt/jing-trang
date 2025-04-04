@@ -46,7 +46,7 @@ jar {
     }
 }
 
-tasks.shadowJar {
+shadowJar {
     archiveFileName = "${project.name}.jar"
 //    archiveBaseName = project.name
 //    archiveClassifier = ''

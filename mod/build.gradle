@@ -24,7 +24,7 @@ subprojects {
         exclude '**/*.java'
         into 'build/resources/main'
     }
-    processResources.dependsOn copyProperties
+    processResources.dependsOn tasks.named('copyProperties')
 
     tasks.register('copyTestProperties', Copy) {
         from 'src/test'
@@ -32,7 +32,7 @@ subprojects {
         exclude '**/*.java'
         into 'build/resources/test'
     }
-    processTestResources.dependsOn copyTestProperties
+    processTestResources.dependsOn tasks.named('copyTestProperties')
 
     test.useTestNG()
 }

@@ -13,7 +13,7 @@ sourceSets {
             srcDir 'src/main'
         }
         resources {
-            srcDir "build/generated/sources/resources/main"
+            srcDirs "build/generated/sources/resources/main"
         }
     }
     test {
