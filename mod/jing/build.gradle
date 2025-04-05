@@ -171,3 +171,31 @@ tasks.register('generateServices') {
     }
 }
 processResources.dependsOn tasks.named("generateServices")
+
+tasks.register('dist', Zip) {
+    dependsOn(tasks.named('shadowJar'))
+    archiveFileName = "${buildDir}/dist/${project.name}-${project.version}.zip"
+    from(tasks.shadowJar) {
+        into 'bin'
+    }
+    from('../../lib') {
+        into 'bin'
+        include('isorelax.jar')
+        include('saxon9.jar')
+        include('xercesImpl.jar')
+        include('xml-apis.jar')
+    }
+    from('../../doc/jing-bin/readme.html') {
+        filter { it.replace('@VERSION@', project.version) }
+    }
+    from('../../doc/jing-bin/copying.html') {
+        into 'doc'
+        filter { it.replace('@VERSION@', project.version) }
+    }
+    from('nvdl/src/main/com/thaiopensource/validate/mns/resources') {
+        into 'lib'
+    }
+    from('../../xhtml') {
+        into 'lib/xhtml'
+    }
+}
