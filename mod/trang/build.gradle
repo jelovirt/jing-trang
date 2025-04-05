@@ -112,3 +112,13 @@ tasks.register('generateServices') {
     }
 }
 processResources.dependsOn tasks.named("generateServices")
+
+tasks.register('dist', Zip) {
+    dependsOn(tasks.named('shadowJar'))
+    archiveFileName = "${buildDir}/dist/${project.name}-${project.version}.zip"
+    from(tasks.shadowJar)
+    from('../../trang/doc/trang-manual.html') {
+        filter { it.replace('@VERSION@', project.version) }
+    }
+    from '../../copying.txt'
+}
