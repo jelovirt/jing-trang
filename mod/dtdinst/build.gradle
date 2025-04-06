@@ -82,9 +82,10 @@ processResources.dependsOn tasks.named("generateServices")
 
 tasks.register('dist', Zip) {
     dependsOn(tasks.named('shadowJar'))
-    archiveFileName = "${buildDir}/dist/${project.name}-${project.version}.zip"
+    archiveFileName = "${file(distsDirectory)}/${project.name}-${project.version}.zip"
     from(tasks.shadowJar)
     from('../../dtdinst') {
         filter { it.replace('@VERSION@', project.version) }
     }
 }
+assemble.dependsOn(tasks.named('dist'))
