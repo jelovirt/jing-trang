@@ -174,7 +174,7 @@ processResources.dependsOn tasks.named("generateServices")
 
 tasks.register('dist', Zip) {
     dependsOn(tasks.named('shadowJar'))
-    archiveFileName = "${buildDir}/dist/${project.name}-${project.version}.zip"
+    archiveFileName = "${file(distsDirectory)}/${project.name}-${project.version}.zip"
     from(tasks.shadowJar) {
         into 'bin'
     }
@@ -192,10 +192,38 @@ tasks.register('dist', Zip) {
         into 'doc'
         filter { it.replace('@VERSION@', project.version) }
     }
-    from('nvdl/src/main/com/thaiopensource/validate/mns/resources') {
+    from('../../doc') {
+        into 'doc'
+        include('jing*.html')
+        include('pluggable-datatypes.html')
+        filter { it.replace('@VERSION@', project.version) }
+    }
+    from('../../eg') {
         into 'lib'
+    }
+    from('../nvdl/src/main/com/thaiopensource/validate/mns/resources') {
+        into 'lib'
+        include ('*.rng')
+    }
+    from('../nvdl/src/main/com/thaiopensource/validate/nrl/resources') {
+        into 'lib'
+        include ('*.rng')
+    }
+    from('../nvdl/src/main/com/thaiopensource/validate/nvdl/resources') {
+        into 'lib'
+        include ('*.rng')
+    }
+    from('../schematron/src/main/com/thaiopensource/validate/schematron/resources') {
+        into 'lib'
+        include ('*.rnc')
+    }
+    from('../..///doc/compact') {
+        into 'lib'
+        include ('*.rnc')
     }
     from('../../xhtml') {
         into 'lib/xhtml'
+        exclude('**/*.rnc')
     }
 }
+assemble.dependsOn(tasks.named('dist'))
