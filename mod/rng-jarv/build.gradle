@@ -23,6 +23,10 @@ sourceSets {
     }
 }
 
+jar {
+    archiveFileName = "${project.name}.jar"
+}
+
 tasks.register('generateServices') {
     def services = [
             'org.iso_relax.verifier.VerifierFactoryLoader': [
