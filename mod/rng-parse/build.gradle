@@ -1,0 +1,39 @@
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':datatype')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main', "${buildDir}/generated/sources/java/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+tasks.named('compileJava').configure {
+    dependsOn generateCompactSyntax
+}
+
+tasks.register('generateCompactSyntax') {
+    doLast {
+        project.mkdir("${buildDir}/generated/sources/java/main/com/thaiopensource/relaxng/parse/compact")
+        ant.javacc(
+                javacchome: "${project(':regex-gen').projectDir}/../../lib",
+                target: "${projectDir}/src/main/com/thaiopensource/relaxng/parse/compact/CompactSyntax.jj",
+                outputdirectory: "${buildDir}/generated/sources/java/main/com/thaiopensource/relaxng/parse/compact")
+        ant.delete {
+            fileset(dir: "${buildDir}/generated/sources/java/main/com/thaiopensource/relaxng/parse/compact",
+                    includes: "JavaCharStream.java")
+        }
+        ant.replace(file: "${buildDir}/generated/sources/java/main/com/thaiopensource/relaxng/parse/compact/CompactSyntaxTokenManager.java",
+                token: "java.io.IOException",
+                value: "EOFException")
+    }
+}

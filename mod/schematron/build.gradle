@@ -1,0 +1,77 @@
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':validate')
+    implementation project(':rng-validate')
+    implementation group: 'net.sf.saxon', name: 'Saxon-HE', version: '9.8.0-7'
+    implementation group: 'xalan', name: 'xalan', version: '2.7.3'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+        resources {
+            srcDirs "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+tasks.register('generateServices') {
+    def services = [
+            'com.thaiopensource.validate.SchemaReaderFactory': [
+                    'com.thaiopensource.validate.schematron.NewSaxonSchemaReaderFactory',
+                    'com.thaiopensource.validate.schematron.OldSaxonSchemaReaderFactory',
+                    'com.thaiopensource.validate.schematron.XalanSchemaReaderFactory',
+                    'com.thaiopensource.validate.schematron.SchematronSchemaReaderFactory',
+            ]
+    ]
+
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
+
+    doLast {
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
+    }
+}
+processResources.dependsOn tasks.named("generateServices")
+
+// FIXME
+// <ant rescompile="mod.schematron.compile-res">
+//    <target name="mod.schematron.compile-res">
+//      <property name="mod.schematron.respackage" value="com/thaiopensource/validate/schematron/resources"/>
+//      <property name="mod.schematron.resdir" value="${build.dir}/mod/schematron/classes/main/${mod.schematron.respackage}"/>
+//      <mkdir dir="${mod.schematron.resdir}"/>
+//      <xslt style="mod/schematron/lib/xsltc-fixup.xsl"
+//	          in="mod/schematron/src/main/${mod.schematron.respackage}/schematron.xsl"
+//	          out="${mod.schematron.resdir}/schematron-xsltc.xsl">
+//	      <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+//        <classpath>
+//          <fileset dir="lib">
+//            <filename name="saxon9.jar"/>
+//          </fileset>
+//        </classpath>
+//      </xslt>
+//      <xslt style="mod/schematron/lib/xsltc-fixup.xsl"
+//            in="mod/schematron/src/main/${mod.schematron.respackage}/iso-schematron.xsl"
+//            out="${mod.schematron.resdir}/iso-schematron-xsltc.xsl">
+//        <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+//        <classpath>
+//          <fileset dir="lib">
+//            <filename name="saxon9.jar"/>
+//          </fileset>
+//        </classpath>
+//      </xslt>
+//    </target>
+//  </ant>

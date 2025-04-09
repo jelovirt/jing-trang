@@ -1,0 +1,78 @@
+dependencies {
+    implementation project(':util')
+    implementation project(':regex-gen')
+    implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main', 'build/generated/sources/java/main'
+        }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+        resources {
+            srcDir 'build/resources/test'
+        }
+    }
+}
+
+tasks.named('compileJava').configure {
+    dependsOn project(':regex-gen').tasks.named('compileJava'), generateCategoriesGen, generateNamingExceptionsGen
+}
+
+// Unicode data can be downloaded from:
+// * https://www.unicode.org/Public/3.1-Update/UnicodeData-3.1.0.txt
+// * https://www.unicode.org/Public/4.0-Update/UnicodeData-4.0.0.txt
+tasks.register('generateCategoriesGen', JavaExec) {
+    doFirst {
+        project.mkdir("${buildDir}/generated/sources/java/main/com/thaiopensource/datatype/xsd/regex/java")
+    }
+    mainClass = 'com.thaiopensource.datatype.xsd.regex.java.gen.CategoriesGen'
+    classpath = project(':regex-gen').sourceSets.main.runtimeClasspath
+    args = [
+            'com.thaiopensource.datatype.xsd.regex.java.Categories',
+            "${buildDir}/generated/sources/java/main",
+            "${project(':regex-gen').projectDir}/../../lib/UnicodeData-3.1.0.txt"
+    ]
+}
+
+tasks.register('generateNamingExceptionsGen', JavaExec) {
+    doFirst {
+        project.mkdir("${buildDir}/generated/sources/java/main/com/thaiopensource/datatype/xsd/regex/java")
+    }
+    mainClass = 'com.thaiopensource.datatype.xsd.regex.java.gen.NamingExceptionsGen'
+    classpath = project(':regex-gen').sourceSets.main.runtimeClasspath
+    args = [
+            'com.thaiopensource.datatype.xsd.regex.java.NamingExceptions',
+            "${buildDir}/generated/sources/java/main"
+    ]
+}
+
+tasks.register('generateServices') {
+    def services = [
+            'com.thaiopensource.datatype.xsd.regex.RegexEngine': [
+                    'com.thaiopensource.datatype.xsd.regex.java.RegexEngineImpl',
+                    'com.thaiopensource.datatype.xsd.regex.xerces2.RegexEngineImpl'
+            ],
+    ]
+
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
+
+    doLast {
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
+    }
+}
+processResources.dependsOn tasks.named("generateServices")

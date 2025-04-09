@@ -1,0 +1,21 @@
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':dtd-parse')
+    implementation project(':rng-schema')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+    
+      

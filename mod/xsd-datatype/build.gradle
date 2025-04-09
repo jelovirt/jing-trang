@@ -1,0 +1,45 @@
+dependencies {
+    implementation project(':util')
+    implementation project(':datatype')
+    implementation project(':regex')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+        resources {
+            srcDir 'build/resources/test'
+        }
+    }
+}
+
+tasks.register('generateServices') {
+    def services = [
+            'org.relaxng.datatype.DatatypeLibraryFactory': [
+                    'com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl'
+            ],
+    ]
+
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
+
+    doLast {
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
+    }
+}
+processResources.dependsOn tasks.named("generateServices")

@@ -1,0 +1,45 @@
+dependencies {
+    implementation project(':util')
+    implementation project(':resolver')
+    implementation project(':validate')
+    implementation project(':rng-validate')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+        resources {
+            srcDir "build/generated/sources/resources/main"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+tasks.register('generateServices') {
+    def services = [
+            'com.thaiopensource.validate.auto.SchemaReceiverFactory': [
+                    'com.thaiopensource.validate.nvdl.NvdlSchemaReceiverFactory',
+                    'com.thaiopensource.validate.nrl.NrlSchemaReceiverFactory',
+                    'com.thaiopensource.validate.mns.MnsSchemaReceiverFactory',
+            ],
+    ]
+
+    outputs.files services.collect { entry -> file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}") }
+
+    doLast {
+        services.each { entry ->
+            {
+                def serviceFile = file("${buildDir}/generated/sources/resources/main/META-INF/services/${entry.key}")
+                serviceFile.parentFile.mkdirs()
+                serviceFile.text = entry.value.join('\n')
+            }
+        }
+    }
+}
+processResources.dependsOn tasks.named("generateServices")
