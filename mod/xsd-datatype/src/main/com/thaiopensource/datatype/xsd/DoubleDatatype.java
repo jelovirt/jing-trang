@@ -58,12 +58,14 @@ class DoubleDatatype extends DatatypeBase implements OrderRelation {
   }
 
   Object getValue(String str, ValidationContext vc) {
-    if (str.equals("INF"))
-      return Double.POSITIVE_INFINITY;
-    if (str.equals("-INF"))
-      return Double.NEGATIVE_INFINITY;
-    if (str.equals("NaN"))
-      return Double.NaN;
+    switch (str) {
+      case "INF":
+        return Double.POSITIVE_INFINITY;
+      case "-INF":
+        return Double.NEGATIVE_INFINITY;
+      case "NaN":
+        return Double.NaN;
+    }
     return new Double(str);
   }
 

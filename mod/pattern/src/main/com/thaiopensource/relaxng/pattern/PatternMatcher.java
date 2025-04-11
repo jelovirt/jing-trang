@@ -29,7 +29,7 @@ public class PatternMatcher implements Cloneable, Matcher {
 
     Pattern findElement(Name name) {
       if (recoverPatternTable == null)
-        recoverPatternTable = new HashMap<Name, Pattern>();
+        recoverPatternTable = new HashMap<>();
       Pattern p = recoverPatternTable.get(name);
       if (p == null) {
         p = FindElementFunction.findElement(builder, name, start);
@@ -45,7 +45,7 @@ public class PatternMatcher implements Cloneable, Matcher {
   private boolean ignoreNextEndTagOrAttributeValue;
   private String errorMessage;
   private final Shared shared;
-  private List<DataDerivFailure> dataDerivFailureList = new ArrayList<DataDerivFailure>();
+  private List<DataDerivFailure> dataDerivFailureList = new ArrayList<>();
 
   public PatternMatcher(Pattern start, ValidatorPatternBuilder builder) {
     shared = new Shared(start, builder);
@@ -60,7 +60,7 @@ public class PatternMatcher implements Cloneable, Matcher {
   public Matcher start() {
     return new PatternMatcher(shared.builder.getPatternMemo(shared.start), shared);
   }
-  
+
   public boolean equals(Object obj) {
     if (!(obj instanceof PatternMatcher))
       return false;
@@ -81,7 +81,7 @@ public class PatternMatcher implements Cloneable, Matcher {
   public final Object clone() {
     try {
       PatternMatcher cloned = (PatternMatcher)super.clone();
-      cloned.dataDerivFailureList = new ArrayList<DataDerivFailure>();
+      cloned.dataDerivFailureList = new ArrayList<>();
       return cloned;
     }
     catch (CloneNotSupportedException e) {
@@ -337,7 +337,7 @@ public class PatternMatcher implements Cloneable, Matcher {
     errorMessage = localizer().message(key, args);
     return false;
   }
-   
+
   private String errorArgQName(String qName, Name name, MatchContext context, boolean isAttribute) {
     if (ignoreError())
       return null;
@@ -360,7 +360,7 @@ public class PatternMatcher implements Cloneable, Matcher {
 
   static private final int UNDEFINED_TOKEN_INDEX = -3;
   static private final int INCONSISTENT_TOKEN_INDEX = -2;
-  
+
   private String formatDataDerivFailures(String str, MatchContext context) {
     if (ignoreError())
       return null;
@@ -368,14 +368,13 @@ public class PatternMatcher implements Cloneable, Matcher {
       return "";
     if (dataDerivFailureList.size() > 1) {
       // remove duplicates
-      Set<DataDerivFailure> failures = new HashSet<DataDerivFailure>();
-      failures.addAll(dataDerivFailureList);
+      Set<DataDerivFailure> failures = new HashSet<>(dataDerivFailureList);
       dataDerivFailureList.clear();
       dataDerivFailureList.addAll(failures);
     }
-    List<String> stringValues = new ArrayList<String>();
-    Set<Name> names = new HashSet<Name>();
-    List<String> messages = new ArrayList<String>();
+    List<String> stringValues = new ArrayList<>();
+    Set<Name> names = new HashSet<>();
+    List<String> messages = new ArrayList<>();
     int tokenIndex = UNDEFINED_TOKEN_INDEX;
     int tokenStart = -1;
     int tokenEnd = -1;
@@ -419,8 +418,7 @@ public class PatternMatcher implements Cloneable, Matcher {
     }
     if (stringValues.size() > 0) {
       Collections.sort(stringValues);
-      for (int i = 0; i < stringValues.size(); i++)
-        stringValues.set(i, quoteValue(stringValues.get(i)));
+      stringValues.replaceAll(this::quoteValue);
       messages.add(localizer().message("require_values",
                                        formatList(stringValues, "or")));
     }
@@ -469,7 +467,7 @@ public class PatternMatcher implements Cloneable, Matcher {
   private String expectedContent(MatchContext context) {
     if (ignoreError())
       return null;
-    List<String> expected = new ArrayList<String>();
+    List<String> expected = new ArrayList<>();
     if (!memo.endTagDeriv().isNotAllowed())
       expected.add(localizer().message("element_end_tag"));
     // getContentType isn't so well-defined on after patterns
@@ -511,7 +509,7 @@ public class PatternMatcher implements Cloneable, Matcher {
   private static String formatNames(Set<Name> names, int flags, MatchContext context) {
     if (names.isEmpty())
       return "";
-    Map<String, String> nsDecls = new HashMap<String, String>();
+    Map<String, String> nsDecls = new HashMap<>();
     List<String> qNames = generateQNames(names, flags, context, nsDecls);
     Collections.sort(qNames);
     int len = qNames.size();
@@ -538,9 +536,9 @@ public class PatternMatcher implements Cloneable, Matcher {
         }
       }
     }
-    List<String> qNames = new ArrayList<String>();
-    Set<String> undeclaredNamespaces = new HashSet<String>();
-    List<Name> namesWithUndeclaredNamespaces = new ArrayList<Name>();
+    List<String> qNames = new ArrayList<>();
+    Set<String> undeclaredNamespaces = new HashSet<>();
+    List<Name> namesWithUndeclaredNamespaces = new ArrayList<>();
     for (Name name : names) {
       String ns = name.getNamespaceUri();
       String prefix;
@@ -550,7 +548,7 @@ public class PatternMatcher implements Cloneable, Matcher {
         prefix = context.getPrefix(ns);
         // If we have no prefix for the namespace and we have an attribute, set the prefix to null
         // to mark that the namespace is undeclared.
-        if ((flags & FORMAT_NAMES_ATTRIBUTE) != 0 && "".equals(prefix) && !"".equals(ns))
+        if ((flags & FORMAT_NAMES_ATTRIBUTE) != 0 && "".equals(prefix) && !ns.isEmpty())
           prefix = null;
       }
       if (prefix == null) {
@@ -573,22 +571,22 @@ public class PatternMatcher implements Cloneable, Matcher {
   }
 
   private static void choosePrefixes(Set<String> nsSet, MatchContext context, Map<String, String> nsDecls) {
-    List<String> nsList = new ArrayList<String>(nsSet);
+    List<String> nsList = new ArrayList<>(nsSet);
     Collections.sort(nsList);
     int len = nsList.size();
-    String prefix;
+    StringBuilder prefix;
     int tryIndex = 0;
     do {
       if (tryIndex < GENERATED_PREFIXES.length)
-        prefix = GENERATED_PREFIXES[tryIndex];
+        prefix = new StringBuilder(GENERATED_PREFIXES[tryIndex]);
       else {
         // default is just to stick as many underscores as necessary at the beginning
-        prefix = "_" + GENERATED_PREFIXES[0];
+        prefix = new StringBuilder("_" + GENERATED_PREFIXES[0]);
         for (int i = GENERATED_PREFIXES.length; i < tryIndex; i++)
-          prefix += "_" + prefix;
+          prefix.append("_").append(prefix);
       }
       for (int i = 0; i < len; i++) {
-        if (context.resolveNamespacePrefix(len == 1 ? prefix : prefix + (i + 1)) != null) {
+        if (context.resolveNamespacePrefix(len == 1 ? prefix.toString() : prefix.toString() + (i + 1)) != null) {
           prefix = null;
           break;
         }
@@ -597,7 +595,7 @@ public class PatternMatcher implements Cloneable, Matcher {
     } while (prefix == null);
     for (int i = 0; i < len; i++) {
       String ns = nsList.get(i);
-      nsDecls.put(ns, len == 1 ? prefix : prefix + (i + 1));
+      nsDecls.put(ns, len == 1 ? prefix.toString() : prefix.toString() + (i + 1));
     }
   }
 
@@ -619,7 +617,7 @@ public class PatternMatcher implements Cloneable, Matcher {
 
   // nsDecls maps namespaces to prefixes
   private static String formatNamespaceDecls(Map<String, String> nsDecls) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     for (Map.Entry<String, String> entry : nsDecls.entrySet()) {
       StringBuilder buf = new StringBuilder();
       String prefix = entry.getValue();

@@ -37,7 +37,7 @@ public class CompactParseable<P, NC, L, EA, CL extends CommentList<L>, A extends
   }
 
   public P parse(SchemaBuilder<P, NC, L, EA, CL, A> sb, Scope<P, L, EA, CL, A> scope) throws BuildException, IllegalSchemaException {
-    return new CompactSyntax<P, NC, L, EA, CL, A>(makeReader(in), in.getUri(), sb, eh).parse(scope);
+    return new CompactSyntax<>(makeReader(in), in.getUri(), sb, eh).parse(scope);
   }
 
   public SubParseable<P, NC, L, EA, CL, A> createSubParseable(String href, String base) throws BuildException {
@@ -52,12 +52,12 @@ public class CompactParseable<P, NC, L, EA, CL extends CommentList<L>, A extends
     catch (IOException e) {
       throw new BuildException(e);
     }
-    return new CompactParseable<P, NC, L, EA, CL, A>(input, resolver, eh);
+    return new CompactParseable<>(input, resolver, eh);
   }
 
   public P parseAsInclude(SchemaBuilder<P, NC, L, EA, CL, A> sb, IncludedGrammar<P, L, EA, CL, A> g)
           throws BuildException, IllegalSchemaException {
-    return new CompactSyntax<P, NC, L, EA, CL, A>(makeReader(in), in.getUri(), sb, eh).parseInclude(g);
+    return new CompactSyntax<>(makeReader(in), in.getUri(), sb, eh).parseInclude(g);
   }
 
   public String getUri() {

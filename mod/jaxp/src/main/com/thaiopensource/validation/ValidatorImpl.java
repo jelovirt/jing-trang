@@ -39,7 +39,7 @@ class ValidatorImpl extends Validator2 {
   private boolean needReset = false;
 
   private static final String LEXICAL_HANDLER_PROPERTY = "http://xml.org/sax/properties/lexical-handler";
-  
+
   public ValidatorImpl(ValidatorHandler2 handler) {
     this.handler = handler;
   }
@@ -142,10 +142,7 @@ class ValidatorImpl extends Validator2 {
     try {
       xr.setProperty(LEXICAL_HANDLER_PROPERTY, lexicalHandler);
     }
-    catch (SAXNotRecognizedException e) {
-      // ignore it
-    }
-    catch (SAXNotSupportedException e) {
+    catch (SAXNotRecognizedException | SAXNotSupportedException e) {
       // ignore it
     }
     xr.setContentHandler(handler);

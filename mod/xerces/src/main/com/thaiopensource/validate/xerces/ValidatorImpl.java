@@ -51,7 +51,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   private final SymbolTable symbolTable;
   private final XMLComponent[] components;
   private Locator locator;
-  private final Set<String> entities = new HashSet<String>();
+  private final Set<String> entities = new HashSet<>();
   private boolean pushedContext = false;
 
   // XXX deal with baseURI
@@ -77,9 +77,9 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
     this.symbolTable = symbolTable;
     XMLErrorHandler errorHandlerWrapper = new ErrorHandlerWrapper(properties.get(ValidateProperty.ERROR_HANDLER));
     components = new XMLComponent[] { errorReporter, schemaValidator, entityManager };
-    for (int i = 0; i < components.length; i++) {
-      addRecognizedFeatures(components[i].getRecognizedFeatures());
-      addRecognizedProperties(components[i].getRecognizedProperties());
+    for (XMLComponent component : components) {
+      addRecognizedFeatures(component.getRecognizedFeatures());
+      addRecognizedProperties(component.getRecognizedProperties());
     }
     addRecognizedFeatures(recognizedFeatures);
     addRecognizedProperties(recognizedProperties);
@@ -112,8 +112,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   public void reset() {
     validationManager.reset();
     namespaceContext.reset();
-    for (int i = 0; i < components.length; i++)
-      components[i].reset(this);
+    for (XMLComponent component : components) component.reset(this);
     validationManager.setEntityState(this);
   }
 
@@ -214,7 +213,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
       else
         prefix = symbolTable.addSymbol(prefix);
       if (uri != null) {
-        if (uri.equals(""))
+        if (uri.isEmpty())
           uri = null;
         else
           uri = symbolTable.addSymbol(uri);
@@ -264,14 +263,14 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   private QName makeQName(String namespaceURI, String localName, String qName) {
     localName = symbolTable.addSymbol(localName);
     String prefix;
-    if (namespaceURI.equals("")) {
+    if (namespaceURI.isEmpty()) {
       namespaceURI = null;
       prefix = XMLSymbols.EMPTY_STRING;
       qName = localName;
     }
     else {
       namespaceURI = symbolTable.addSymbol(namespaceURI);
-      if (qName.equals("")) {
+      if (qName.isEmpty()) {
         prefix = namespaceContext.getPrefix(namespaceURI);
         if (prefix == XMLSymbols.EMPTY_STRING)
           qName = localName;
@@ -332,7 +331,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   public String getXMLVersion() {
     return "1.0";
   }
-  
+
   static SAXException toSAXException(XNIException e) {
     if (e instanceof XMLParseException) {
       XMLParseException pe = (XMLParseException)e;

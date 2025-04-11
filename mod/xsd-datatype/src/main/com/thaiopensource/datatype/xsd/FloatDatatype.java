@@ -5,12 +5,14 @@ import org.relaxng.datatype.ValidationContext;
 class FloatDatatype extends DoubleDatatype {
 
   Object getValue(String str, ValidationContext vc) {
-    if (str.equals("INF"))
-      return Float.POSITIVE_INFINITY;
-    if (str.equals("-INF"))
-      return Float.NEGATIVE_INFINITY;
-    if (str.equals("NaN"))
-      return Float.NaN;
+    switch (str) {
+      case "INF":
+        return Float.POSITIVE_INFINITY;
+      case "-INF":
+        return Float.NEGATIVE_INFINITY;
+      case "NaN":
+        return Float.NaN;
+    }
     return new Float(str);
   }
 

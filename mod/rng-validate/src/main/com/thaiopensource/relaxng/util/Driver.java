@@ -36,7 +36,7 @@ class Driver {
 
   private boolean timing = false;
   private String encoding = null;
-  private Localizer localizer = new Localizer(Driver.class);
+  private final Localizer localizer = new Localizer(Driver.class);
 
   public int doMain(String[] args) {
     ErrorHandlerImpl eh = new ErrorHandlerImpl(System.out);
@@ -47,7 +47,7 @@ class Driver {
     SchemaReader sr = null;
     boolean compact = false;
     boolean outputSimplifiedSchema = false;
-    List<String> catalogUris = new ArrayList<String>();
+    List<String> catalogUris = new ArrayList<>();
 
     try {
       while (op.moveToNextOption()) {
@@ -148,11 +148,7 @@ class Driver {
       else
 	hadError = true;
     }
-    catch (SAXException e) {
-      hadError = true;
-      eh.printException(e);
-    }
-    catch (IOException e) {
+    catch (SAXException | IOException e) {
       hadError = true;
       eh.printException(e);
     }

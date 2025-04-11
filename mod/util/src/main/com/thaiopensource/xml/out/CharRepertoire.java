@@ -9,7 +9,7 @@ public class CharRepertoire {
   private static final byte UNKNOWN = 0;
   private static final byte IN = 1;
   private static final byte OUT = -1;
-  
+
   private final String enc;
 
   CharRepertoire(String enc) {
@@ -59,13 +59,11 @@ public class CharRepertoire {
       String s = new String(new String(new char[]{c1, c2}).getBytes(enc), enc);
       return s.length() == 2 && s.charAt(0) == c1 && s.charAt(1) == c2;
     }
-    catch (UnsupportedEncodingException e) {
+    catch (UnsupportedEncodingException | RuntimeException e) {
       return false;
     }
     // work around gcj bug (libgcj/9802)
-    catch (RuntimeException e) {
-      return false;
-    }
+
   }
 
 }

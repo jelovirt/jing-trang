@@ -94,7 +94,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     }
 
     public Set<String> prefixes() {
-      Set<String> set = new HashSet<String>();
+      Set<String> set = new HashSet<>();
       for (PrefixMapping p = prefixMapping; p != null; p = p.next)
         set.add(p.prefix);
       return set;
@@ -257,22 +257,27 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 	String uri = atts.getURI(i);
 	if (uri.length() == 0) {
 	  String name = atts.getLocalName(i);
-	  if (name.equals("name"))
-	    setName(atts.getValue(i).trim());
-	  else if (name.equals("ns"))
-	    ns = atts.getValue(i);
-	  else if (name.equals("datatypeLibrary")) {
-	    datatypeLibrary = atts.getValue(i);
-	    checkUri(datatypeLibrary);
-	    if (!datatypeLibrary.equals("")
-		&& !Uri.isAbsolute(datatypeLibrary))
-	      error("relative_datatype_library");
-	    if (Uri.hasFragmentId(datatypeLibrary))
-	      error("fragment_identifier_datatype_library");
-	    datatypeLibrary = Uri.escapeDisallowedChars(datatypeLibrary);
-	  }
-	  else
-	    setOtherAttribute(name, atts.getValue(i));
+    switch (name) {
+      case "name":
+        setName(atts.getValue(i).trim());
+        break;
+      case "ns":
+        ns = atts.getValue(i);
+        break;
+      case "datatypeLibrary":
+        datatypeLibrary = atts.getValue(i);
+        checkUri(datatypeLibrary);
+        if (!datatypeLibrary.isEmpty()
+          && !Uri.isAbsolute(datatypeLibrary))
+          error("relative_datatype_library");
+        if (Uri.hasFragmentId(datatypeLibrary))
+          error("fragment_identifier_datatype_library");
+        datatypeLibrary = Uri.escapeDisallowedChars(datatypeLibrary);
+        break;
+      default:
+        setOtherAttribute(name, atts.getValue(i));
+        break;
+    }
 	}
 	else if (uri.equals(relaxngURI))
 	  error("qualified_attribute", atts.getLocalName(i));
@@ -346,7 +351,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   class ForeignElementHandler extends Handler {
     final State nextState;
     ElementAnnotationBuilder<Location, ElementAnnotation, CommentListImpl> builder;
-    final Stack<ElementAnnotationBuilder<Location, ElementAnnotation, CommentListImpl>> builderStack = new Stack<ElementAnnotationBuilder<Location, ElementAnnotation, CommentListImpl>>();
+    final Stack<ElementAnnotationBuilder<Location, ElementAnnotation, CommentListImpl>> builderStack = new Stack<>();
     StringBuffer textBuf;
     Location textLoc;
 
@@ -460,7 +465,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   }
 
   abstract class PatternContainerState extends State {
-    List<Pattern> childPatterns = new ArrayList<Pattern>();
+    final List<Pattern> childPatterns = new ArrayList<>();
 
     State createChildState(String localName) throws SAXException {
       State state = patternMap.get(localName);
@@ -936,14 +941,16 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     }
 
     State createChildState(String localName) throws SAXException {
-      if (localName.equals("define"))
-	return new DefineState(section);
-      if (localName.equals("start"))
-	return new StartState(section);
-      if (localName.equals("include")) {
-	Include<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> include = section.makeInclude();
-	if (include != null)
-	  return new IncludeState(include);
+      switch (localName) {
+        case "define":
+          return new DefineState(section);
+        case "start":
+          return new StartState(section);
+        case "include":
+          Include<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> include = section.makeInclude();
+          if (include != null)
+            return new IncludeState(include);
+          break;
       }
       if (localName.equals("div"))
 	return new DivState(section.makeDiv());
@@ -1346,7 +1353,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   }
 
   class NameClassChoiceState extends NameClassContainerState {
-    private List<NameClass> nameClasses = new ArrayList<NameClass>();
+    private final List<NameClass> nameClasses = new ArrayList<>();
     private int context;
 
     NameClassChoiceState() {
@@ -1420,7 +1427,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   }
 
   private void initPatternTable() {
-    patternMap = new HashMap<String, State>();
+    patternMap = new HashMap<>();
     patternMap.put("zeroOrMore", new ZeroOrMoreState());
     patternMap.put("oneOrMore", new OneOrMoreState());
     patternMap.put("optional", new OptionalState());
@@ -1443,7 +1450,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   }
 
   private void initNameClassTable() {
-    nameClassMap = new HashMap<String, State>();
+    nameClassMap = new HashMap<>();
     nameClassMap.put("name", new NameState());
     nameClassMap.put("anyName", new AnyNameState());
     nameClassMap.put("nsName", new NsNameState());
@@ -1532,10 +1539,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       try {
         xr.setProperty("http://xml.org/sax/properties/lexical-handler", new LexicalHandlerImpl());
       }
-      catch (SAXNotRecognizedException e) {
-        warning("no_comment_support", xr.getClass().getName());
-      }
-      catch (SAXNotSupportedException e) {
+      catch (SAXNotRecognizedException | SAXNotSupportedException e) {
         warning("no_comment_support", xr.getClass().getName());
       }
     }
@@ -1581,7 +1585,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
   private String findPrefix(String qName, String uri) {
     String prefix = null;
-    if (qName == null || qName.equals("")) {
+    if (qName == null || qName.isEmpty()) {
       for (PrefixMapping p = context.prefixMapping; p != null; p = p.next)
         if (p.uri.equals(uri)) {
           prefix = p.prefix;

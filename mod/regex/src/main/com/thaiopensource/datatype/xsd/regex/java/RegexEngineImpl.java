@@ -14,16 +14,12 @@ public class RegexEngineImpl implements RegexEngine {
   public RegexEngineImpl() {
     // Force a linkage error on instantiation if JDK >= 1.4 is not available.
     boolean b = RegexFeatures.SURROGATES_DIRECT;
-  } 
+  }
 
   public Regex compile(String str) throws RegexSyntaxException {
     // Don't catch PatternSyntaxException
     // The Translator should detect all syntax errors
     final Pattern pattern = Pattern.compile(Translator.translate(str));
-    return new Regex() {
-      public boolean matches(String str) {
-        return pattern.matcher(str).matches();
-      }
-    };
+    return str1 -> pattern.matcher(str1).matches();
   }
 }

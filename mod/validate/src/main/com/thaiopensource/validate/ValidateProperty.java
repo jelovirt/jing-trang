@@ -39,7 +39,7 @@ public class ValidateProperty {
    *
    * @see EntityResolver
    */
-  public static PropertyId<EntityResolver> ENTITY_RESOLVER
+  public static final PropertyId<EntityResolver> ENTITY_RESOLVER
           = PropertyId.newInstance("ENTITY_RESOLVER", EntityResolver.class);
 
   /**

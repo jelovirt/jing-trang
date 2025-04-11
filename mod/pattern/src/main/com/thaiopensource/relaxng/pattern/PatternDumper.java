@@ -13,14 +13,14 @@ import java.util.Map;
 public class PatternDumper {
   private static final String INTERNAL_NAMESPACE = "http://www.thaiopensource.com/relaxng/internal";
   private boolean startTagOpen = false;
-  private final ArrayList<String> tagStack = new ArrayList<String>();
+  private final ArrayList<String> tagStack = new ArrayList<>();
   private final StringBuilder buf;
   private int level = 0;
   private boolean suppressIndent = false;
-  private final List<ElementPattern> patternList = new ArrayList<ElementPattern>();
-  private final Map<String, Integer> localNamePatternCount = new HashMap<String, Integer>();
+  private final List<ElementPattern> patternList = new ArrayList<>();
+  private final Map<String, Integer> localNamePatternCount = new HashMap<>();
   private int otherPatternCount;
-  private final Map<ElementPattern, String> patternNameMap = new HashMap<ElementPattern, String>();
+  private final Map<ElementPattern, String> patternNameMap = new HashMap<>();
 
   private final PatternFunction<VoidValue> dumper = new Dumper();
   private final PatternFunction<VoidValue> elementDumper = new ElementDumper();
@@ -50,9 +50,9 @@ public class PatternDumper {
     startElement("start");
     p.apply(dumper);
     endElement();
-    for (int i = 0; i < patternList.size(); i++) {
+    for (ElementPattern elementPattern : patternList) {
       startElement("define");
-      ElementPattern tem = patternList.get(i);
+      ElementPattern tem = elementPattern;
       attribute("name", getName(tem));
       tem.apply(elementDumper);
       endElement();
@@ -79,7 +79,7 @@ public class PatternDumper {
           int u = name.lastIndexOf('_');
           if (u >= 0) {
             try {
-              if (Integer.valueOf(name.substring(u + 1, name.length())) > 0)
+              if (Integer.parseInt(name.substring(u + 1, name.length())) > 0)
                 // it can, so transform it so that it cannot
                 name += "_1";
             }
@@ -175,7 +175,7 @@ public class PatternDumper {
       }
     }
   }
-      
+
   private void endElement() {
     --level;
     if (startTagOpen) {
@@ -324,7 +324,7 @@ public class PatternDumper {
     }
 
     public VoidValue caseValue(ValuePattern p) {
-      startElement("value");      
+      startElement("value");
       Name dtName = p.getDatatypeName();
       attribute("type", dtName.getLocalName());
       attribute("datatypeLibrary", dtName.getNamespaceUri());
@@ -475,7 +475,7 @@ public class PatternDumper {
       startElement("error");
       endElement();
     }
-    
+
     public void visitNull() {
       visitAnyName();
     }

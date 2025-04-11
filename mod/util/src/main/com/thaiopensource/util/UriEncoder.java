@@ -56,7 +56,7 @@ public class UriEncoder {
   }
 
   static private String encode(String s, int flags) {
-    StringBuffer encoded = null;
+    StringBuilder encoded = null;
     final int len = s.length();
     for (int i = 0; i < len; i++) {
       char c = s.charAt(i);
@@ -109,7 +109,7 @@ public class UriEncoder {
       }
       if (mustEncode) {
         if (encoded == null)
-          encoded = new StringBuffer(s.substring(0, i));
+          encoded = new StringBuilder(s.substring(0, i));
         int codePoint;
         if (Utf16.isSurrogate1(c)
             && i + 1 < len
@@ -132,8 +132,7 @@ public class UriEncoder {
   static char[] percentEncode(byte[] bytes) {
     char[] buf = new char[bytes.length * 3];
     int j = 0;
-    for (int i = 0; i < bytes.length; i++) {
-      int b = bytes[i];
+    for (int b : bytes) {
       buf[j++] = '%';
       buf[j++] = hexDigits.charAt((b >> 4) & 0xF);
       buf[j++] = hexDigits.charAt(b & 0xF);

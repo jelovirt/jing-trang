@@ -30,9 +30,9 @@ import java.io.IOException;
  * @author <a href="mailto:jjc@jclark.com">James Clark</a>
  */
 public class SchemaFactory {
-  private PropertyMapBuilder properties = new PropertyMapBuilder();
+  private final PropertyMapBuilder properties = new PropertyMapBuilder();
   private boolean compactSyntax = false;
-  private SchemaReader autoSchemaLanguage = new AutoSchemaReader();
+  private final SchemaReader autoSchemaLanguage = new AutoSchemaReader();
 
   /**
    * Constructs a schema factory.

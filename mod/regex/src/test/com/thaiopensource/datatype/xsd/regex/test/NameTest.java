@@ -17,7 +17,7 @@ public class NameTest {
       System.exit(2);
     }
 
-    Class cls = NameTest.class.getClassLoader().loadClass(args[0]);
+    Class<?> cls = NameTest.class.getClassLoader().loadClass(args[0]);
     RegexEngine engine = (RegexEngine)cls.newInstance();
     int nFail = new NameTest(engine).run();
     System.err.println(nFail + " tests failed");

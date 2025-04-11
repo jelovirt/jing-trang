@@ -15,7 +15,7 @@ import java.io.IOException;
 public final class JavaCharStream {
   public static final boolean staticFlag = false;
 
-  static final int hexval(char c) {
+  static int hexval(char c) {
     switch (c) {
     case '0':
       return 0;
@@ -85,7 +85,7 @@ public final class JavaCharStream {
   protected void setTabSize(int i) { tabSize = i; }
   protected int getTabSize(int i) { return tabSize; }
 
-  private final void ExpandBuff(boolean wrapAround) {
+  private void ExpandBuff(boolean wrapAround) {
     char[] newbuffer = new char[bufsize + 2048];
     int newbufline[] = new int[bufsize + 2048];
     int newbufcolumn[] = new int[bufsize + 2048];
@@ -123,7 +123,7 @@ public final class JavaCharStream {
     tokenBegin = 0;
   }
 
-  private final void FillBuff() throws EOFException {
+  private void FillBuff() throws EOFException {
     int i;
     if (maxNextCharInd == 4096)
       maxNextCharInd = nextCharInd = 0;
@@ -144,20 +144,20 @@ public final class JavaCharStream {
     }
   }
 
-  private final char ReadChar() throws EOFException {
+  private char ReadChar() throws EOFException {
     if (++nextCharInd >= maxNextCharInd)
       FillBuff();
 
     return nextCharBuf[nextCharInd];
   }
 
-  private final char PeekChar() throws EOFException {
+  private char PeekChar() throws EOFException {
     char c = ReadChar();
     --nextCharInd;
     return c;
   }
 
-  public final char BeginToken() throws EOFException {
+  public char BeginToken() throws EOFException {
     if (inBuf > 0) {
       --inBuf;
       if (++bufpos == bufsize)
@@ -173,7 +173,7 @@ public final class JavaCharStream {
     return readChar();
   }
 
-  private final void AdjustBuffSize() {
+  private void AdjustBuffSize() {
     if (available == bufsize) {
       if (tokenBegin > 2048) {
         bufpos = 0;
@@ -190,7 +190,7 @@ public final class JavaCharStream {
       available = tokenBegin;
   }
 
-  private final void UpdateLineColumn(char c) {
+  private void UpdateLineColumn(char c) {
     column++;
 
     if (prevCharIsLF) {
@@ -216,7 +216,7 @@ public final class JavaCharStream {
 
   private final char NEWLINE_MARKER = '\u0000';
 
-  public final char readChar() throws EOFException {
+  public char readChar() throws EOFException {
     if (inBuf > 0) {
       --inBuf;
       if (++bufpos == bufsize)
@@ -374,7 +374,7 @@ public final class JavaCharStream {
    * @see #getEndColumn
    */
 
-  public final int getColumn() {
+  public int getColumn() {
     return bufcolumn[bufpos];
   }
 
@@ -383,27 +383,27 @@ public final class JavaCharStream {
    * @see #getEndLine
    */
 
-  public final int getLine() {
+  public int getLine() {
     return bufline[bufpos];
   }
 
-  public final int getEndColumn() {
+  public int getEndColumn() {
     return bufcolumn[bufpos];
   }
 
-  public final int getEndLine() {
+  public int getEndLine() {
     return bufline[bufpos];
   }
 
-  public final int getBeginColumn() {
+  public int getBeginColumn() {
     return bufcolumn[tokenBegin];
   }
 
-  public final int getBeginLine() {
+  public int getBeginLine() {
     return bufline[tokenBegin];
   }
 
-  public final void backup(int amount) {
+  public void backup(int amount) {
 
     inBuf += amount;
     if ((bufpos -= amount) < 0)
@@ -503,7 +503,7 @@ public final class JavaCharStream {
            ? new java.io.InputStreamReader(dstream)
            : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
   }
-  
+
   public void ReInit(java.io.InputStream dstream, int startline,
                      int startcolumn, int buffersize) {
     ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
@@ -540,7 +540,7 @@ public final class JavaCharStream {
     }
   }
 
-  public final String GetImage() {
+  public String GetImage() {
     if (bufpos >= tokenBegin)
       return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
     else
@@ -548,7 +548,7 @@ public final class JavaCharStream {
               new String(buffer, 0, bufpos + 1);
   }
 
-  public final char[] GetSuffix(int len) {
+  public char[] GetSuffix(int len) {
     char[] ret = new char[len];
 
     if ((bufpos + 1) >= len)

@@ -7,7 +7,7 @@ public interface GrammarSection<P, L, EA, CL extends CommentList<L>, A extends A
     private Combine(String name) {
       this.name = name;
     }
-    final public String toString() {
+    public String toString() {
       return name;
     }
   }

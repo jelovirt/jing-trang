@@ -52,7 +52,7 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
   }
 
   static private String makePattern(String template) {
-    StringBuffer pattern = new StringBuffer();
+    StringBuilder pattern = new StringBuilder();
     for (int i = 0, len = template.length(); i < len; i++) {
       char c = template.charAt(i);
       switch (c) {
@@ -217,7 +217,7 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
     static private final int FAST = 1;
     static private final int LIMIT = 10;
     static private int speed = UNKNOWN;
-    static GregorianCalendar cal = new GregorianCalendar();
+    static final GregorianCalendar cal = new GregorianCalendar();
 
     static GregorianCalendar getCalendar() {
       // Don't need to synchronize this because speed is atomic.

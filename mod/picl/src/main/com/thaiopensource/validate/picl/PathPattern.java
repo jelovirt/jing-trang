@@ -60,7 +60,7 @@ abstract class PathPattern extends Pattern {
   }
 
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (int i = 0, j = 0; i < names.length; i += 2, j++) {
       if (j != 0)
         buf.append(descendantsOrSelf[j] ? "//" : "/");

@@ -31,7 +31,7 @@ public class JingTask extends Task {
   private File schemaFile;
   private File src;
   private final List filesets = new ArrayList();
-  private PropertyMapBuilder properties = new PropertyMapBuilder();
+  private final PropertyMapBuilder properties = new PropertyMapBuilder();
   private boolean failOnError = true;
   private SchemaReader schemaReader = null;
 
@@ -83,23 +83,19 @@ public class JingTask extends Task {
 	  if (!driver.validate(ValidationDriver.fileInputSource(src)))
 	    hadError = true;
 	}
-	for (int i = 0; i < filesets.size(); i++) {
-	  FileSet fs = (FileSet)filesets.get(i);
-	  DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-	  File dir = fs.getDir(getProject());
-	  String[] srcs = ds.getIncludedFiles();
-	  for (int j = 0; j < srcs.length; j++) {
-	    if (!driver.validate(ValidationDriver.fileInputSource(new File(dir, srcs[j]))))
-	      hadError = true;
-	  }
-	}
+        for (Object fileset : filesets) {
+          FileSet fs = (FileSet) fileset;
+          DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+          File dir = fs.getDir(getProject());
+          String[] srcs = ds.getIncludedFiles();
+          for (String s : srcs) {
+            if (!driver.validate(ValidationDriver.fileInputSource(new File(dir, s))))
+              hadError = true;
+          }
+        }
       }
     }
-    catch (SAXException e) {
-      hadError = true;
-      eh.printException(e);
-    }
-    catch (IOException e) {
+    catch (SAXException | IOException e) {
       hadError = true;
       eh.printException(e);
     }

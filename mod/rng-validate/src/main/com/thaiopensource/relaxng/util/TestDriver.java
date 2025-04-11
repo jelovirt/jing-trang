@@ -23,7 +23,7 @@ class TestDriver {
 
   private ValidationDriver driver;
   private ErrorHandlerImpl eh;
-  private Localizer localizer = new Localizer(TestDriver.class);
+  private final Localizer localizer = new Localizer(TestDriver.class);
   private int nTests = 0;
 
   public int doMain(String[] args) throws IOException {
@@ -71,16 +71,16 @@ class TestDriver {
   private static final String INCORRECT_SCHEMA_NAME = "i.rng";
   private static final String VALID_INSTANCE_SUFFIX = ".v.xml";
   private static final String INVALID_INSTANCE_SUFFIX = ".i.xml";
-  
+
   public int runTestSuite(File dir) throws IOException {
     int result = 0;
     String[] subdirs = dir.list();
-    for (int i = 0; i < subdirs.length; i++) {
-      File subdir = new File(dir, subdirs[i]);
+    for (String s : subdirs) {
+      File subdir = new File(dir, s);
       if (subdir.isDirectory()) {
-	int n = runTestCase(subdir);
-	if (n > result)
-	  result = n;
+        int n = runTestCase(subdir);
+        if (n > result)
+          result = n;
       }
     }
     return result;
@@ -104,20 +104,19 @@ class TestDriver {
     }
     String[] files = dir.list();
     int result = 0;
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].endsWith(VALID_INSTANCE_SUFFIX)) {
-	f = new File(dir, files[i]);
-	if (!validateInstance(f)) {
-	  failed(f);
-	  result = 1;
-	}
-      }
-      else if (files[i].endsWith(INVALID_INSTANCE_SUFFIX)) {
-	f = new File(dir, files[i]);
-	if (validateInstance(f)) {
-	  failed(f);
-	  result = 1;
-	}
+    for (String file : files) {
+      if (file.endsWith(VALID_INSTANCE_SUFFIX)) {
+        f = new File(dir, file);
+        if (!validateInstance(f)) {
+          failed(f);
+          result = 1;
+        }
+      } else if (file.endsWith(INVALID_INSTANCE_SUFFIX)) {
+        f = new File(dir, file);
+        if (validateInstance(f)) {
+          failed(f);
+          result = 1;
+        }
       }
     }
     return result;

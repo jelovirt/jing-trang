@@ -34,7 +34,7 @@ public class PropertyMapBuilder {
   }
 
   public PropertyMapBuilder() {
-    this.map = new HashMap<PropertyId<?>, Object>();
+    this.map = new HashMap<>();
   }
 
   public PropertyMapBuilder(PropertyMap pm) {
@@ -44,7 +44,7 @@ public class PropertyMapBuilder {
       this.keys = pmi.keys;
     }
     else {
-      this.map = new HashMap<PropertyId<?>, Object>();
+      this.map = new HashMap<>();
       add(pm);
     }
   }
@@ -53,7 +53,7 @@ public class PropertyMapBuilder {
    for (int i = 0, len = pm.size(); i < len; i++)
      copy(pm.getKey(i), pm);
   }
-  
+
   private <T> void copy(PropertyId<T> pid, PropertyMap pm) {
     put(pid, pm.get(pid));
   }
@@ -70,9 +70,8 @@ public class PropertyMapBuilder {
   private void copyIfLocked() {
     if (keys == null)
       return;
-    Map<PropertyId<?>, Object> newMap = new HashMap<PropertyId<?>, Object>();
-    for (int i = 0; i < keys.length; i++)
-      newMap.put(keys[i], map.get(keys[i]));
+    Map<PropertyId<?>, Object> newMap = new HashMap<>();
+    for (PropertyId<?> key : keys) newMap.put(key, map.get(key));
     map = newMap;
     keys = null;
   }

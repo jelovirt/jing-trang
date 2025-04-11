@@ -10,12 +10,12 @@ import com.thaiopensource.xml.util.Name;
 /**
  * Extracts the default values for attributes and notifies a
  * listener for each value.
- * 
+ *
  * @author george@oxygenxml.com
  */
 public class DefaultValuesExtractor {
   /**
-   * Receives notification of default values. 
+   * Receives notification of default values.
    */
   public static interface DefaultValuesListener {
     /**
@@ -28,22 +28,22 @@ public class DefaultValuesExtractor {
      */
     public void defaultValue(String elementName, String elementNamespace, String attributeName, String attributeNamepsace, String value);
   }
-  
+
   /**
    * The listener that will receive default value notifications.
    */
-  private DefaultValuesListener listener;
+  private final DefaultValuesListener listener;
   // store a list of element patterns.
-  private final List<Pattern> patternList = new ArrayList<Pattern>();
-  private final HashSet<Pattern> patternSet = new HashSet<Pattern>();
+  private final List<Pattern> patternList = new ArrayList<>();
+  private final HashSet<Pattern> patternSet = new HashSet<>();
 
-  private ElementContentVisitor ecv = new ElementContentVisitor(); 
-  private ElementsVisitor ev = new ElementsVisitor(); 
-  
-  
+  private final ElementContentVisitor ecv = new ElementContentVisitor();
+  private final ElementsVisitor ev = new ElementsVisitor();
+
+
   /**
    * Constructor
-   * 
+   *
    * @param listener The annotation manager
    */
   public DefaultValuesExtractor(DefaultValuesListener listener) {
@@ -56,12 +56,11 @@ public class DefaultValuesExtractor {
    */
   public void parsePattern(Pattern p) {
     p.apply(ecv);
-    for (int i = 0; i < patternList.size(); i++) {
-      Pattern tem = patternList.get(i);
+    for (Pattern tem : patternList) {
       tem.apply(ev);
     }
   }
-  
+
   private void addPattern(Pattern p) {
     if (!patternSet.contains(p)) {
       patternList.add(p);
@@ -80,7 +79,7 @@ public class DefaultValuesExtractor {
 
     public VoidValue caseError(ErrorPattern p)              {return VoidValue.VOID;}
     public VoidValue caseEmpty(EmptyPattern p)              {return VoidValue.VOID;}
-    public VoidValue caseNotAllowed(NotAllowedPattern p)    {return VoidValue.VOID;}    
+    public VoidValue caseNotAllowed(NotAllowedPattern p)    {return VoidValue.VOID;}
     public VoidValue caseGroup(GroupPattern g)              {g.getOperand1().apply(this);g.getOperand2().apply(this);return VoidValue.VOID;}
     public VoidValue caseInterleave(InterleavePattern i)    {i.getOperand1().apply(this);i.getOperand2().apply(this);return VoidValue.VOID;}
     public VoidValue caseChoice(ChoicePattern c)            {c.getOperand1().apply(this);c.getOperand2().apply(this);return VoidValue.VOID;}
@@ -95,7 +94,7 @@ public class DefaultValuesExtractor {
 
     // ** NameClass visitor methods.** //
     public void visitName(Name name)                        {}
-    
+
     public void visitChoice(NameClass nc1, NameClass nc2)   {nc1.accept(this);nc2.accept(this);}
     public void visitNsName(String ns)                      {}
     public void visitNsNameExcept(String ns, NameClass nc)  {}
@@ -104,7 +103,7 @@ public class DefaultValuesExtractor {
     public void visitNull()                                 {}
     public void visitError()                                {}
   }
-  
+
   /**
    * Adds element patterns to the patterns list.
    * @author george
@@ -116,18 +115,18 @@ public class DefaultValuesExtractor {
       return VoidValue.VOID;
     }
   }
-  
+
   /**
    * Visits an element, extracts default attributes and calls
    * the element content visitor to visit the element content.
-   * 
+   *
    * @author george
    */
   class ElementsVisitor extends BaseVisitor {
     /**
      * Keeps all the elements found. List of Name.
      */
-    private List<Name> elements = new ArrayList<Name>();
+    private final List<Name> elements = new ArrayList<>();
 
     @Override
     public VoidValue caseElement(ElementPattern p) {
@@ -148,13 +147,13 @@ public class DefaultValuesExtractor {
       elements.add(name);
     }
   }
-  
+
   /**
    * Notify the listener for each visited attribute with default value.
    */
   class AttributesVisitor extends BaseVisitor {
     private String defaultValue;
-    private List<Name> elements;
+    private final List<Name> elements;
     /**
      * @param elements The parent element names for the visited attributes.
      */

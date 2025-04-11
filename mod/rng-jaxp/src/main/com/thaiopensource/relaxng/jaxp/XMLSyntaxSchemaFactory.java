@@ -25,11 +25,11 @@ public class XMLSyntaxSchemaFactory extends SchemaFactoryImpl {
    * XML syntax.  The String is the namespace URI for RELAX NG schemas.
    */
   static final public String SCHEMA_LANGUAGE = Constants.RELAXNG_XML_URI;
-  
+
   protected Parseable<Pattern, NameClass, Locator, VoidValue, CommentListImpl, AnnotationsImpl> createParseable(SAXSource source, SAXResolver resolver, ErrorHandler eh) throws SAXException {
     if (source.getXMLReader() == null)
       source = new SAXSource(resolver.createXMLReader(), source.getInputSource());
-    return new SAXParseable<Pattern, NameClass, Locator, VoidValue, CommentListImpl, AnnotationsImpl>(source, resolver, eh);
+    return new SAXParseable<>(source, resolver, eh);
   }
 
   public boolean isSchemaLanguageSupported(String schemaLanguage) {

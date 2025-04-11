@@ -26,7 +26,7 @@ public class CategoryTest {
       System.exit(2);
     }
     BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(args[1])));
-    Class cls = CategoryTest.class.getClassLoader().loadClass(args[0]);
+    Class<?> cls = CategoryTest.class.getClassLoader().loadClass(args[0]);
     RegexEngine engine = (RegexEngine)cls.newInstance();
     int nFail = new CategoryTest(engine).testAll(r);
     System.err.println(nFail + " tests failed");
@@ -75,7 +75,7 @@ public class CategoryTest {
   void test(int ch, String category) {
     if (!isXmlChar(ch))
       return;
-    if (subCategories.indexOf(category) < 0) {
+    if (!subCategories.contains(category)) {
       System.err.println("Missing category: " + category);
       System.exit(2);
     }
