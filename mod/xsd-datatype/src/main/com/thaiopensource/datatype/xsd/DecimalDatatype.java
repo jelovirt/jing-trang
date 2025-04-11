@@ -53,8 +53,6 @@ class DecimalDatatype extends DatatypeBase implements OrderRelation {
   }
 
   Object getValue(String str, ValidationContext vc) {
-    if (str.charAt(0) == '+')
-      str = str.substring(1);	// JDK 1.1 doesn't handle leading +
     return new BigDecimal(str);
   }
 
