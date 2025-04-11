@@ -1,6 +1,5 @@
 package com.thaiopensource.relaxng.util;
 
-import com.thaiopensource.resolver.catalog.CatalogResolver;
 import com.thaiopensource.util.Localizer;
 import com.thaiopensource.util.OptionParser;
 import com.thaiopensource.util.PropertyMapBuilder;
@@ -114,15 +113,6 @@ class Driver {
     catch (OptionParser.MissingArgumentException e) {
       eh.print(localizer.message("option_missing_argument", op.getOptionCharString()));
       return 2;
-    }
-    if (!catalogUris.isEmpty()) {
-      try {
-        properties.put(ValidateProperty.RESOLVER, new CatalogResolver(catalogUris));
-      }
-      catch (LinkageError e) {
-        eh.print(localizer.message("resolver_not_found"));
-        return 2;
-      }
     }
     if (compact)
       sr = CompactSchemaReader.getInstance();

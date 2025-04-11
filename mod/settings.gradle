@@ -1,6 +1,5 @@
 rootProject.name = "jingtrang"
 
-include ':catalog'
 include ':datatype'
 include ':jaxp'
 include ':jing'

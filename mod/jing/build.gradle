@@ -5,7 +5,6 @@ plugins {
 dependencies {
     implementation project(':util')
     implementation project(':resolver')
-    implementation project(':catalog')
     implementation project(':regex')
     implementation project(':datatype')
     implementation project(':xsd-datatype')
@@ -56,9 +55,6 @@ shadowJar {
         exclude('META-INF/services/*')
     }
     from(project(':resolver').sourceSets.main.output) {
-        exclude('META-INF/services/*')
-    }
-    from(project(':catalog').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
     from(project(':regex').sourceSets.main.output) {

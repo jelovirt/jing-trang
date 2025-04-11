@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':util')
     implementation project(':resolver')
-    implementation project(':catalog')
     implementation project(':datatype')
     implementation project(':rng-parse')
     implementation project(':pattern')
