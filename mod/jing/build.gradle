@@ -11,11 +11,9 @@ dependencies {
     implementation project(':xsd-datatype')
     implementation project(':rng-parse')
     implementation project(':pattern')
-    implementation project(':jaxp')
+//    implementation project(':jaxp')
     implementation project(':rng-jaxp')
     implementation project(':rng-validate')
-    implementation project(':nvdl')
-    implementation project(':schematron')
     implementation project(':xerces')
     implementation project(':picl')
     implementation project(':rng-jarv')
@@ -42,7 +40,7 @@ jar {
     manifest {
         attributes(
                 'Main-Class': 'com/thaiopensource/relaxng/util/Driver',
-                'Class-Path': "saxon9.jar xalan.jar isorelax.jar resolver.jar rng-jarv.jar")
+                'Class-Path': "saxon9.jar xalan.jar resolver.jar")
     }
 }
 
@@ -78,19 +76,13 @@ shadowJar {
     from(project(':pattern').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
-    from(project(':jaxp').sourceSets.main.output) {
-        exclude('META-INF/services/*')
-    }
+//    from(project(':jaxp').sourceSets.main.output) {
+//        exclude('META-INF/services/*')
+//    }
     from(project(':rng-jaxp').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
     from(project(':rng-validate').sourceSets.main.output) {
-        exclude('META-INF/services/*')
-    }
-    from(project(':nvdl').sourceSets.main.output) {
-        exclude('META-INF/services/*')
-    }
-    from(project(':schematron').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
     from(project(':xerces').sourceSets.main.output) {
@@ -99,9 +91,6 @@ shadowJar {
     from(project(':picl').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
-//    from(project(':rng-jarv').sourceSets.main.output) {
-//        exclude('META-INF/services/*')
-//    }
     from(project(':validate').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
@@ -137,22 +126,12 @@ tasks.register('generateServices') {
             'org.relaxng.datatype.DatatypeLibraryFactory'           : [
                     'com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl',
             ],
-//            'org.iso_relax.verifier.VerifierFactoryLoader'          : [
-//                    'com.thaiopensource.relaxng.jarv.VerifierFactoryLoaderImpl',
-//            ],
             'com.thaiopensource.validate.SchemaReaderFactory'       : [
-                    'com.thaiopensource.validate.schematron.NewSaxonSchemaReaderFactory',
-                    'com.thaiopensource.validate.schematron.OldSaxonSchemaReaderFactory',
-                    'com.thaiopensource.validate.schematron.XalanSchemaReaderFactory',
-                    'com.thaiopensource.validate.schematron.SchematronSchemaReaderFactory',
                     'com.thaiopensource.validate.xerces.XsdSchemaReaderFactory',
                     'com.thaiopensource.validate.jarv.JarvSchemaReaderFactory',
             ],
             'com.thaiopensource.validate.auto.SchemaReceiverFactory': [
                     'com.thaiopensource.validate.rng.SAXSchemaReceiverFactory',
-                    'com.thaiopensource.validate.nvdl.NvdlSchemaReceiverFactory',
-                    'com.thaiopensource.validate.nrl.NrlSchemaReceiverFactory',
-                    'com.thaiopensource.validate.mns.MnsSchemaReceiverFactory',
                     'com.thaiopensource.validate.picl.PiclSchemaReceiverFactory',
                     'com.thaiopensource.validate.auto.SchemaReaderLoaderSchemaReceiverFactory',
             ],
@@ -181,12 +160,12 @@ tasks.register('dist', Zip) {
 //    from(project(':rng-jarv').configuration.runtimeClasspath.allArtifacts.files) {
 //        into 'bin'
 //    }
-    from(project(':rng-jarv').tasks.jar) {
-        into 'bin'
-    }
+//    from(project(':rng-jarv').tasks.jar) {
+//        into 'bin'
+//    }
     from('../../lib') {
         into 'bin'
-        include('isorelax.jar')
+//        include('isorelax.jar')
         include('saxon9.jar')
         include('xercesImpl.jar')
         include('xml-apis.jar')
@@ -218,10 +197,6 @@ tasks.register('dist', Zip) {
     from('../nvdl/src/main/com/thaiopensource/validate/nvdl/resources') {
         into 'lib'
         include ('*.rng')
-    }
-    from('../schematron/src/main/com/thaiopensource/validate/schematron/resources') {
-        into 'lib'
-        include ('*.rnc')
     }
     from('../..///doc/compact') {
         into 'lib'
