@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':util')
     implementation project(':resolver')
-    implementation project(':datatype')
+    implementation project(':xsd-datatype')
     implementation project(':rng-parse')
     implementation project(':pattern')
     implementation group: 'isorelax', name: 'isorelax', version: '20030108'

@@ -6,7 +6,7 @@ dependencies {
     implementation project(':util')
     implementation project(':resolver')
     implementation project(':regex')
-    implementation project(':datatype')
+    implementation project(':xsd-datatype')
     implementation project(':xsd-datatype')
     implementation project(':rng-parse')
     implementation project(':pattern')
@@ -58,9 +58,6 @@ shadowJar {
         exclude('META-INF/services/*')
     }
     from(project(':regex').sourceSets.main.output) {
-        exclude('META-INF/services/*')
-    }
-    from(project(':datatype').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
     from(project(':xsd-datatype').sourceSets.main.output) {
