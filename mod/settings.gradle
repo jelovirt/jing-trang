@@ -2,13 +2,11 @@ rootProject.name = "jingtrang"
 
 include ':jaxp'
 include ':jing'
-include ':nvdl'
 include ':pattern'
 include ':picl'
 include ':regex'
 include ':regex-gen'
 include ':resolver'
-include ':rng-jarv'
 include ':rng-jaxp'
 include ':rng-parse'
 include ':rng-validate'

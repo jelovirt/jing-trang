@@ -10,12 +10,10 @@ dependencies {
     implementation project(':xsd-datatype')
     implementation project(':rng-parse')
     implementation project(':pattern')
-//    implementation project(':jaxp')
     implementation project(':rng-jaxp')
     implementation project(':rng-validate')
     implementation project(':xerces')
     implementation project(':picl')
-    implementation project(':rng-jarv')
     implementation project(':validate')
 }
 
@@ -69,9 +67,6 @@ shadowJar {
     from(project(':pattern').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
-//    from(project(':jaxp').sourceSets.main.output) {
-//        exclude('META-INF/services/*')
-//    }
     from(project(':rng-jaxp').sourceSets.main.output) {
         exclude('META-INF/services/*')
     }
@@ -150,15 +145,8 @@ tasks.register('dist', Zip) {
     from(tasks.shadowJar) {
         into 'bin'
     }
-//    from(project(':rng-jarv').configuration.runtimeClasspath.allArtifacts.files) {
-//        into 'bin'
-//    }
-//    from(project(':rng-jarv').tasks.jar) {
-//        into 'bin'
-//    }
     from('../../lib') {
         into 'bin'
-//        include('isorelax.jar')
         include('saxon9.jar')
         include('xercesImpl.jar')
         include('xml-apis.jar')
