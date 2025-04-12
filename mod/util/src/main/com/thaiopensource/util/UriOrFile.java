@@ -24,15 +24,15 @@ public class UriOrFile {
     for (int i = 1; i < len; i++) {
       char c = str.charAt(i);
       switch (c) {
-      case ':':
-	return str.substring(0, i);
-      case '+':
-      case '-':
-	break;
-      default:
-	if (!isAlnum(c))
-	  return null;
-	break;
+        case ':':
+          return str.substring(0, i);
+        case '+':
+        case '-':
+          break;
+        default:
+          if (!isAlnum(c))
+            return null;
+          break;
       }
     }
     return null;
@@ -61,7 +61,8 @@ public class UriOrFile {
         return new File(new URI(uri)).toString();
       }
       // not a valid URI
-      catch (URISyntaxException | IllegalArgumentException e) { }
+      catch (URISyntaxException | IllegalArgumentException e) {
+      }
       // not a valid file URI
 
     }

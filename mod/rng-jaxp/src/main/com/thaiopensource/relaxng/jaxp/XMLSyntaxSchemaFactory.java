@@ -2,16 +2,16 @@ package com.thaiopensource.relaxng.jaxp;
 
 import com.thaiopensource.relaxng.parse.Parseable;
 import com.thaiopensource.relaxng.parse.sax.SAXParseable;
-import com.thaiopensource.relaxng.pattern.Pattern;
-import com.thaiopensource.relaxng.pattern.NameClass;
-import com.thaiopensource.relaxng.pattern.CommentListImpl;
 import com.thaiopensource.relaxng.pattern.AnnotationsImpl;
+import com.thaiopensource.relaxng.pattern.CommentListImpl;
+import com.thaiopensource.relaxng.pattern.NameClass;
+import com.thaiopensource.relaxng.pattern.Pattern;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
-import com.thaiopensource.validation.Constants;
 import com.thaiopensource.util.VoidValue;
+import com.thaiopensource.validation.Constants;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 import javax.xml.transform.sax.SAXSource;
 

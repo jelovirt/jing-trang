@@ -3,8 +3,8 @@ package com.thaiopensource.validate.picl;
 import com.thaiopensource.util.Localizer;
 import com.thaiopensource.xml.util.Naming;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 class PatternParser {
@@ -21,12 +21,12 @@ class PatternParser {
   private NamespaceContext namespaceContext;
   private final StringBuffer nameBuffer = new StringBuffer();
 
-  private static final int TOKEN_EOF  = 0;
-  private static final int TOKEN_SLASH  = 1;
-  private static final int TOKEN_SLASH_SLASH  = 2;
-  private static final int TOKEN_CHOICE  = 3;
-  private static final int TOKEN_CHILD_AXIS  = 4;
-  private static final int TOKEN_ATTRIBUTE_AXIS  = 5;
+  private static final int TOKEN_EOF = 0;
+  private static final int TOKEN_SLASH = 1;
+  private static final int TOKEN_SLASH_SLASH = 2;
+  private static final int TOKEN_CHOICE = 3;
+  private static final int TOKEN_CHILD_AXIS = 4;
+  private static final int TOKEN_ATTRIBUTE_AXIS = 5;
   private static final int TOKEN_DOT = 6;
   private static final int TOKEN_QNAME = 7;
   private static final int TOKEN_NCNAME_STAR = 8;
@@ -49,29 +49,28 @@ class PatternParser {
         parseChoice();
       } while (currentToken == TOKEN_CHOICE);
       return builder.createPattern();
-    }
-    finally {
+    } finally {
       builder.cleanup();
     }
   }
 
   private void parseChoice() throws SAXException, InvalidPatternException {
-    for (;;) {
+    for (; ; ) {
       parseStep();
       advance();
       switch (currentToken) {
-      case TOKEN_SLASH:
-        break;
-      case TOKEN_SLASH_SLASH:
-        builder.addDescendantsOrSelf();
-        break;
-      case TOKEN_CHOICE:
-        builder.alternative();
-        return;
-      case TOKEN_EOF:
-        return;
-      default:
-        throw error("expected_step_connector");
+        case TOKEN_SLASH:
+          break;
+        case TOKEN_SLASH_SLASH:
+          builder.addDescendantsOrSelf();
+          break;
+        case TOKEN_CHOICE:
+          builder.alternative();
+          return;
+        case TOKEN_EOF:
+          return;
+        default:
+          throw error("expected_step_connector");
       }
     }
   }
@@ -80,38 +79,38 @@ class PatternParser {
     advance();
     byte type;
     switch (currentToken) {
-    case TOKEN_ATTRIBUTE_AXIS:
-      type = PatternBuilder.ATTRIBUTE;
-      advance();
-      break;
-    case TOKEN_CHILD_AXIS:
-      type = PatternBuilder.CHILD;
-      advance();
-      break;
-    case TOKEN_DOT:
-      return;
-    default:
-      type = PatternBuilder.CHILD;
-      break;
+      case TOKEN_ATTRIBUTE_AXIS:
+        type = PatternBuilder.ATTRIBUTE;
+        advance();
+        break;
+      case TOKEN_CHILD_AXIS:
+        type = PatternBuilder.CHILD;
+        advance();
+        break;
+      case TOKEN_DOT:
+        return;
+      default:
+        type = PatternBuilder.CHILD;
+        break;
     }
     switch (currentToken) {
-    case TOKEN_QNAME:
-      builder.addName(type, tokenNamespaceUri, tokenLocalName);
-      break;
-    case TOKEN_STAR:
-      builder.addAnyName(type);
-      break;
-    case TOKEN_NCNAME_STAR:
-      builder.addNsName(type, tokenNamespaceUri);
-      break;
-    default:
-      throw error("expected_name_test");
+      case TOKEN_QNAME:
+        builder.addName(type, tokenNamespaceUri, tokenLocalName);
+        break;
+      case TOKEN_STAR:
+        builder.addAnyName(type);
+        break;
+      case TOKEN_NCNAME_STAR:
+        builder.addNsName(type, tokenNamespaceUri);
+        break;
+      default:
+        throw error("expected_name_test");
     }
   }
 
 
   private void advance() throws SAXException, InvalidPatternException {
-    for (;;) {
+    for (; ; ) {
       tokenStartOffset = patternOffset;
       if (patternOffset >= patternLength) {
         currentToken = TOKEN_EOF;
@@ -119,36 +118,35 @@ class PatternParser {
       }
       char ch = pattern.charAt(patternOffset);
       switch (ch) {
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-        patternOffset++;
-        continue;
-      case '.':
-        patternOffset++;
-        currentToken = TOKEN_DOT;
-        return;
-      case '@':
-        patternOffset++;
-        currentToken = TOKEN_ATTRIBUTE_AXIS;
-        return;
-      case '|':
-        patternOffset++;
-        currentToken = TOKEN_CHOICE;
-        return;
-      case '/':
-        if (++patternOffset < patternLength && pattern.charAt(patternOffset) == '/') {
+        case ' ':
+        case '\t':
+        case '\r':
+        case '\n':
           patternOffset++;
-          currentToken = TOKEN_SLASH_SLASH;
-        }
-        else
-          currentToken = TOKEN_SLASH;
-        return;
-      case '*':
-        patternOffset++;
-        currentToken = TOKEN_STAR;
-        return;
+          continue;
+        case '.':
+          patternOffset++;
+          currentToken = TOKEN_DOT;
+          return;
+        case '@':
+          patternOffset++;
+          currentToken = TOKEN_ATTRIBUTE_AXIS;
+          return;
+        case '|':
+          patternOffset++;
+          currentToken = TOKEN_CHOICE;
+          return;
+        case '/':
+          if (++patternOffset < patternLength && pattern.charAt(patternOffset) == '/') {
+            patternOffset++;
+            currentToken = TOKEN_SLASH_SLASH;
+          } else
+            currentToken = TOKEN_SLASH;
+          return;
+        case '*':
+          patternOffset++;
+          currentToken = TOKEN_STAR;
+          return;
       }
       String name = scanNCName("illegal_char");
       if ((name.equals("child") || name.equals("attribute")) && tryScanDoubleColon()) {
@@ -179,18 +177,18 @@ class PatternParser {
   private boolean tryScanDoubleColon() {
     for (int i = patternOffset; i < patternLength; i++) {
       switch (pattern.charAt(i)) {
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-        break;
-      case ':':
-        if (++i < patternLength && pattern.charAt(i) == ':') {
-          patternOffset = i + 1;
-          return true;
-        }
-      default:
-        return false;
+        case ' ':
+        case '\t':
+        case '\r':
+        case '\n':
+          break;
+        case ':':
+          if (++i < patternLength && pattern.charAt(i) == ':') {
+            patternOffset = i + 1;
+            return true;
+          }
+        default:
+          return false;
       }
 
     }
@@ -244,17 +242,17 @@ class PatternParser {
 
   private String addContext(String message) {
     return localizer.message("context",
-                             new Object[] {
-                               message,
-                               pattern.substring(0, tokenStartOffset),
-                               pattern.substring(tokenStartOffset, patternOffset),
-                               pattern.substring(patternOffset)
-                             });
+      new Object[]{
+        message,
+        pattern.substring(0, tokenStartOffset),
+        pattern.substring(tokenStartOffset, patternOffset),
+        pattern.substring(patternOffset)
+      });
   }
 
   static public void main(String[] args) throws SAXException {
     PatternParser parser = new PatternParser(new com.thaiopensource.xml.sax.ErrorHandlerImpl(),
-                                             new Localizer(PatternParser.class));
+      new Localizer(PatternParser.class));
     String[] tests = {
       "foo//bar",
       ".",

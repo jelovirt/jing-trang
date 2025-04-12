@@ -19,7 +19,7 @@ class DataExceptPattern extends DataPattern {
   boolean samePattern(Pattern other) {
     if (!super.samePattern(other))
       return false;
-    return except.samePattern(((DataExceptPattern)other).except);
+    return except.samePattern(((DataExceptPattern) other).except);
   }
 
   <T> T apply(PatternFunction<T> f) {
@@ -31,8 +31,7 @@ class DataExceptPattern extends DataPattern {
     super.checkRestrictions(context, dad, alpha);
     try {
       except.checkRestrictions(DATA_EXCEPT_CONTEXT, null, null);
-    }
-    catch (RestrictionViolationException e) {
+    } catch (RestrictionViolationException e) {
       e.maybeSetLocator(loc);
       throw e;
     }

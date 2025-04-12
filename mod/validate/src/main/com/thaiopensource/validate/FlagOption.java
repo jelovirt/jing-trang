@@ -2,6 +2,7 @@ package com.thaiopensource.validate;
 
 public class FlagOption implements Option {
   private final FlagPropertyId pid;
+
   public FlagOption(FlagPropertyId pid) {
     this.pid = pid;
   }

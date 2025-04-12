@@ -65,10 +65,10 @@ public class JingTask extends Task {
   public void execute() throws BuildException {
     if (schemaFile == null)
       throw new BuildException("There must be an rngFile or schemaFile attribute",
-			       getLocation());
+        getLocation());
     if (src == null && filesets.size() == 0)
       throw new BuildException("There must be a file attribute or a fileset child element",
-			       getLocation());
+        getLocation());
 
     ErrorHandlerImpl eh = new LogErrorHandler();
 
@@ -77,12 +77,12 @@ public class JingTask extends Task {
     try {
       ValidationDriver driver = new ValidationDriver(properties.toPropertyMap(), schemaReader);
       if (!driver.loadSchema(ValidationDriver.fileInputSource(schemaFile)))
-	hadError = true;
+        hadError = true;
       else {
-	if (src != null) {
-	  if (!driver.validate(ValidationDriver.fileInputSource(src)))
-	    hadError = true;
-	}
+        if (src != null) {
+          if (!driver.validate(ValidationDriver.fileInputSource(src)))
+            hadError = true;
+        }
         for (Object fileset : filesets) {
           FileSet fs = (FileSet) fileset;
           DirectoryScanner ds = fs.getDirectoryScanner(getProject());
@@ -94,8 +94,7 @@ public class JingTask extends Task {
           }
         }
       }
-    }
-    catch (SAXException | IOException e) {
+    } catch (SAXException | IOException e) {
       hadError = true;
       eh.printException(e);
     }
@@ -132,7 +131,7 @@ public class JingTask extends Task {
    */
   public void setCheckid(boolean checkid) {
     properties.put(RngProperty.CHECK_ID_IDREF,
-                   checkid ? Flag.PRESENT : null);
+      checkid ? Flag.PRESENT : null);
   }
 
   /**

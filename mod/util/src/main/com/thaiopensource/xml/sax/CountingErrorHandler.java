@@ -1,8 +1,8 @@
 package com.thaiopensource.xml.sax;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class CountingErrorHandler implements ErrorHandler {
   private ErrorHandler errorHandler;
@@ -51,14 +51,14 @@ public class CountingErrorHandler implements ErrorHandler {
   }
 
   public void warning(SAXParseException exception)
-          throws SAXException {
+    throws SAXException {
     warningCount++;
     if (errorHandler != null)
       errorHandler.warning(exception);
   }
 
   public void error(SAXParseException exception)
-          throws SAXException {
+    throws SAXException {
     errorCount++;
     hadErrorOrFatalError = true;
     if (errorHandler != null)
@@ -66,7 +66,7 @@ public class CountingErrorHandler implements ErrorHandler {
   }
 
   public void fatalError(SAXParseException exception)
-          throws SAXException {
+    throws SAXException {
     fatalErrorCount++;
     hadErrorOrFatalError = true;
     if (errorHandler != null)

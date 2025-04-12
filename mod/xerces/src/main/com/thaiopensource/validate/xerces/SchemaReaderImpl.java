@@ -2,11 +2,7 @@ package com.thaiopensource.validate.xerces;
 
 import com.thaiopensource.util.PropertyId;
 import com.thaiopensource.util.PropertyMap;
-import com.thaiopensource.validate.AbstractSchemaReader;
-import com.thaiopensource.validate.IncorrectSchemaException;
-import com.thaiopensource.validate.Option;
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.*;
 import com.thaiopensource.validate.prop.wrap.WrapProperty;
 import com.thaiopensource.xml.util.Name;
 import org.apache.xerces.parsers.CachingParserPool;
@@ -34,8 +30,9 @@ class SchemaReaderImpl extends AbstractSchemaReader {
     ValidateProperty.ERROR_HANDLER,
     ValidateProperty.ENTITY_RESOLVER,
   };
+
   public Schema createSchema(SAXSource source, PropertyMap properties)
-          throws IOException, SAXException, IncorrectSchemaException {
+    throws IOException, SAXException, IncorrectSchemaException {
     SymbolTable symbolTable = new SymbolTable();
     XMLGrammarPreparser preparser = new XMLGrammarPreparser(symbolTable);
     XMLGrammarPool grammarPool = new XMLGrammarPoolImpl();
@@ -52,19 +49,18 @@ class SchemaReaderImpl extends AbstractSchemaReader {
       Name attributeOwner = properties.get(WrapProperty.ATTRIBUTE_OWNER);
       if (attributeOwner != null) {
         Reader r = new StringReader(createWrapper(attributeOwner));
-   	preparser.preparseGrammar(XMLGrammarDescription.XML_SCHEMA,
-                                  new XMLInputSource(null, null, null, r, null));
+        preparser.preparseGrammar(XMLGrammarDescription.XML_SCHEMA,
+          new XMLInputSource(null, null, null, r, null));
       }
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw ValidatorImpl.toSAXException(e);
     }
     if (xeh.getHadError())
       throw new IncorrectSchemaException();
     return new SchemaImpl(new SynchronizedSymbolTable(symbolTable),
-                          new CachingParserPool.SynchronizedGrammarPool(grammarPool),
-                          properties,
-                          supportedPropertyIds);
+      new CachingParserPool.SynchronizedGrammarPool(grammarPool),
+      properties,
+      supportedPropertyIds);
   }
 
   public Option getOption(String uri) {
@@ -73,13 +69,13 @@ class SchemaReaderImpl extends AbstractSchemaReader {
 
   static private String createWrapper(Name attributeOwner) {
     return "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"" +
-           "    targetNamespace=\"" + attributeOwner.getNamespaceUri() + "\">" +
-           "  <xs:element name=\"" + attributeOwner.getLocalName() + "\">" +
-           "    <xs:complexType><xs:anyAttribute processContents=\"strict\"/></xs:complexType>" +
-           "  </xs:element>" +
-           "</xs:schema>";
+      "    targetNamespace=\"" + attributeOwner.getNamespaceUri() + "\">" +
+      "  <xs:element name=\"" + attributeOwner.getLocalName() + "\">" +
+      "    <xs:complexType><xs:anyAttribute processContents=\"strict\"/></xs:complexType>" +
+      "  </xs:element>" +
+      "</xs:schema>";
   }
-  
+
   private static XMLInputSource toXMLInputSource(InputSource in) {
     XMLInputSource xin = new XMLInputSource(in.getPublicId(), in.getSystemId(), null);
     xin.setByteStream(in.getByteStream());

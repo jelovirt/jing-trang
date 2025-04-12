@@ -1,15 +1,11 @@
 package com.thaiopensource.relaxng;
 
-import com.thaiopensource.validate.auto.AutoSchemaReader;
 import com.thaiopensource.util.PropertyMapBuilder;
-import com.thaiopensource.validate.Flag;
-import com.thaiopensource.validate.IncorrectSchemaException;
-import com.thaiopensource.validate.SchemaReader;
-import com.thaiopensource.xml.sax.XMLReaderCreator;
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.*;
+import com.thaiopensource.validate.auto.AutoSchemaReader;
 import com.thaiopensource.validate.prop.rng.RngProperty;
 import com.thaiopensource.validate.rng.CompactSchemaReader;
+import com.thaiopensource.xml.sax.XMLReaderCreator;
 import org.relaxng.datatype.DatatypeLibraryFactory;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -20,7 +16,7 @@ import java.io.IOException;
 /**
  * A factory for RELAX NG schemas.  The factory creates <code>Schema</code> objects from their
  * XML representation.
- *
+ * <p>
  * A single <code>SchemaFactory</code> is <em>not</em> safe for concurrent
  * access by multiple threads; it must be accessed by at most one thread at a time.
  * Schemas can be created concurrently by using a distinct <code>SchemaFactory</code> for each
@@ -56,15 +52,14 @@ public class SchemaFactory {
    * user if <code>createSchema</code> throws <code>IncorrectSchemaException</code>.
    *
    * @param in the <code>InputSource</code> containing the XML document to be parsed;
-   * must not be <code>null</code>
+   *           must not be <code>null</code>
    * @return the <code>Schema</code> constructed from the XML document;
    * never <code>null</code>.
-   *
-   * @throws IOException if an I/O error occurs
-   * @throws SAXException if there is an XML parsing error and the XMLReader or ErrorHandler
-   * throws a SAXException
+   * @throws IOException                                          if an I/O error occurs
+   * @throws SAXException                                         if there is an XML parsing error and the XMLReader or ErrorHandler
+   *                                                              throws a SAXException
    * @throws com.thaiopensource.validate.IncorrectSchemaException if the XML document was not a correct RELAX NG schema
-   * @throws NullPointerException if the current XMLReaderCreator is <code>null</code>
+   * @throws NullPointerException                                 if the current XMLReaderCreator is <code>null</code>
    */
   public Schema createSchema(InputSource in) throws IOException, SAXException, IncorrectSchemaException {
     SchemaReader r = compactSyntax ? CompactSchemaReader.getInstance() : autoSchemaLanguage;
@@ -78,7 +73,7 @@ public class SchemaFactory {
    * A non-null XMLReaderCreator must be specified before calling <code>createSchema</code>.
    *
    * @param xrc the <code>XMLReaderCreator</code> to be used for parsing the XML document containing
-   * the schema; may be <code>null</code>
+   *            the schema; may be <code>null</code>
    * @see #getXMLReaderCreator
    */
   public void setXMLReaderCreator(XMLReaderCreator xrc) {
@@ -92,11 +87,10 @@ public class SchemaFactory {
    *
    * @return the <code>XMLReaderCreator</code> that will be used for parsing the XML document containing
    * the schema; may be <code>null</code>
-   *
    * @see #setXMLReaderCreator
    */
   public XMLReaderCreator getXMLReaderCreator() {
-    return (XMLReaderCreator)properties.get(ValidateProperty.XML_READER_CREATOR);
+    return (XMLReaderCreator) properties.get(ValidateProperty.XML_READER_CREATOR);
   }
 
   /**
@@ -104,7 +98,7 @@ public class SchemaFactory {
    * This does not affect the error handler used for validation.
    *
    * @param eh the <code>ErrorHandler</code> to be used for reporting errors while creating the schema;
-   * may be <code>null</code>.
+   *           may be <code>null</code>.
    * @see #getErrorHandler
    */
   public void setErrorHandler(ErrorHandler eh) {
@@ -121,7 +115,7 @@ public class SchemaFactory {
    * @see #setErrorHandler
    */
   public ErrorHandler getErrorHandler() {
-    return (ErrorHandler)properties.get(ValidateProperty.ERROR_HANDLER);
+    return (ErrorHandler) properties.get(ValidateProperty.ERROR_HANDLER);
   }
 
   /**
@@ -146,7 +140,7 @@ public class SchemaFactory {
    * @see #setDatatypeLibraryFactory
    */
   public DatatypeLibraryFactory getDatatypeLibraryFactory() {
-    return (DatatypeLibraryFactory)properties.get(RngProperty.DATATYPE_LIBRARY_FACTORY);
+    return (DatatypeLibraryFactory) properties.get(RngProperty.DATATYPE_LIBRARY_FACTORY);
   }
 
   /**
@@ -154,8 +148,7 @@ public class SchemaFactory {
    * RELAX NG DTD Compatibility.
    *
    * @param checkIdIdref <code>true</code> if ID/IDREF/IDREFS checking should be performed;
-   * <code>false</code> otherwise
-   *
+   *                     <code>false</code> otherwise
    * @see #getCheckIdIdref
    * @see <a href="http://www.oasis-open.org/committees/relax-ng/compatibility.html#id">RELAX NG DTD Compatibility</a>
    */
@@ -170,7 +163,6 @@ public class SchemaFactory {
    *
    * @return <code>true</code> if ID/IDREF/IDREFS attributes will be checked;
    * <code>false</code> otherwise.
-   *
    * @see #setCheckIdIdref
    * @see <a href="http://www.oasis-open.org/committees/relax-ng/compatibility.html#id">RELAX NG DTD Compatibility</a>
    */
@@ -182,7 +174,7 @@ public class SchemaFactory {
    * Specifies whether to use the compact syntax to parse the RELAX NG schema rather than the normal XML syntax.
    *
    * @param compactSyntax <code>true</code> if the compact syntax should be used; <code>false</code>
-   * if the XML syntax should be used
+   *                      if the XML syntax should be used
    * @see #getCompactSyntax
    */
   public void setCompactSyntax(boolean compactSyntax) {

@@ -1,10 +1,6 @@
 package com.thaiopensource.resolver.xml.ls;
 
-import com.thaiopensource.resolver.AbstractResolver;
-import com.thaiopensource.resolver.Identifier;
-import com.thaiopensource.resolver.Input;
-import com.thaiopensource.resolver.Resolver;
-import com.thaiopensource.resolver.ResolverException;
+import com.thaiopensource.resolver.*;
 import com.thaiopensource.resolver.xml.ExternalIdentifier;
 import com.thaiopensource.resolver.xml.TargetNamespaceIdentifier;
 import com.thaiopensource.resolver.xml.XMLDocumentIdentifier;
@@ -35,11 +31,10 @@ public class LS {
         String publicId = null;
         String type = null;
         if (id instanceof ExternalIdentifier) {
-          publicId = ((ExternalIdentifier)id).getPublicId();
+          publicId = ((ExternalIdentifier) id).getPublicId();
           type = XML_TYPE;
-        }
-        else if (id instanceof XMLDocumentIdentifier)
-          type = ((XMLDocumentIdentifier)id).getNamespaceUri();
+        } else if (id instanceof XMLDocumentIdentifier)
+          type = ((XMLDocumentIdentifier) id).getNamespaceUri();
         if (type == null) {
           String mediaType = id.getMediaType();
           if (mediaType.indexOf('*') < 0)
@@ -47,7 +42,7 @@ public class LS {
         }
         String targetNamespace = null;
         if (id instanceof TargetNamespaceIdentifier)
-          targetNamespace = ((TargetNamespaceIdentifier)id).getTargetNamespace();
+          targetNamespace = ((TargetNamespaceIdentifier) id).getTargetNamespace();
         LSInput lsInput = resourceResolver.resolveResource(type, targetNamespace, publicId, id.getUriReference(), base);
         if (lsInput == null)
           return;

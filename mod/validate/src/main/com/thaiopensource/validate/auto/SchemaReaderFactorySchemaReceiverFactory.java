@@ -1,9 +1,9 @@
 package com.thaiopensource.validate.auto;
 
 import com.thaiopensource.util.PropertyMap;
+import com.thaiopensource.validate.Option;
 import com.thaiopensource.validate.SchemaReader;
 import com.thaiopensource.validate.SchemaReaderFactory;
-import com.thaiopensource.validate.Option;
 
 public class SchemaReaderFactorySchemaReceiverFactory implements SchemaReceiverFactory {
   private final SchemaReaderFactory srf;

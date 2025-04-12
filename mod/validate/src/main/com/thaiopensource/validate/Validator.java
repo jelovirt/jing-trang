@@ -48,12 +48,12 @@ public interface Validator {
    * Implementations should allocate resources that require
    * cleanup (e.g. threads, open files) lazily, typically
    * in startDocument().
-   *
+   * <p>
    * This method does not change the state of the Validator: the same
    * object will always be returned unless <code>reset</code> is called.
    *
-   * @see #reset()
    * @return a ContentHandler, never <code>null</code>
+   * @see #reset()
    */
   ContentHandler getContentHandler();
 
@@ -69,12 +69,12 @@ public interface Validator {
    */
   DTDHandler getDTDHandler();
 
-   /**
-    * Cleans up after validating a document.  After completing validation
-    * of a document, <code>reset</code> must be called. After calling
-    * reset(), another document may be validated.  Calling this method
-    * may create new ContentHandler and DTDHandler objects or may simply
-    * reinitialize the state of the existing objects.
-    */
-   void reset();
+  /**
+   * Cleans up after validating a document.  After completing validation
+   * of a document, <code>reset</code> must be called. After calling
+   * reset(), another document may be validated.  Calling this method
+   * may create new ContentHandler and DTDHandler objects or may simply
+   * reinitialize the state of the existing objects.
+   */
+  void reset();
 }

@@ -1,16 +1,16 @@
 package com.thaiopensource.xml.sax;
 
-import java.util.ResourceBundle;
-import java.text.MessageFormat;
+import com.thaiopensource.util.UriOrFile;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.io.OutputStream;
-import java.io.FileNotFoundException;
-
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
-import com.thaiopensource.util.UriOrFile;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 public class ErrorHandlerImpl implements ErrorHandler {
   private final PrintWriter err;
@@ -48,12 +48,12 @@ public class ErrorHandlerImpl implements ErrorHandler {
 
   public void warning(SAXParseException e) throws SAXParseException {
     print(format("warning",
-		 new Object[] { formatMessage(e), formatLocation(e) }));
+      new Object[]{formatMessage(e), formatLocation(e)}));
   }
 
   public void error(SAXParseException e) {
     print(format("error",
-		 new Object[] { formatMessage(e), formatLocation(e) }));
+      new Object[]{formatMessage(e), formatLocation(e)}));
   }
 
   public void fatalError(SAXParseException e) throws SAXParseException {
@@ -63,15 +63,15 @@ public class ErrorHandlerImpl implements ErrorHandler {
   public void printException(Throwable e) {
     String loc;
     if (e instanceof SAXParseException)
-      loc = formatLocation((SAXParseException)e);
+      loc = formatLocation((SAXParseException) e);
     else
       loc = "";
     String message;
     if (e instanceof SAXException)
-      message = formatMessage((SAXException)e);
+      message = formatMessage((SAXException) e);
     else
       message = formatMessage(e);
-    print(format("fatal", new Object[] { message, loc }));
+    print(format("fatal", new Object[]{message, loc}));
   }
 
   public void print(String message) {
@@ -90,26 +90,23 @@ public class ErrorHandlerImpl implements ErrorHandler {
     if (systemId != null) {
       systemId = UriOrFile.uriToUriOrFile(systemId);
       if (lineNumber != null) {
-	if (columnNumber != null)
-	  return format("locator_system_id_line_number_column_number",
-			new Object[] { systemId, lineNumber, columnNumber });
-	else
-	  return format("locator_system_id_line_number",
-			new Object[] { systemId, lineNumber });
-      }
-      else
-	return format("locator_system_id",
-		      new Object[] { systemId });
-    }
-    else if (lineNumber != null) {
+        if (columnNumber != null)
+          return format("locator_system_id_line_number_column_number",
+            new Object[]{systemId, lineNumber, columnNumber});
+        else
+          return format("locator_system_id_line_number",
+            new Object[]{systemId, lineNumber});
+      } else
+        return format("locator_system_id",
+          new Object[]{systemId});
+    } else if (lineNumber != null) {
       if (columnNumber != null)
-	return format("locator_line_number_column_number",
-		      new Object[] { lineNumber, columnNumber });
+        return format("locator_line_number_column_number",
+          new Object[]{lineNumber, columnNumber});
       else
-	return format("locator_line_number",
-		      new Object[] { lineNumber });
-    }
-    else
+        return format("locator_line_number",
+          new Object[]{lineNumber});
+    } else
       return "";
   }
 
@@ -120,19 +117,18 @@ public class ErrorHandlerImpl implements ErrorHandler {
       String detail2 = e.getMessage();
       // Crimson stupidity
       if (detail2 == detail || e.getClass().getName().equals(detail))
-	return formatMessage(e);
+        return formatMessage(e);
       else if (detail2 == null)
-	return format("exception",
-		      new Object[]{ e.getClass().getName(), detail });
+        return format("exception",
+          new Object[]{e.getClass().getName(), detail});
       else
-	return format("tunnel_exception",
-		      new Object[] { e.getClass().getName(),
-				     detail,
-				     detail2 });
-    }
-    else {
+        return format("tunnel_exception",
+          new Object[]{e.getClass().getName(),
+            detail,
+            detail2});
+    } else {
       if (detail == null)
-	detail = getString("no_detail");
+        detail = getString("no_detail");
       return detail;
     }
   }
@@ -142,8 +138,8 @@ public class ErrorHandlerImpl implements ErrorHandler {
     if (detail == null)
       detail = getString("no_detail");
     if (e instanceof FileNotFoundException)
-      return format("file_not_found", new Object[] { detail });
+      return format("file_not_found", new Object[]{detail});
     return format("exception",
-		  new Object[] { e.getClass().getName(), detail });
+      new Object[]{e.getClass().getName(), detail});
   }
 }

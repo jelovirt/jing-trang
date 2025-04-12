@@ -10,7 +10,6 @@ public class XMLDocumentIdentifier extends Identifier {
   public static final String MEDIA_TYPE = "application/xml";
 
   /**
-   *
    * @param href
    * @param base
    * @param namespaceUri the expected namespace URI of the root element of the XML document
@@ -21,7 +20,6 @@ public class XMLDocumentIdentifier extends Identifier {
   }
 
   /**
-   *
    * @return the expected namespace name of root element; "" if no namespace is expected;
    * null if no information is available about the expected namespace name.
    */

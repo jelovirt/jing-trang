@@ -1,7 +1,7 @@
 package com.thaiopensource.validate;
 
-import com.thaiopensource.util.PropertyMap;
 import com.thaiopensource.util.PropertyId;
+import com.thaiopensource.util.PropertyMap;
 import com.thaiopensource.util.PropertyMapBuilder;
 
 public abstract class AbstractSchema implements Schema {

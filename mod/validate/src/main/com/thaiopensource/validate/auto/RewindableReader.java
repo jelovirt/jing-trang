@@ -6,6 +6,7 @@ import java.io.Reader;
 /**
  * Rewindable implementation over a reader.
  * Modified from RewindableInputStream by replacing the input stream with a reader.
+ *
  * @author george
  */
 public class RewindableReader extends Reader implements Rewindable {
@@ -14,6 +15,7 @@ public class RewindableReader extends Reader implements Rewindable {
     final char[] buf;
     int used = 0;
     static final int MIN_SIZE = 1024;
+
     Block(int minSize) {
       buf = new char[Math.max(MIN_SIZE, minSize)];
     }
@@ -63,8 +65,7 @@ public class RewindableReader extends Reader implements Rewindable {
       curBlockAvail = 0;
       curBlock = null;
       pretendClosed = true;
-    }
-    else {
+    } else {
       head = null;
       curBlock = null;
       lastBlock = null;
@@ -97,8 +98,8 @@ public class RewindableReader extends Reader implements Rewindable {
       pretendClosed = false;
       try {
         in.close();
+      } catch (IOException e) {
       }
-      catch (IOException e) { }
     }
   }
 
@@ -121,7 +122,7 @@ public class RewindableReader extends Reader implements Rewindable {
         lastBlock = head = new Block();
       else if (lastBlock.used == lastBlock.buf.length)
         lastBlock = lastBlock.next = new Block();
-      lastBlock.append((char)c);
+      lastBlock.append((char) c);
     }
     return c;
   }
@@ -135,7 +136,7 @@ public class RewindableReader extends Reader implements Rewindable {
       throw new IndexOutOfBoundsException();
     int nRead = 0;
     if (curBlockAvail != 0) {
-      for (;;) {
+      for (; ; ) {
         if (len == 0)
           return nRead;
         b[off++] = curBlock.buf[curBlockPos++];
@@ -176,8 +177,7 @@ public class RewindableReader extends Reader implements Rewindable {
         }
         lastBlock.append(b, off, n);
       }
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       eof = true;
       if (nRead == 0)
         throw e;

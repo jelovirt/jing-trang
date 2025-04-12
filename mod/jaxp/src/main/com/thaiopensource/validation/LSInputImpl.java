@@ -7,6 +7,7 @@ import java.io.Reader;
 
 /**
  * A straightforward default implementation of LSInput.
+ *
  * @see LSInput
  */
 public class LSInputImpl implements LSInput {

@@ -1,20 +1,20 @@
 package com.thaiopensource.validate.rng.impl;
 
-import com.thaiopensource.validate.IncorrectSchemaException;
-import com.thaiopensource.validate.auto.SchemaReceiver;
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.ValidateProperty;
-import com.thaiopensource.validate.prop.rng.RngProperty;
-import com.thaiopensource.validate.prop.wrap.WrapProperty;
-import com.thaiopensource.validate.auto.SchemaFuture;
-import com.thaiopensource.relaxng.parse.ParseReceiver;
+import com.thaiopensource.datatype.DatatypeLibraryLoader;
 import com.thaiopensource.relaxng.parse.BuildException;
 import com.thaiopensource.relaxng.parse.IllegalSchemaException;
-import com.thaiopensource.relaxng.pattern.SchemaPatternBuilder;
+import com.thaiopensource.relaxng.parse.ParseReceiver;
 import com.thaiopensource.relaxng.pattern.PatternFuture;
 import com.thaiopensource.relaxng.pattern.SchemaBuilderImpl;
+import com.thaiopensource.relaxng.pattern.SchemaPatternBuilder;
 import com.thaiopensource.util.PropertyMap;
-import com.thaiopensource.datatype.DatatypeLibraryLoader;
+import com.thaiopensource.validate.IncorrectSchemaException;
+import com.thaiopensource.validate.Schema;
+import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.auto.SchemaFuture;
+import com.thaiopensource.validate.auto.SchemaReceiver;
+import com.thaiopensource.validate.prop.rng.RngProperty;
+import com.thaiopensource.validate.prop.wrap.WrapProperty;
 import org.relaxng.datatype.DatatypeLibraryFactory;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -42,18 +42,17 @@ public class SchemaReceiverImpl implements SchemaReceiver {
       public Schema getSchema() throws IncorrectSchemaException, SAXException, IOException {
         try {
           return SchemaReaderImpl.wrapPattern(pf.getPattern(properties.contains(WrapProperty.ATTRIBUTE_OWNER)),
-                                              pb, properties);
-        }
-        catch (IllegalSchemaException e) {
+            pb, properties);
+        } catch (IllegalSchemaException e) {
           throw new IncorrectSchemaException();
         }
       }
+
       public RuntimeException unwrapException(RuntimeException e) throws SAXException, IOException, IncorrectSchemaException {
         if (e instanceof BuildException) {
           try {
-            return SchemaBuilderImpl.unwrapBuildException((BuildException)e);
-          }
-          catch (IllegalSchemaException ise) {
+            return SchemaBuilderImpl.unwrapBuildException((BuildException) e);
+          } catch (IllegalSchemaException ise) {
             throw new IncorrectSchemaException();
           }
         }

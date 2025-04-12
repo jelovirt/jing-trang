@@ -107,9 +107,8 @@ public class DatatypeLibraryImpl implements DatatypeLibrary {
       throw new DatatypeException();
     if (base instanceof RegexDatatype) {
       try {
-        ((RegexDatatype)base).compile(getRegexEngine());
-      }
-      catch (RegexSyntaxException e) {
+        ((RegexDatatype) base).compile(getRegexEngine());
+      } catch (RegexSyntaxException e) {
         throw new DatatypeException(DatatypeBuilderImpl.localizer.message("regex_internal_error", localName));
       }
     }
@@ -125,8 +124,7 @@ public class DatatypeLibraryImpl implements DatatypeLibrary {
   private static DatatypeBase restrictMax(DatatypeBase base, String limit) {
     try {
       return new MaxInclusiveRestrictDatatype(base, base.getValue(limit, null), limit);
-    }
-    catch (DatatypeException e) {
+    } catch (DatatypeException e) {
       throw new AssertionError();
     }
   }
@@ -134,8 +132,7 @@ public class DatatypeLibraryImpl implements DatatypeLibrary {
   private static DatatypeBase restrictMin(DatatypeBase base, String limit) {
     try {
       return new MinInclusiveRestrictDatatype(base, base.getValue(limit, null), limit);
-    }
-    catch (DatatypeException e) {
+    } catch (DatatypeException e) {
       throw new AssertionError();
     }
   }

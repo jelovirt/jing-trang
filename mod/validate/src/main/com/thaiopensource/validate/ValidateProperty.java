@@ -31,7 +31,7 @@ public class ValidateProperty {
    * @see ErrorHandler
    */
   public static final PropertyId<ErrorHandler> ERROR_HANDLER
-          = PropertyId.newInstance("ERROR_HANDLER", ErrorHandler.class);
+    = PropertyId.newInstance("ERROR_HANDLER", ErrorHandler.class);
 
   /**
    * Property specifying EntityResolver to be used for resolving entities. The value
@@ -40,7 +40,7 @@ public class ValidateProperty {
    * @see EntityResolver
    */
   public static final PropertyId<EntityResolver> ENTITY_RESOLVER
-          = PropertyId.newInstance("ENTITY_RESOLVER", EntityResolver.class);
+    = PropertyId.newInstance("ENTITY_RESOLVER", EntityResolver.class);
 
   /**
    * Property specifying URIResolver to be used for resolving URIs. The value
@@ -49,7 +49,7 @@ public class ValidateProperty {
    * @see URIResolver
    */
   public static final PropertyId<URIResolver> URI_RESOLVER
-          = PropertyId.newInstance("URI_RESOLVER", URIResolver.class);
+    = PropertyId.newInstance("URI_RESOLVER", URIResolver.class);
 
   /**
    * Property specifying Resolver to be used. The value
@@ -58,7 +58,7 @@ public class ValidateProperty {
    * @see Resolver
    */
   public static final PropertyId<Resolver> RESOLVER
-          = PropertyId.newInstance("RESOLVER", Resolver.class);
+    = PropertyId.newInstance("RESOLVER", Resolver.class);
 
   /**
    * Property specifying XMLReaderCreator used to create XMLReader objects needed for
@@ -66,5 +66,5 @@ public class ValidateProperty {
    * instance of XMLReaderCreator.
    */
   public static final PropertyId<XMLReaderCreator> XML_READER_CREATOR
-          = PropertyId.newInstance("XML_READER_CREATOR", XMLReaderCreator.class);
+    = PropertyId.newInstance("XML_READER_CREATOR", XMLReaderCreator.class);
 }

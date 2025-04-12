@@ -18,7 +18,7 @@ class BuiltinDatatypeLibraryFactory implements DatatypeLibraryFactory {
   BuiltinDatatypeLibraryFactory(DatatypeLibraryFactory factory) {
     this.factory = factory;
     cache.put(WellKnownNamespaces.RELAX_NG_COMPATIBILITY_DATATYPES,
-              new CompatibilityDatatypeLibrary(this));
+      new CompatibilityDatatypeLibrary(this));
   }
 
   public DatatypeLibrary createDatatypeLibrary(String uri) {
@@ -29,10 +29,10 @@ class BuiltinDatatypeLibraryFactory implements DatatypeLibraryFactory {
     DatatypeLibrary library = cache.get(uri);
     if (library == null) {
       if (factory == null)
-	return null;
+        return null;
       library = factory.createDatatypeLibrary(uri);
       if (library == null)
-	return null;
+        return null;
       cache.put(uri, library);
     }
     lastDatatypeLibraryUri = uri;

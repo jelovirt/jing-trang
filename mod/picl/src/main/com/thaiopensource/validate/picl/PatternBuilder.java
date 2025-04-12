@@ -21,13 +21,13 @@ class PatternBuilder {
     names.addElement(namespaceUri);
     names.addElement(localName);
     switch (attributeType) {
-    case LAST_WAS_ATTRIBUTE:
-      attributeType = NON_LEAF_ATTRIBUTE;
-      break;
-    case NO_ATTRIBUTE:
-      if (type == ATTRIBUTE)
-        attributeType = LAST_WAS_ATTRIBUTE;
-      break;
+      case LAST_WAS_ATTRIBUTE:
+        attributeType = NON_LEAF_ATTRIBUTE;
+        break;
+      case NO_ATTRIBUTE:
+        if (type == ATTRIBUTE)
+          attributeType = LAST_WAS_ATTRIBUTE;
+        break;
     }
   }
 
@@ -51,7 +51,7 @@ class PatternBuilder {
     else {
       String[] namesArray = new String[names.size()];
       for (int i = 0; i < namesArray.length; i++)
-        namesArray[i] = (String)names.elementAt(i);
+        namesArray[i] = (String) names.elementAt(i);
       boolean[] descendantsOrSelfArray = new boolean[descendantsOrSelf.size() + 1];
       for (int i = 0; i < descendantsOrSelfArray.length - 1; i++)
         descendantsOrSelfArray[i] = (Boolean) descendantsOrSelf.elementAt(i);
@@ -89,13 +89,12 @@ class PatternBuilder {
       if (pattern == null)
         return new NotAllowedPattern();
       return pattern;
-    }
-    else {
+    } else {
       if (pattern != null)
         choices.addElement(pattern);
       Pattern[] patterns = new Pattern[choices.size()];
       for (int i = 0; i < patterns.length; i++)
-        patterns[i] = (Pattern)choices.elementAt(i);
+        patterns[i] = (Pattern) choices.elementAt(i);
       return new ChoicePattern(patterns);
     }
   }

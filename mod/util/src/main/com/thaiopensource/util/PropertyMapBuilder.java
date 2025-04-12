@@ -39,19 +39,18 @@ public class PropertyMapBuilder {
 
   public PropertyMapBuilder(PropertyMap pm) {
     if (pm instanceof PropertyMapImpl) {
-      PropertyMapImpl pmi = (PropertyMapImpl)pm;
+      PropertyMapImpl pmi = (PropertyMapImpl) pm;
       this.map = pmi.map;
       this.keys = pmi.keys;
-    }
-    else {
+    } else {
       this.map = new HashMap<>();
       add(pm);
     }
   }
 
   public void add(PropertyMap pm) {
-   for (int i = 0, len = pm.size(); i < len; i++)
-     copy(pm.getKey(i), pm);
+    for (int i = 0, len = pm.size(); i < len; i++)
+      copy(pm.getKey(i), pm);
   }
 
   private <T> void copy(PropertyId<T> pid, PropertyMap pm) {

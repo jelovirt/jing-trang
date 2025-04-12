@@ -16,9 +16,9 @@ public class Utf8Test {
         continue;
       char[] chars;
       if (i <= 0xFFFF)
-        chars = new char[] { (char)i };
+        chars = new char[]{(char) i};
       else
-      chars = new char[] { Utf16.surrogate1(i), Utf16.surrogate2(i) };
+        chars = new char[]{Utf16.surrogate1(i), Utf16.surrogate2(i)};
       Assert.assertEquals(Utf8.encode(i), new String(chars).getBytes("UTF-8"));
     }
   }

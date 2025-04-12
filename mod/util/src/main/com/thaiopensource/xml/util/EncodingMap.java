@@ -11,20 +11,19 @@ public abstract class EncodingMap {
     "US-ASCII", "ASCII",
     "TIS-620", "TIS620"
   };
-      
+
   static public String getJavaName(String enc) {
     try {
       "x".getBytes(enc);
-    }
-    catch (UnsupportedEncodingException e) {
+    } catch (UnsupportedEncodingException e) {
       for (int i = 0; i < aliases.length; i += 2) {
-	if (enc.equalsIgnoreCase(aliases[i])) {
-	  try {
-	    "x".getBytes(aliases[i + 1]);
-	    return aliases[i + 1];
-	  }
-	  catch (UnsupportedEncodingException e2) {}
-	}
+        if (enc.equalsIgnoreCase(aliases[i])) {
+          try {
+            "x".getBytes(aliases[i + 1]);
+            return aliases[i + 1];
+          } catch (UnsupportedEncodingException e2) {
+          }
+        }
       }
     }
     return enc;
@@ -34,4 +33,4 @@ public abstract class EncodingMap {
     System.err.println(getJavaName(args[0]));
   }
 }
-  
+

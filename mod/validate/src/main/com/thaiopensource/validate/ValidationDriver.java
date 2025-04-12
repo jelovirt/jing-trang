@@ -6,12 +6,7 @@ import com.thaiopensource.util.UriOrFile;
 import com.thaiopensource.validate.auto.AutoSchemaReader;
 import com.thaiopensource.xml.sax.CountingErrorHandler;
 import com.thaiopensource.xml.sax.ErrorHandlerImpl;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
 
 import javax.xml.transform.sax.SAXSource;
 import java.io.File;
@@ -36,13 +31,13 @@ public class ValidationDriver {
   /**
    * Creates and initializes a ValidationDriver.
    *
-   * @param schemaProperties a PropertyMap specifying properties controlling schema creation;
-   * must not be <code>null</code>
+   * @param schemaProperties   a PropertyMap specifying properties controlling schema creation;
+   *                           must not be <code>null</code>
    * @param instanceProperties a PropertyMap specifying properties controlling validation;
-   * must not be <code>null</code>
-   * @param schemaReader the SchemaReader to use; if this is <code>null</code>, then the schema
-   * must be in XML, and the namespace URI of the root element will be used to determine what
-   * the schema language is
+   *                           must not be <code>null</code>
+   * @param schemaReader       the SchemaReader to use; if this is <code>null</code>, then the schema
+   *                           must be in XML, and the namespace URI of the root element will be used to determine what
+   *                           the schema language is
    */
   public ValidationDriver(PropertyMap schemaProperties,
                           PropertyMap instanceProperties,
@@ -54,8 +49,7 @@ public class ValidationDriver {
       builder = new PropertyMapBuilder(schemaProperties);
       builder.put(ValidateProperty.ERROR_HANDLER, seh);
       this.schemaProperties = builder.toPropertyMap();
-    }
-    else
+    } else
       this.schemaProperties = schemaProperties;
     builder = new PropertyMapBuilder(instanceProperties);
     ErrorHandler ieh = instanceProperties.get(ValidateProperty.ERROR_HANDLER);
@@ -70,43 +64,43 @@ public class ValidationDriver {
   /**
    * Equivalent to ValidationDriver(schemaProperties, instanceProperties, null).
    *
-   * @see #ValidationDriver(PropertyMap,PropertyMap,SchemaReader)
+   * @see #ValidationDriver(PropertyMap, PropertyMap, SchemaReader)
    */
-   public ValidationDriver(PropertyMap schemaProperties, PropertyMap instanceProperties) {
-     this(schemaProperties, instanceProperties, null);
+  public ValidationDriver(PropertyMap schemaProperties, PropertyMap instanceProperties) {
+    this(schemaProperties, instanceProperties, null);
   }
 
   /**
    * Equivalent to ValidationDriver(properties, properties, sr).
    *
-   * @see #ValidationDriver(PropertyMap,PropertyMap,SchemaReader)
+   * @see #ValidationDriver(PropertyMap, PropertyMap, SchemaReader)
    */
-   public ValidationDriver(PropertyMap properties, SchemaReader sr) {
+  public ValidationDriver(PropertyMap properties, SchemaReader sr) {
     this(properties, properties, sr);
   }
 
   /**
    * Equivalent to ValidationDriver(properties, properties, null).
    *
-   * @see #ValidationDriver(PropertyMap,PropertyMap,SchemaReader)
+   * @see #ValidationDriver(PropertyMap, PropertyMap, SchemaReader)
    */
-   public ValidationDriver(PropertyMap properties) {
+  public ValidationDriver(PropertyMap properties) {
     this(properties, properties, null);
   }
 
   /**
    * Equivalent to ValidationDriver(PropertyMap.EMPTY, PropertyMap.EMPTY, null).
    *
-   * @see #ValidationDriver(PropertyMap,PropertyMap,SchemaReader)
+   * @see #ValidationDriver(PropertyMap, PropertyMap, SchemaReader)
    */
-   public ValidationDriver(SchemaReader sr) {
+  public ValidationDriver(SchemaReader sr) {
     this(PropertyMap.EMPTY, sr);
   }
 
   /**
    * Equivalent to ValidationDriver(PropertyMap.EMPTY, PropertyMap.EMPTY, null).
    *
-   * @see #ValidationDriver(PropertyMap,PropertyMap,SchemaReader)
+   * @see #ValidationDriver(PropertyMap, PropertyMap, SchemaReader)
    */
   public ValidationDriver() {
     this(PropertyMap.EMPTY, PropertyMap.EMPTY, null);
@@ -119,7 +113,7 @@ public class ValidationDriver {
    *
    * @param in the InputSource for the schema
    * @return <code>true</code> if the schema was loaded successfully; <code>false</code> otherwise
-   * @throws IOException if an I/O error occurred
+   * @throws IOException  if an I/O error occurred
    * @throws SAXException if an XMLReader or ErrorHandler threw a SAXException
    */
   public boolean loadSchema(InputSource in) throws SAXException, IOException {
@@ -127,8 +121,7 @@ public class ValidationDriver {
       schema = sr.createSchema(new SAXSource(in), schemaProperties);
       validator = null;
       return true;
-    }
-    catch (IncorrectSchemaException e) {
+    } catch (IncorrectSchemaException e) {
       return false;
     }
   }
@@ -140,8 +133,8 @@ public class ValidationDriver {
    * @param in the InputSource for the document to be validated
    * @return <code>true</code> if the document is valid; <code>false</code> otherwise
    * @throws java.lang.IllegalStateException if there is no currently loaded schema
-   * @throws java.io.IOException if an I/O error occurred
-   * @throws org.xml.sax.SAXException if an XMLReader or ErrorHandler threw a SAXException
+   * @throws java.io.IOException             if an I/O error occurred
+   * @throws org.xml.sax.SAXException        if an XMLReader or ErrorHandler threw a SAXException
    */
   public boolean validate(InputSource in) throws SAXException, IOException {
     if (schema == null)
@@ -160,8 +153,7 @@ public class ValidationDriver {
     try {
       xr.parse(in);
       return !eh.getHadErrorOrFatalError();
-    }
-    finally {
+    } finally {
       validator.reset();
     }
   }
@@ -173,8 +165,8 @@ public class ValidationDriver {
    * @param producer a producer that delivers SAX events to the handlers.
    * @return <code>true</code> if the document is valid; <code>false</code> otherwise
    * @throws java.lang.IllegalStateException if there is no currently loaded schema
-   * @throws java.io.IOException if an I/O error occurred
-   * @throws org.xml.sax.SAXException if an XMLReader or ErrorHandler threw a SAXException
+   * @throws java.io.IOException             if an I/O error occurred
+   * @throws org.xml.sax.SAXException        if an XMLReader or ErrorHandler threw a SAXException
    */
   public boolean validate(SaxProducer saxProducer) throws SAXException, IOException {
     if (schema == null)
@@ -189,14 +181,14 @@ public class ValidationDriver {
     try {
       saxProducer.produce(validator.getContentHandler(), dh, eh);
       return !eh.getHadErrorOrFatalError();
-    }
-    finally {
+    } finally {
       validator.reset();
     }
   }
 
   /**
    * Get the actual properties of the loaded schema
+   *
    * @return a PropertyMap with the schema properties
    * @throws java.lang.IllegalStateException if there is no currently loaded schema
    */
@@ -246,11 +238,10 @@ public class ValidationDriver {
      * Causes the producer to process and send SAX events to the handlers.
      *
      * @param contentHandler the content handler.
-     * @dtdHandler the DTD handler, or null if absent.
-     * @param errorHandler the error handler.
-     *
-     * @throws IOException if an error occurs during processing.
+     * @param errorHandler   the error handler.
+     * @throws IOException  if an error occurs during processing.
      * @throws SAXException if a SAXException occurs when calling one of the handlers.
+     * @dtdHandler the DTD handler, or null if absent.
      */
     public void produce(ContentHandler contentHandler, DTDHandler dtdHandler, ErrorHandler errorHandler)
       throws IOException, SAXException;

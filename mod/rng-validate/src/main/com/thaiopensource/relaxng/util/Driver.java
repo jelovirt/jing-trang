@@ -1,17 +1,7 @@
 package com.thaiopensource.relaxng.util;
 
-import com.thaiopensource.util.Localizer;
-import com.thaiopensource.util.OptionParser;
-import com.thaiopensource.util.PropertyMapBuilder;
-import com.thaiopensource.util.UriOrFile;
-import com.thaiopensource.util.Version;
-import com.thaiopensource.validate.Flag;
-import com.thaiopensource.validate.FlagOption;
-import com.thaiopensource.validate.OptionArgumentException;
-import com.thaiopensource.validate.SchemaReader;
-import com.thaiopensource.validate.StringOption;
-import com.thaiopensource.validate.ValidateProperty;
-import com.thaiopensource.validate.ValidationDriver;
+import com.thaiopensource.util.*;
+import com.thaiopensource.validate.*;
 import com.thaiopensource.validate.auto.AutoSchemaReader;
 import com.thaiopensource.validate.prop.rng.RngProperty;
 import com.thaiopensource.validate.rng.CompactSchemaReader;
@@ -52,20 +42,19 @@ class Driver {
     try {
       while (op.moveToNextOption()) {
         switch (op.getOptionChar()) {
-        case 'i':
-          properties.put(RngProperty.CHECK_ID_IDREF, null);
-          break;
-        case 'C':
-          catalogUris.add(UriOrFile.toUri(op.getOptionArg()));
-          break;
-        case 'c':
-          compact = true;
-          break;
-        case 'd':
-          {
+          case 'i':
+            properties.put(RngProperty.CHECK_ID_IDREF, null);
+            break;
+          case 'C':
+            catalogUris.add(UriOrFile.toUri(op.getOptionArg()));
+            break;
+          case 'c':
+            compact = true;
+            break;
+          case 'd': {
             if (sr == null)
               sr = new AutoSchemaReader();
-            FlagOption option = (FlagOption)sr.getOption(SchemaReader.BASE_URI + "diagnose");
+            FlagOption option = (FlagOption) sr.getOption(SchemaReader.BASE_URI + "diagnose");
             if (option == null) {
               eh.print(localizer.message("no_schematron", op.getOptionCharString()));
               return 2;
@@ -73,31 +62,29 @@ class Driver {
             properties.put(option.getPropertyId(), Flag.PRESENT);
           }
           break;
-        case 't':
-          timing = true;
-          break;
-        case 'e':
-          encoding = op.getOptionArg();
-          break;
-        case 'f':
-          RngProperty.FEASIBLE.add(properties);
-          break;
-        case 's':
-          outputSimplifiedSchema = true;
-          break;
-        case 'p':
-          {
+          case 't':
+            timing = true;
+            break;
+          case 'e':
+            encoding = op.getOptionArg();
+            break;
+          case 'f':
+            RngProperty.FEASIBLE.add(properties);
+            break;
+          case 's':
+            outputSimplifiedSchema = true;
+            break;
+          case 'p': {
             if (sr == null)
               sr = new AutoSchemaReader();
-            StringOption option = (StringOption)sr.getOption(SchemaReader.BASE_URI + "phase");
+            StringOption option = (StringOption) sr.getOption(SchemaReader.BASE_URI + "phase");
             if (option == null) {
               eh.print(localizer.message("no_schematron", op.getOptionCharString()));
               return 2;
             }
             try {
               properties.put(option.getPropertyId(), option.valueOf(op.getOptionArg()));
-            }
-            catch (OptionArgumentException e) {
+            } catch (OptionArgumentException e) {
               eh.print(localizer.message("invalid_phase", op.getOptionArg()));
               return 2;
             }
@@ -105,12 +92,10 @@ class Driver {
           break;
         }
       }
-    }
-    catch (OptionParser.InvalidOptionException e) {
+    } catch (OptionParser.InvalidOptionException e) {
       eh.print(localizer.message("invalid_option", op.getOptionCharString()));
       return 2;
-    }
-    catch (OptionParser.MissingArgumentException e) {
+    } catch (OptionParser.MissingArgumentException e) {
       eh.print(localizer.message("option_missing_argument", op.getOptionCharString()));
       return 2;
     }
@@ -136,19 +121,16 @@ class Driver {
           if (simplifiedSchema == null) {
             eh.print(localizer.message("no_simplified_schema"));
             hadError = true;
-          }
-          else
+          } else
             System.out.print(simplifiedSchema);
         }
-	for (int i = 1; i < args.length; i++) {
-	  if (!driver.validate(ValidationDriver.uriOrFileInputSource(args[i])))
-	    hadError = true;
-	}
-      }
-      else
-	hadError = true;
-    }
-    catch (SAXException | IOException e) {
+        for (int i = 1; i < args.length; i++) {
+          if (!driver.validate(ValidationDriver.uriOrFileInputSource(args[i])))
+            hadError = true;
+        }
+      } else
+        hadError = true;
+    } catch (SAXException | IOException e) {
       hadError = true;
       eh.printException(e);
     }
@@ -157,11 +139,11 @@ class Driver {
       if (loadedPatternTime < 0)
         loadedPatternTime = endTime;
       eh.print(localizer.message("elapsed_time",
-		       new Object[] {
-                               loadedPatternTime - startTime,
-                               endTime - loadedPatternTime,
-                               endTime - startTime
-                       }));
+        new Object[]{
+          loadedPatternTime - startTime,
+          endTime - loadedPatternTime,
+          endTime - startTime
+        }));
     }
     if (hadError)
       return 1;

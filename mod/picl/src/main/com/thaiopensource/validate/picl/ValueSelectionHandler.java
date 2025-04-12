@@ -44,4 +44,4 @@ class ValueSelectionHandler implements SelectionHandler {
     handler.selectComplete(ec);
   }
 
- }
+}

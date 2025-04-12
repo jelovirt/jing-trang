@@ -24,7 +24,7 @@ public abstract class DtdContext implements DTDHandler, ValidationContext {
   public void notationDecl(String name,
                            String publicId,
                            String systemId)
-          throws SAXException {
+    throws SAXException {
     notations.add(name);
   }
 
@@ -32,7 +32,7 @@ public abstract class DtdContext implements DTDHandler, ValidationContext {
                                  String publicId,
                                  String systemId,
                                  String notationName)
-          throws SAXException {
+    throws SAXException {
     unparsedEntities.add(name);
   }
 

@@ -19,7 +19,7 @@ public class FeasibleIdTypeMapSchema extends AbstractSchema {
     ErrorHandler eh = properties.get(ValidateProperty.ERROR_HANDLER);
     return new IdValidator(idTypeMap, eh) {
       public void endDocument() {
-         setComplete();
+        setComplete();
       }
     };
   }

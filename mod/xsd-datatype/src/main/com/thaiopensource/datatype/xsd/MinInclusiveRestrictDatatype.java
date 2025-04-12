@@ -17,7 +17,7 @@ class MinInclusiveRestrictDatatype extends ValueRestrictDatatype {
   void checkRestriction(Object value) throws DatatypeException {
     if (!order.isLessThan(limit, value) && !super.sameValue(value, limit))
       throw new DatatypeException(localizer().message("min_inclusive_violation",
-                                                      getDescriptionForRestriction(),
-                                                      limitString));
+        getDescriptionForRestriction(),
+        limitString));
   }
 }

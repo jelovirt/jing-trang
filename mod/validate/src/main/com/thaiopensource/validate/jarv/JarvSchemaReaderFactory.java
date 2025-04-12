@@ -1,10 +1,10 @@
 package com.thaiopensource.validate.jarv;
 
-import com.thaiopensource.validate.SchemaReaderFactory;
-import com.thaiopensource.validate.SchemaReader;
 import com.thaiopensource.validate.Option;
-import org.iso_relax.verifier.VerifierFactory;
+import com.thaiopensource.validate.SchemaReader;
+import com.thaiopensource.validate.SchemaReaderFactory;
 import org.iso_relax.verifier.VerifierConfigurationException;
+import org.iso_relax.verifier.VerifierFactory;
 
 public class JarvSchemaReaderFactory implements SchemaReaderFactory {
   public SchemaReader createSchemaReader(String namespaceUri) {
@@ -12,8 +12,8 @@ public class JarvSchemaReaderFactory implements SchemaReaderFactory {
       VerifierFactory vf = VerifierFactory.newInstance(namespaceUri);
       if (vf != null)
         return new VerifierFactorySchemaReader(vf);
+    } catch (VerifierConfigurationException e) {
     }
-    catch (VerifierConfigurationException e) { }
     return null;
   }
 

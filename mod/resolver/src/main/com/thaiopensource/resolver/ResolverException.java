@@ -7,6 +7,7 @@ public class ResolverException extends Exception {
   public ResolverException(Throwable t) {
     super(t);
   }
+
   public ResolverException(String message) {
     super(message);
   }

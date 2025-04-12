@@ -1,11 +1,6 @@
 package com.thaiopensource.resolver.xml.sax;
 
-import com.thaiopensource.resolver.AbstractResolver;
-import com.thaiopensource.resolver.BasicResolver;
-import com.thaiopensource.resolver.Identifier;
-import com.thaiopensource.resolver.Input;
-import com.thaiopensource.resolver.Resolver;
-import com.thaiopensource.resolver.ResolverException;
+import com.thaiopensource.resolver.*;
 import com.thaiopensource.resolver.xml.ExternalDTDSubsetIdentifier;
 import com.thaiopensource.resolver.xml.ExternalEntityIdentifier;
 import com.thaiopensource.resolver.xml.ExternalIdentifier;
@@ -34,7 +29,7 @@ public class SAX {
     private EntityResolverWrapper(EntityResolver entityResolver, boolean promiscuous) {
       this.entityResolver = entityResolver;
       if (entityResolver instanceof EntityResolver2)
-        entityResolver2 = (EntityResolver2)entityResolver;
+        entityResolver2 = (EntityResolver2) entityResolver;
       else
         entityResolver2 = null;
       this.promiscuous = promiscuous;
@@ -46,8 +41,7 @@ public class SAX {
       URI uri;
       try {
         uri = new URI(input.getUri());
-      }
-      catch (URISyntaxException e) {
+      } catch (URISyntaxException e) {
         throw new ResolverException(e);
       }
       if (!uri.isAbsolute())
@@ -57,20 +51,19 @@ public class SAX {
       // XXX if this is HTTP and we've been redirected, should do input.setURI with the new URI
       input.setByteStream(url.openStream());
     }
-    
+
     public void resolve(Identifier id, Input input) throws IOException, ResolverException {
       if (input.isResolved())
         return;
       String publicId;
       String entityName = null;
       if (id instanceof ExternalIdentifier) {
-        publicId = ((ExternalIdentifier)id).getPublicId();
+        publicId = ((ExternalIdentifier) id).getPublicId();
         if (id instanceof ExternalEntityIdentifier)
-          entityName = ((ExternalEntityIdentifier)id).getEntityName();
+          entityName = ((ExternalEntityIdentifier) id).getEntityName();
         else if (id instanceof ExternalDTDSubsetIdentifier)
           entityName = "[dtd]";
-      }
-      else {
+      } else {
         if (!promiscuous)
           return;
         publicId = null;
@@ -79,15 +72,14 @@ public class SAX {
         InputSource inputSource;
         if (entityName != null && entityResolver2 != null)
           inputSource = entityResolver2.resolveEntity(entityName,
-                                                      publicId,
-                                                      id.getBase(),
-                                                      id.getUriReference());
+            publicId,
+            id.getBase(),
+            id.getUriReference());
         else
           inputSource = entityResolver.resolveEntity(publicId, getSystemId(id));
         if (inputSource != null)
           setInput(input, inputSource);
-      }
-      catch (SAXException e) {
+      } catch (SAXException e) {
         throw toResolverException(e);
       }
     }
@@ -108,6 +100,7 @@ public class SAX {
     setInput(input, inputSource);
     return input;
   }
+
   // public because needed by transform package
   public static void setInput(Input input, InputSource inputSource) {
     input.setByteStream(inputSource.getByteStream());
@@ -127,16 +120,16 @@ public class SAX {
     Exception wrapped = getWrappedException(e);
     if (wrapped != null) {
       if (wrapped instanceof ResolverException)
-        return (ResolverException)wrapped;
+        return (ResolverException) wrapped;
       return new ResolverException(wrapped);
     }
     return new ResolverException(e);
   }
-  
+
   public static SAXException toSAXException(ResolverException e) {
     Throwable cause = e.getCause();
     if (cause != null && cause instanceof SAXException)
-      return (SAXException)cause;
+      return (SAXException) cause;
     return new SAXException(e);
   }
 
@@ -152,8 +145,8 @@ public class SAX {
   static String getSystemId(Identifier id) {
     try {
       return BasicResolver.resolveUri(id);
+    } catch (ResolverException e) {
     }
-    catch (ResolverException e) { }
     return id.getUriReference();
   }
 
@@ -161,7 +154,7 @@ public class SAX {
   static InputSource createInputSource(Identifier id, Input input) {
     InputSource inputSource = createInputSource(input);
     if (id instanceof ExternalIdentifier)
-      inputSource.setPublicId(((ExternalIdentifier)id).getPublicId());
+      inputSource.setPublicId(((ExternalIdentifier) id).getPublicId());
     if (inputSource.getSystemId() == null)
       inputSource.setSystemId(getSystemId(id));
     return inputSource;
@@ -181,8 +174,7 @@ public class SAX {
       Input input = new Input();
       try {
         resolver.resolve(id, input);
-      }
-      catch (ResolverException e) {
+      } catch (ResolverException e) {
         throw toSAXException(e);
       }
       if (input.isResolved())
@@ -203,8 +195,7 @@ public class SAX {
       Input input = new Input();
       try {
         resolver.resolve(id, input);
-      }
-      catch (ResolverException e) {
+      } catch (ResolverException e) {
         throw toSAXException(e);
       }
       if (input.isResolved())

@@ -21,7 +21,7 @@ class AnyNameExceptNameClass implements NameClass {
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof AnyNameExceptNameClass))
       return false;
-    return nameClass.equals(((AnyNameExceptNameClass)obj).nameClass);
+    return nameClass.equals(((AnyNameExceptNameClass) obj).nameClass);
   }
 
   public int hashCode() {

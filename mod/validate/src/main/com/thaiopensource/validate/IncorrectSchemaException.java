@@ -5,9 +5,8 @@ package com.thaiopensource.validate;
  * XML document is not well-formed or because it fails to be correct in some other
  * way.
  *
- * @see SchemaReader#createSchema
- *
  * @author <a href="mailto:jjc@jclark.com">James Clark</a>
+ * @see SchemaReader#createSchema
  */
 public class IncorrectSchemaException extends Exception {
 }

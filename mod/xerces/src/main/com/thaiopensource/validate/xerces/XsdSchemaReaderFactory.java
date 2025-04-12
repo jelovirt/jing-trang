@@ -1,9 +1,8 @@
 package com.thaiopensource.validate.xerces;
 
-import com.thaiopensource.validate.SchemaReaderFactory;
-import com.thaiopensource.validate.SchemaReader;
 import com.thaiopensource.validate.Option;
-import com.thaiopensource.validate.xerces.SchemaReaderImpl;
+import com.thaiopensource.validate.SchemaReader;
+import com.thaiopensource.validate.SchemaReaderFactory;
 import com.thaiopensource.xml.util.WellKnownNamespaces;
 import org.apache.xerces.parsers.XMLGrammarPreparser;
 

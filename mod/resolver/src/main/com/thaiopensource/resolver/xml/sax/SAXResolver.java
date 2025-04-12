@@ -1,11 +1,6 @@
 package com.thaiopensource.resolver.xml.sax;
 
-import com.thaiopensource.resolver.BasicResolver;
-import com.thaiopensource.resolver.Identifier;
-import com.thaiopensource.resolver.Input;
-import com.thaiopensource.resolver.Resolver;
-import com.thaiopensource.resolver.ResolverException;
-import com.thaiopensource.resolver.SequenceResolver;
+import com.thaiopensource.resolver.*;
 import com.thaiopensource.resolver.xml.XMLDocumentIdentifier;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -48,7 +43,7 @@ public class SAXResolver {
   public SAXSource resolve(String href, String base, String rootNamespaceUri) throws SAXException, IOException {
     return resolve(new XMLDocumentIdentifier(href, base, rootNamespaceUri));
   }
-  
+
   public SAXSource resolve(Identifier id) throws SAXException, IOException {
     SAXInput input = new SAXInput();
     try {
@@ -60,8 +55,7 @@ public class SAXResolver {
       if (xr == null)
         xr = createXMLReader();
       return new SAXSource(xr, inputSource);
-    }
-    catch (ResolverException e) {
+    } catch (ResolverException e) {
       throw SAX.toSAXException(e);
     }
   }
@@ -70,7 +64,7 @@ public class SAXResolver {
     InputSource inputSource = SAX.createInputSource(input);
     XMLReader xr = null;
     if (input instanceof SAXInput)
-      xr = ((SAXInput)input).getXMLReader();
+      xr = ((SAXInput) input).getXMLReader();
     if (xr == null)
       xr = createXMLReader();
     return new SAXSource(xr, inputSource);
@@ -83,10 +77,9 @@ public class SAXResolver {
   }
 
   protected XMLReader createXMLReaderWithoutResolver() throws SAXException {
-   try {
+    try {
       return parserFactory.newSAXParser().getXMLReader();
-    }
-    catch (ParserConfigurationException e) {
+    } catch (ParserConfigurationException e) {
       throw new SAXException(e);
     }
   }
@@ -97,8 +90,7 @@ public class SAXResolver {
     Input input = SAX.createInput(inputSource);
     try {
       resolver.open(input);
-    }
-    catch (ResolverException e) {
+    } catch (ResolverException e) {
       throw SAX.toSAXException(e);
     }
     String publicId = inputSource.getPublicId();

@@ -14,7 +14,7 @@ class VerifierImpl extends org.iso_relax.verifier.impl.VerifierImpl {
 
   VerifierImpl(Pattern start, ValidatorPatternBuilder builder) throws VerifierConfigurationException {
     vhi = new VerifierHandlerImpl(start, builder,
-                                  new CountingErrorHandler(errorHandler));
+      new CountingErrorHandler(errorHandler));
     reader.setDTDHandler(vhi);
   }
 

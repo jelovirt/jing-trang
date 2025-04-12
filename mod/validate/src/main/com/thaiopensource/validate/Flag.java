@@ -6,7 +6,9 @@ package com.thaiopensource.validate;
  * PropertyMap.
  */
 public class Flag {
-  private Flag() { }
+  private Flag() {
+  }
+
   /**
    * The unique value of this class.
    */

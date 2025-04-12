@@ -33,7 +33,7 @@ public class CombineValidator implements Validator {
 
   private void createHandlers() {
     contentHandler = new ForkContentHandler(v1.getContentHandler(),
-                                            v2.getContentHandler());
+      v2.getContentHandler());
     DTDHandler d1 = v1.getDTDHandler();
     DTDHandler d2 = v2.getDTDHandler();
     if (d1 != null && d2 != null)

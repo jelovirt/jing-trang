@@ -7,15 +7,15 @@ abstract class BinaryDatatype extends DatatypeBase implements Measure {
   }
 
   public int valueHashCode(Object value) {
-    byte[] v = (byte[])value;
+    byte[] v = (byte[]) value;
     int hc = 0;
     for (byte b : v) hc = (hc * 33) ^ (b & 0xFF);
     return hc;
   }
 
   public boolean sameValue(Object value1, Object value2) {
-    byte[] v1 = (byte[])value1;
-    byte[] v2 = (byte[])value2;
+    byte[] v1 = (byte[]) value1;
+    byte[] v2 = (byte[]) value2;
     if (v1.length != v2.length)
       return false;
     for (int i = 0, len = v1.length; i < len; i++)
@@ -25,7 +25,7 @@ abstract class BinaryDatatype extends DatatypeBase implements Measure {
   }
 
   public int getLength(Object obj) {
-    return ((byte[])obj).length;
+    return ((byte[]) obj).length;
   }
 
   Measure getMeasure() {

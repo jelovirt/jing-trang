@@ -9,6 +9,7 @@ import org.relaxng.datatype.helpers.StreamingValidatorImpl;
 
 abstract class DatatypeBase implements Datatype2 {
   abstract boolean lexicallyAllows(String str);
+
   private final int whiteSpace;
 
   static final int WHITE_SPACE_PRESERVE = 0;
@@ -44,18 +45,17 @@ abstract class DatatypeBase implements Datatype2 {
       return null;
     try {
       return getValue(str, vc);
-    }
-    catch (DatatypeException e) {
+    } catch (DatatypeException e) {
       return null;
     }
   }
 
   final String normalizeWhiteSpace(String str) {
     switch (whiteSpace) {
-    case WHITE_SPACE_COLLAPSE:
-      return collapseWhiteSpace(str);
-    case WHITE_SPACE_REPLACE:
-      return replaceWhiteSpace(str);
+      case WHITE_SPACE_COLLAPSE:
+        return collapseWhiteSpace(str);
+      case WHITE_SPACE_REPLACE:
+        return replaceWhiteSpace(str);
     }
     return str;
   }
@@ -77,7 +77,7 @@ abstract class DatatypeBase implements Datatype2 {
 
   DatatypeException createLexicallyInvalidException() {
     return new DatatypeException(localizer().message("lexical_violation",
-                                                     getLexicalSpaceDescription(getLexicalSpaceKey())));
+      getLexicalSpaceDescription(getLexicalSpaceKey())));
   }
 
   // Requires lexicallyAllows to be true
@@ -85,8 +85,7 @@ abstract class DatatypeBase implements Datatype2 {
     try {
       getValue(str, vc);
       return true;
-    }
-    catch (DatatypeException e) {
+    } catch (DatatypeException e) {
       return false;
     }
   }
@@ -113,19 +112,19 @@ abstract class DatatypeBase implements Datatype2 {
     for (int len = s.length(); i < len; i++) {
       char c = s.charAt(i);
       switch (c) {
-      case '\r':
-      case '\n':
-      case '\t':
-      case ' ':
-        if (!collapsing) {
-          buf.append(' ');
-          collapsing = true;
-        }
-        break;
-      default:
-        collapsing = false;
-        buf.append(c);
-        break;
+        case '\r':
+        case '\n':
+        case '\t':
+        case ' ':
+          if (!collapsing) {
+            buf.append(' ');
+            collapsing = true;
+          }
+          break;
+        default:
+          collapsing = false;
+          buf.append(c);
+          break;
       }
     }
     if (buf.length() > 0 && buf.charAt(buf.length() - 1) == ' ')
@@ -136,14 +135,14 @@ abstract class DatatypeBase implements Datatype2 {
   static private int collapseStart(String s) {
     for (int i = 0, len = s.length(); i < len; i++) {
       switch (s.charAt(i)) {
-      case ' ':
-        if (i == 0 || s.charAt(i - 1) == ' ' || i == len - 1)
+        case ' ':
+          if (i == 0 || s.charAt(i - 1) == ' ' || i == len - 1)
+            return i;
+          break;
+        case '\r':
+        case '\n':
+        case '\t':
           return i;
-        break;
-      case '\r':
-      case '\n':
-      case '\t':
-        return i;
       }
     }
     return -1;
@@ -153,21 +152,20 @@ abstract class DatatypeBase implements Datatype2 {
     int len = s.length();
     for (int i = 0; i < len; i++)
       switch (s.charAt(i)) {
-      case '\r':
-      case '\n':
-      case '\t':
-	{
-	  char[] buf = s.toCharArray();
-	  buf[i] = ' ';
-	  for (++i; i < len; i++)
-	    switch (buf[i]) {
-	    case '\r':
-	    case '\n':
-	    case '\t':
-	      buf[i] = ' ';
-	    }
-	  return new String(buf);
-	}
+        case '\r':
+        case '\n':
+        case '\t': {
+          char[] buf = s.toCharArray();
+          buf[i] = ' ';
+          for (++i; i < len; i++)
+            switch (buf[i]) {
+              case '\r':
+              case '\n':
+              case '\t':
+                buf[i] = ' ';
+            }
+          return new String(buf);
+        }
       }
     return s;
   }

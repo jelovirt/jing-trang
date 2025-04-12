@@ -12,8 +12,8 @@ import org.xml.sax.helpers.LocatorImpl;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Test PatternMatcher.
@@ -21,7 +21,7 @@ import java.util.Map;
 public class PatternMatcherTest extends SchemaPatternBuilder {
   final SchemaPatternBuilder spb = new SchemaPatternBuilder();
   static private final Name root = new Name("", "root");
-  static private final Map<String,HashSet<String>> EMPTY_MAP = Collections.emptyMap();
+  static private final Map<String, HashSet<String>> EMPTY_MAP = Collections.emptyMap();
 
   @DataProvider(name = "startTagPairs")
   Object[][] startTagPairs() {
@@ -32,10 +32,10 @@ public class PatternMatcherTest extends SchemaPatternBuilder {
     nameSet.add(bar);
     final NormalizedNameClass foobarNNC = new NormalizedNsNameClass(nameSet, EMPTY_MAP);
     final Locator loc = new LocatorImpl();
-    return new Object[][] {
-            { rootMatcher(makeChoice(makeElement(new SimpleNameClass(foo), makeEmpty(), loc),
-                                     makeElement(new SimpleNameClass(bar), makeEmpty(), loc))),
-              foobarNNC }
+    return new Object[][]{
+      {rootMatcher(makeChoice(makeElement(new SimpleNameClass(foo), makeEmpty(), loc),
+        makeElement(new SimpleNameClass(bar), makeEmpty(), loc))),
+        foobarNNC}
 
     };
   }
@@ -60,12 +60,12 @@ public class PatternMatcherTest extends SchemaPatternBuilder {
     nameSet.add(bar);
     final NormalizedNameClass foobarNNC = new NormalizedNsNameClass(nameSet, EMPTY_MAP);
     final Locator loc = new LocatorImpl();
-    return new Object[][] {
-            { rootAttributeMatcher(makeElement(new SimpleNameClass(root),
-                                               makeGroup(makeAttribute(new SimpleNameClass(foo), makeText(), loc),
-                                                         makeAttribute(new SimpleNameClass(bar), makeText(), loc)),
-                                               loc)),
-              foobarNNC }
+    return new Object[][]{
+      {rootAttributeMatcher(makeElement(new SimpleNameClass(root),
+        makeGroup(makeAttribute(new SimpleNameClass(foo), makeText(), loc),
+          makeAttribute(new SimpleNameClass(bar), makeText(), loc)),
+        loc)),
+        foobarNNC}
     };
   }
 
@@ -85,12 +85,12 @@ public class PatternMatcherTest extends SchemaPatternBuilder {
   Object[][] missingNamespacedAttribute() {
     final Name foo = new Name("http://example.com/", "foo");
     final Locator loc = new LocatorImpl();
-    return new Object[][] {{
+    return new Object[][]{{
       rootMissingNamespacedAttributeMatcher(
         makeElement(
-            new SimpleNameClass(root),
-            makeAttribute(new SimpleNameClass(foo), makeText(), loc),
-            loc
+          new SimpleNameClass(root),
+          makeAttribute(new SimpleNameClass(foo), makeText(), loc),
+          loc
         )
       )
     }};
@@ -118,6 +118,6 @@ public class PatternMatcherTest extends SchemaPatternBuilder {
     // element "root" missing required attribute "foo"
     // Now we should get the correct namespace for the missing attribute:
     Assert.assertEquals(matcher.getErrorMessage(),
-        "element \"root\" missing required attribute \"ns:foo\" (with xmlns:ns=\"http://example.com/\")");
+      "element \"root\" missing required attribute \"ns:foo\" (with xmlns:ns=\"http://example.com/\")");
   }
 }

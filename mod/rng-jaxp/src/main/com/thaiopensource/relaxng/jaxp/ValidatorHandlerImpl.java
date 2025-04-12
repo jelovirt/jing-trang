@@ -9,15 +9,7 @@ import com.thaiopensource.validation.ValidatorHandler2;
 import com.thaiopensource.xml.sax.DraconianErrorHandler;
 import com.thaiopensource.xml.util.Name;
 import org.w3c.dom.ls.LSResourceResolver;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.TypeInfoProvider;
@@ -52,9 +44,9 @@ class ValidatorHandlerImpl extends ValidatorHandler2 {
   }
 
   public void startElement(String namespaceURI,
-			   String localName,
-			   String qName,
-			   Attributes atts) throws SAXException {
+                           String localName,
+                           String qName,
+                           Attributes atts) throws SAXException {
     if (bufferingCharacters) {
       bufferingCharacters = false;
       check(matcher.matchTextBeforeStartTag(charBuf.toString(), context));
@@ -78,13 +70,13 @@ class ValidatorHandlerImpl extends ValidatorHandler2 {
   }
 
   public void endElement(String namespaceURI,
-			 String localName,
-			 String qName) throws SAXException {
+                         String localName,
+                         String qName) throws SAXException {
     if (bufferingCharacters) {
       bufferingCharacters = false;
       if (charBuf.length() > 0)
         check(matcher.matchTextBeforeEndTag(charBuf.toString(), new Name(namespaceURI, localName),
-                                            qName, context));
+          qName, context));
     }
     check(matcher.matchEndTag(new Name(namespaceURI, localName), qName, context));
     if (contentHandler != null)
@@ -98,14 +90,14 @@ class ValidatorHandlerImpl extends ValidatorHandler2 {
     }
     for (int i = 0; i < length; i++) {
       switch (ch[start + i]) {
-      case ' ':
-      case '\r':
-      case '\t':
-      case '\n':
-	break;
-      default:
-	check(matcher.matchUntypedText(context));
-	return;
+        case ' ':
+        case '\r':
+        case '\t':
+        case '\n':
+          break;
+        default:
+          check(matcher.matchUntypedText(context));
+          return;
       }
     }
   }

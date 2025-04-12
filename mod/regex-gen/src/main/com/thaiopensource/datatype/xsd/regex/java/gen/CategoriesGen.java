@@ -1,21 +1,7 @@
 package com.thaiopensource.datatype.xsd.regex.java.gen;
 
-import java.io.File;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public class CategoriesGen {
   static public void main(String[] args) throws IOException {
@@ -56,7 +42,7 @@ public class CategoriesGen {
     String lastCategory = null;
     int lastCode = 0;
     int firstCode = 0;
-    for (;;) {
+    for (; ; ) {
       String line = r.readLine();
       if (line == null)
         break;
@@ -68,7 +54,7 @@ public class CategoriesGen {
       String name = line.substring(semi, semi2);
       String category = line.substring(semi2 + 1, semi2 + 3);
       if (!category.equals(lastCategory) ||
-          !(lastCode + 1 == code || name.endsWith(", Last>"))) {
+        !(lastCode + 1 == code || name.endsWith(", Last>"))) {
         if (lastCategory != null)
           add(firstCode, lastCode, lastCategory);
         lastCategory = category;
@@ -93,7 +79,7 @@ public class CategoriesGen {
   }
 
   void add(int firstCode, int lastCode, String category) {
-    List list = (List)map.get(category);
+    List list = (List) map.get(category);
     if (list == null) {
       list = new Vector();
       map.put(category, list);
@@ -119,8 +105,8 @@ public class CategoriesGen {
     w.write("static final int[][] CATEGORY_RANGES = {");
     w.write(lineSep);
 
-    for (Iterator iter = set.iterator(); iter.hasNext();) {
-      Map.Entry entry = (Map.Entry)iter.next();
+    for (Iterator iter = set.iterator(); iter.hasNext(); ) {
+      Map.Entry entry = (Map.Entry) iter.next();
       w.write(INDENT);
       w.write(INDENT);
       w.write('{');
@@ -129,11 +115,11 @@ public class CategoriesGen {
       w.write(INDENT);
       w.write(INDENT);
       w.write("// ");
-      w.write((String)entry.getKey());
+      w.write((String) entry.getKey());
       w.write(lineSep);
-      List list = (List)entry.getValue();
+      List list = (List) entry.getValue();
       for (int i = 0, len = list.size(); i < len; i++) {
-        Range r = (Range)list.get(i);
+        Range r = (Range) list.get(i);
         w.write(INDENT);
         w.write(INDENT);
         w.write(INDENT);

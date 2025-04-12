@@ -17,7 +17,7 @@ class MaxInclusiveRestrictDatatype extends ValueRestrictDatatype {
   void checkRestriction(Object value) throws DatatypeException {
     if (!order.isLessThan(value, limit) && !super.sameValue(value, limit))
       throw new DatatypeException(localizer().message("max_inclusive_violation",
-                                                      getDescriptionForRestriction(),
-                                                      limitString));
+        getDescriptionForRestriction(),
+        limitString));
   }
 }

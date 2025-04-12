@@ -1,20 +1,16 @@
 package com.thaiopensource.relaxng.util;
 
+import com.thaiopensource.datatype.DatatypeLibraryLoader;
+import com.thaiopensource.util.Localizer;
 import com.thaiopensource.util.OptionParser;
 import com.thaiopensource.util.PropertyMapBuilder;
-import com.thaiopensource.util.Localizer;
 import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.ValidationDriver;
 import com.thaiopensource.validate.prop.rng.RngProperty;
 import com.thaiopensource.xml.sax.ErrorHandlerImpl;
-import com.thaiopensource.datatype.DatatypeLibraryLoader;
 import org.xml.sax.SAXException;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 class TestDriver {
   static public void main(String[] args) throws IOException {
@@ -37,17 +33,15 @@ class TestDriver {
     try {
       while (op.moveToNextOption()) {
         switch (op.getOptionChar()) {
-        case 'i':
-          RngProperty.CHECK_ID_IDREF.add(properties);
-          break;
+          case 'i':
+            RngProperty.CHECK_ID_IDREF.add(properties);
+            break;
         }
       }
-    }
-    catch (OptionParser.InvalidOptionException e) {
+    } catch (OptionParser.InvalidOptionException e) {
       eh.print(localizer.message("invalid_option", op.getOptionCharString()));
       return 2;
-    }
-    catch (OptionParser.MissingArgumentException e) {
+    } catch (OptionParser.MissingArgumentException e) {
       eh.print(localizer.message("option_missing_argument", op.getOptionCharString()));
       return 2;
     }
@@ -59,7 +53,7 @@ class TestDriver {
     for (int i = 1; i < args.length; i++) {
       int n = runTestSuite(new File(args[i]));
       if (n > result)
-	result = n;
+        result = n;
     }
     System.err.println("Number of tests: " + nTests);
     System.err.println("Elapsed time: " + (System.currentTimeMillis() - startTime));
@@ -90,8 +84,8 @@ class TestDriver {
     File f = new File(dir, INCORRECT_SCHEMA_NAME);
     if (f.exists()) {
       if (loadSchema(f)) {
-	failed(f);
-	return 1;
+        failed(f);
+        return 1;
       }
       return 0;
     }
@@ -130,9 +124,8 @@ class TestDriver {
     nTests++;
     try {
       if (driver.loadSchema(ValidationDriver.fileInputSource(schema)))
-	return true;
-    }
-    catch (SAXException e) {
+        return true;
+    } catch (SAXException e) {
       eh.printException(e);
     }
     return false;
@@ -142,9 +135,8 @@ class TestDriver {
     nTests++;
     try {
       if (driver.validate(ValidationDriver.fileInputSource(instance)))
-	return true;
-    }
-    catch (SAXException e) {
+        return true;
+    } catch (SAXException e) {
       eh.printException(e);
     }
     return false;

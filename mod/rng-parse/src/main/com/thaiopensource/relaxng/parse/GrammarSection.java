@@ -4,9 +4,11 @@ public interface GrammarSection<P, L, EA, CL extends CommentList<L>, A extends A
 
   static final class Combine {
     private final String name;
+
     private Combine(String name) {
       this.name = name;
     }
+
     public String toString() {
       return name;
     }
@@ -19,9 +21,13 @@ public interface GrammarSection<P, L, EA, CL extends CommentList<L>, A extends A
 
   void define(String name, Combine combine, P pattern, L loc, A anno)
     throws BuildException;
+
   void topLevelAnnotation(EA ea) throws BuildException;
+
   void topLevelComment(CL comments) throws BuildException;
+
   Div<P, L, EA, CL, A> makeDiv();
+
   /*
    * Returns null if already in an include.
    */

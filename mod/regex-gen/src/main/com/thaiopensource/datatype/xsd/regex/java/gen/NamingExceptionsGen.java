@@ -2,13 +2,7 @@ package com.thaiopensource.datatype.xsd.regex.java.gen;
 
 import com.thaiopensource.xml.util.Naming;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.List;
 import java.util.Vector;
 
@@ -53,7 +47,7 @@ public class NamingExceptionsGen {
     List includeList = new Vector();
     List excludeRangeList = new Vector();
     for (int i = 0; i < 65536; i++) {
-      char ch = (char)i;
+      char ch = (char) i;
       buf[0] = ch;
       String s = new String(buf);
       boolean isName = isStart ? Naming.isName(s) : Naming.isNmtoken(s);
@@ -133,18 +127,18 @@ public class NamingExceptionsGen {
 
   static private boolean isApproxName(char c, boolean isStart) {
     switch (Character.getType(c)) {
-    case Character.LOWERCASE_LETTER: // Ll
-    case Character.UPPERCASE_LETTER: // Lu
-    case Character.OTHER_LETTER: // Lo
-    case Character.TITLECASE_LETTER: // Lt
-    case Character.LETTER_NUMBER: // Nl
-      return true;
-    case Character.COMBINING_SPACING_MARK: // Mc
-    case Character.ENCLOSING_MARK: // Me
-    case Character.NON_SPACING_MARK: // Mn
-    case Character.MODIFIER_LETTER: // Lm
-    case Character.DECIMAL_DIGIT_NUMBER: // Nd
-      return !isStart;
+      case Character.LOWERCASE_LETTER: // Ll
+      case Character.UPPERCASE_LETTER: // Lu
+      case Character.OTHER_LETTER: // Lo
+      case Character.TITLECASE_LETTER: // Lt
+      case Character.LETTER_NUMBER: // Nl
+        return true;
+      case Character.COMBINING_SPACING_MARK: // Mc
+      case Character.ENCLOSING_MARK: // Me
+      case Character.NON_SPACING_MARK: // Mn
+      case Character.MODIFIER_LETTER: // Lm
+      case Character.DECIMAL_DIGIT_NUMBER: // Nd
+        return !isStart;
     }
     return false;
   }

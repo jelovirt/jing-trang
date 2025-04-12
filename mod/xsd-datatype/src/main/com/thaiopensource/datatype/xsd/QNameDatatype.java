@@ -19,14 +19,13 @@ class QNameDatatype extends DatatypeBase {
     if (i < 0) {
       String ns = vc.resolveNamespacePrefix("");
       if (ns == null)
-	ns = "";
+        ns = "";
       return new Name(ns, str);
-    }
-    else {
+    } else {
       String prefix = str.substring(0, i);
       String ns = vc.resolveNamespacePrefix(prefix);
       if (ns == null)
-	throw new DatatypeException(localizer().message("undeclared_prefix", prefix));
+        throw new DatatypeException(localizer().message("undeclared_prefix", prefix));
       return new Name(ns, str.substring(i + 1));
     }
   }

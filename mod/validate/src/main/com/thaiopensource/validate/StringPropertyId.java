@@ -10,7 +10,7 @@ import com.thaiopensource.util.PropertyId;
  */
 
 public class StringPropertyId extends PropertyId<String> {
-   public StringPropertyId(String name) {
-      super(name, String.class);
-    }
+  public StringPropertyId(String name) {
+    super(name, String.class);
+  }
 }

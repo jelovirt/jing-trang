@@ -56,21 +56,21 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
     for (int i = 0, len = template.length(); i < len; i++) {
       char c = template.charAt(i);
       switch (c) {
-      case 'Y':
-        pattern.append(YEAR_PATTERN);
-        break;
-      case 'M':
-        pattern.append(MONTH_PATTERN);
-        break;
-      case 'D':
-        pattern.append(DAY_OF_MONTH_PATTERN);
-        break;
-      case 't':
-        pattern.append(TIME_PATTERN);
-        break;
-      default:
-        pattern.append(c);
-        break;
+        case 'Y':
+          pattern.append(YEAR_PATTERN);
+          break;
+        case 'M':
+          pattern.append(MONTH_PATTERN);
+          break;
+        case 'D':
+          pattern.append(DAY_OF_MONTH_PATTERN);
+          break;
+        case 't':
+          pattern.append(TIME_PATTERN);
+          break;
+        default:
+          pattern.append(c);
+          break;
       }
     }
     pattern.append(TZ_PATTERN);
@@ -91,10 +91,10 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
     public boolean equals(Object obj) {
       if (!(obj instanceof DateTime))
         return false;
-      DateTime other = (DateTime)obj;
+      DateTime other = (DateTime) obj;
       return (this.date.equals(other.date)
-              && this.leapMilliseconds == other.leapMilliseconds
-              && this.hasTimeZone == other.hasTimeZone);
+        && this.leapMilliseconds == other.leapMilliseconds
+        && this.hasTimeZone == other.hasTimeZone);
     }
 
     public int hashCode() {
@@ -132,45 +132,44 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
          templateIndex++) {
       char templateChar = template.charAt(templateIndex);
       switch (templateChar) {
-      case 'Y':
-        negative = str.charAt(pos) == '-';
-        int yearStartIndex = negative ? pos + 1 : pos;
-        pos = skipDigits(str, yearStartIndex);
-        try {
-          year = Integer.parseInt(str.substring(yearStartIndex, pos));
-        }
-        catch (NumberFormatException e) {
-          throw createLexicallyInvalidException();
-        }
-        break;
-      case 'M':
-        month = parse2Digits(str, pos);
-        pos += 2;
-        break;
-      case 'D':
-        day = parse2Digits(str, pos);
-        pos += 2;
-        break;
-      case 't':
-        hours = parse2Digits(str, pos);
-        pos += 3;
-        minutes = parse2Digits(str, pos);
-        pos += 3;
-        seconds = parse2Digits(str, pos);
-        pos += 2;
-        if (pos < len && str.charAt(pos) == '.') {
-          int end = skipDigits(str, ++pos);
-          for (int j = 0; j < 3; j++) {
-            milliseconds *= 10;
-            if (pos < end)
-              milliseconds += str.charAt(pos++) - '0';
+        case 'Y':
+          negative = str.charAt(pos) == '-';
+          int yearStartIndex = negative ? pos + 1 : pos;
+          pos = skipDigits(str, yearStartIndex);
+          try {
+            year = Integer.parseInt(str.substring(yearStartIndex, pos));
+          } catch (NumberFormatException e) {
+            throw createLexicallyInvalidException();
           }
-          pos = end;
-        }
-        break;
-      default:
-        pos++;
-        break;
+          break;
+        case 'M':
+          month = parse2Digits(str, pos);
+          pos += 2;
+          break;
+        case 'D':
+          day = parse2Digits(str, pos);
+          pos += 2;
+          break;
+        case 't':
+          hours = parse2Digits(str, pos);
+          pos += 3;
+          minutes = parse2Digits(str, pos);
+          pos += 3;
+          seconds = parse2Digits(str, pos);
+          pos += 2;
+          if (pos < len && str.charAt(pos) == '.') {
+            int end = skipDigits(str, ++pos);
+            for (int j = 0; j < 3; j++) {
+              milliseconds *= 10;
+              if (pos < end)
+                milliseconds += str.charAt(pos++) - '0';
+            }
+            pos = end;
+          }
+          break;
+        default:
+          pos++;
+          break;
       }
     }
     boolean hasTimeZone = pos < len;
@@ -184,8 +183,7 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
       leapMilliseconds = milliseconds + 1;
       milliseconds = 999;
       seconds = 59;
-    }
-    else
+    } else
       leapMilliseconds = 0;
     try {
       GregorianCalendar cal = CalendarFactory.getCalendar();
@@ -194,12 +192,10 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
         synchronized (cal) {
           date = createDate(cal, tzOffset, negative, year, month, day, hours, minutes, seconds, milliseconds);
         }
-      }
-      else
+      } else
         date = createDate(cal, tzOffset, negative, year, month, day, hours, minutes, seconds, milliseconds);
       return new DateTime(date, leapMilliseconds, hasTimeZone);
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       throw createLexicallyInvalidException();
     }
   }
@@ -222,10 +218,10 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
     static GregorianCalendar getCalendar() {
       // Don't need to synchronize this because speed is atomic.
       switch (speed) {
-      case SLOW:
-        return cal;
-      case FAST:
-        return new GregorianCalendar();
+        case SLOW:
+          return cal;
+        case FAST:
+          return new GregorianCalendar();
       }
       // Note that we are not timing the first construction (which happens
       // at class initialization), since that may involve one-time cache
@@ -233,7 +229,7 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
       long start = System.currentTimeMillis();
       GregorianCalendar tem = new GregorianCalendar();
       long time = System.currentTimeMillis() - start;
-      speed =  time > LIMIT ? SLOW : FAST;
+      speed = time > LIMIT ? SLOW : FAST;
       return tem;
     }
   }
@@ -264,19 +260,19 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
       throw new IllegalArgumentException();
     int dayMax;
     switch (month) {
-    // Thirty days have September, April, June and November...
-    case Calendar.SEPTEMBER:
-    case Calendar.APRIL:
-    case Calendar.JUNE:
-    case Calendar.NOVEMBER:
-      dayMax = 30;
-      break;
-    case Calendar.FEBRUARY:
-      dayMax = isLeapYear ? 29 : 28;
-      break;
-    default:
-      dayMax = 31;
-      break;
+      // Thirty days have September, April, June and November...
+      case Calendar.SEPTEMBER:
+      case Calendar.APRIL:
+      case Calendar.JUNE:
+      case Calendar.NOVEMBER:
+        dayMax = 30;
+        break;
+      case Calendar.FEBRUARY:
+        dayMax = isLeapYear ? 29 : 28;
+        break;
+      default:
+        dayMax = 31;
+        break;
     }
     if (day > dayMax)
       throw new IllegalArgumentException();
@@ -284,11 +280,11 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
 
   static private int parseTimeZone(String str, int i) {
     int sign = str.charAt(i) == '-' ? -1 : 1;
-    return (Integer.parseInt(str.substring(i + 1, i + 3))*60 + Integer.parseInt(str.substring(i + 4)))*60*1000*sign;
+    return (Integer.parseInt(str.substring(i + 1, i + 3)) * 60 + Integer.parseInt(str.substring(i + 4))) * 60 * 1000 * sign;
   }
 
   static private int parse2Digits(String str, int i) {
-    return (str.charAt(i) - '0')*10 + (str.charAt(i + 1) - '0');
+    return (str.charAt(i) - '0') * 10 + (str.charAt(i + 1) - '0');
   }
 
   static private int skipDigits(String str, int i) {
@@ -303,18 +299,18 @@ class DateTimeDatatype extends RegexDatatype implements OrderRelation {
     return this;
   }
 
-  static private final int TIME_ZONE_MAX = 14*60*60*1000;
+  static private final int TIME_ZONE_MAX = 14 * 60 * 60 * 1000;
 
   public boolean isLessThan(Object obj1, Object obj2) {
-    DateTime dt1 = (DateTime)obj1;
-    DateTime dt2 = (DateTime)obj2;
+    DateTime dt1 = (DateTime) obj1;
+    DateTime dt2 = (DateTime) obj2;
     long t1 = dt1.getDate().getTime();
     long t2 = dt2.getDate().getTime();
     if (dt1.getHasTimeZone() == dt2.getHasTimeZone())
       return isLessThan(t1,
-                        dt1.getLeapMilliseconds(),
-                        t2,
-                        dt2.getLeapMilliseconds());
+        dt1.getLeapMilliseconds(),
+        t2,
+        dt2.getLeapMilliseconds());
     else if (!dt2.getHasTimeZone())
       return isLessThan(t1, dt1.getLeapMilliseconds(), t2 - TIME_ZONE_MAX, dt2.getLeapMilliseconds());
     else

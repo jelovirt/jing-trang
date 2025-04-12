@@ -13,8 +13,9 @@ import java.util.Iterator;
  */
 public class SchemaReaderLoader implements SchemaReaderFactory {
   private final Service<SchemaReaderFactory> service = Service.newInstance(SchemaReaderFactory.class);
+
   public SchemaReader createSchemaReader(String namespaceUri) {
-    for (Iterator<SchemaReaderFactory> iter = service.getProviders(); iter.hasNext();) {
+    for (Iterator<SchemaReaderFactory> iter = service.getProviders(); iter.hasNext(); ) {
       SchemaReaderFactory srf = iter.next();
       SchemaReader sr = srf.createSchemaReader(namespaceUri);
       if (sr != null)
@@ -24,7 +25,7 @@ public class SchemaReaderLoader implements SchemaReaderFactory {
   }
 
   public Option getOption(String uri) {
-    for (Iterator<SchemaReaderFactory> iter = service.getProviders(); iter.hasNext();) {
+    for (Iterator<SchemaReaderFactory> iter = service.getProviders(); iter.hasNext(); ) {
       SchemaReaderFactory srf = iter.next();
       Option option = srf.getOption(uri);
       if (option != null)

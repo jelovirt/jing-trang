@@ -17,7 +17,7 @@ class MinExclusiveRestrictDatatype extends ValueRestrictDatatype {
   void checkRestriction(Object value) throws DatatypeException {
     if (!order.isLessThan(limit, value))
       throw new DatatypeException(localizer().message("min_exclusive_violation",
-                                                      getDescriptionForRestriction(),
-                                                      limitString));
+        getDescriptionForRestriction(),
+        limitString));
   }
 }

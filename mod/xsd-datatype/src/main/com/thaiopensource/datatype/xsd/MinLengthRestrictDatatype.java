@@ -16,6 +16,6 @@ class MinLengthRestrictDatatype extends ValueRestrictDatatype {
     int actualLength = measure.getLength(obj);
     if (actualLength < length)
       throw new DatatypeException(localizer().message("min_length_violation",
-                                                      new Object[] { getDescriptionForRestriction(), length, actualLength }));
+        new Object[]{getDescriptionForRestriction(), length, actualLength}));
   }
 }

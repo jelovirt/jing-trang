@@ -22,7 +22,7 @@ class DataPattern extends StringPattern {
   boolean samePattern(Pattern other) {
     if (other.getClass() != this.getClass())
       return false;
-    return dt.equals(((DataPattern)other).dt);
+    return dt.equals(((DataPattern) other).dt);
   }
 
   <T> T apply(PatternFunction<T> f) {
@@ -42,14 +42,14 @@ class DataPattern extends StringPattern {
   }
 
   boolean allowsAnyString() {
-    return dt instanceof Datatype2 && ((Datatype2)dt).alwaysValid();
+    return dt instanceof Datatype2 && ((Datatype2) dt).alwaysValid();
   }
 
   void checkRestrictions(int context, DuplicateAttributeDetector dad, Alphabet alpha)
     throws RestrictionViolationException {
     switch (context) {
-    case START_CONTEXT:
-      throw new RestrictionViolationException("start_contains_data");
+      case START_CONTEXT:
+        throw new RestrictionViolationException("start_contains_data");
     }
   }
 }

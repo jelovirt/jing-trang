@@ -5,7 +5,7 @@ import org.relaxng.datatype.ValidationContext;
 
 abstract class RestrictDatatype extends DatatypeBase {
   protected final DatatypeBase base;
-  
+
   RestrictDatatype(DatatypeBase base) {
     this(base, base.getWhiteSpace());
   }

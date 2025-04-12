@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 /**
  * Tests CompactSyntaxSchemaFactory.
  */
-public class CompactSyntaxSchemaFactoryTest extends SchemaFactoryImplTest {  
+public class CompactSyntaxSchemaFactoryTest extends SchemaFactoryImplTest {
   public CompactSyntaxSchemaFactoryTest() {
     super(CompactSyntaxSchemaFactory.class);
   }
@@ -20,8 +20,8 @@ public class CompactSyntaxSchemaFactoryTest extends SchemaFactoryImplTest {
   protected String element(String name, String[] contentPatterns) {
     StringBuilder builder = new StringBuilder();
     builder.append("element ")
-            .append(name)
-            .append(" {");
+      .append(name)
+      .append(" {");
     for (int i = 0; i < contentPatterns.length; i++) {
       if (i > 0)
         builder.append(", ");

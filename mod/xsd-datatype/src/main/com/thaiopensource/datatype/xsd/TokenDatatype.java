@@ -6,7 +6,9 @@ import org.relaxng.datatype.ValidationContext;
 
 class TokenDatatype extends DatatypeBase implements Measure {
 
-  TokenDatatype() { }
+  TokenDatatype() {
+  }
+
   TokenDatatype(int whiteSpace) {
     super(whiteSpace);
   }
@@ -32,12 +34,12 @@ class TokenDatatype extends DatatypeBase implements Measure {
   }
 
   public int getLength(Object obj) {
-    String str = (String)obj;
+    String str = (String) obj;
     int len = str.length();
     int nSurrogatePairs = 0;
     for (int i = 0; i < len; i++)
       if (Utf16.isSurrogate1(str.charAt(i)))
-	nSurrogatePairs++;
+        nSurrogatePairs++;
     return len - nSurrogatePairs;
   }
 }

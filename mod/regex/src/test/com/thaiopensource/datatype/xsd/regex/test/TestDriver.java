@@ -5,11 +5,7 @@ import com.thaiopensource.datatype.xsd.regex.RegexEngine;
 import com.thaiopensource.datatype.xsd.regex.RegexSyntaxException;
 import com.thaiopensource.util.UriOrFile;
 import com.thaiopensource.util.Utf16;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,7 +21,7 @@ public class TestDriver extends DefaultHandler {
   private final RegexEngine engine;
 
   static public void main(String[] args) throws SAXException, IOException, ParserConfigurationException,
-          ClassNotFoundException, IllegalAccessException, InstantiationException {
+    ClassNotFoundException, IllegalAccessException, InstantiationException {
     if (args.length != 2) {
       System.err.println("usage: TestDriver class testfile");
       System.exit(2);
@@ -35,7 +31,7 @@ public class TestDriver extends DefaultHandler {
     factory.setValidating(false);
     XMLReader xr = factory.newSAXParser().getXMLReader();
     Class<?> cls = TestDriver.class.getClassLoader().loadClass(args[0]);
-    RegexEngine engine = (RegexEngine)cls.newInstance();
+    RegexEngine engine = (RegexEngine) cls.newInstance();
     TestDriver tester = new TestDriver(engine);
     xr.setContentHandler(tester);
     InputSource in = new InputSource(UriOrFile.fileToUri(args[1]));
@@ -55,23 +51,23 @@ public class TestDriver extends DefaultHandler {
   }
 
   public void characters(char ch[], int start, int length)
-          throws SAXException {
+    throws SAXException {
     buf.append(ch, start, length);
   }
 
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException {
+    throws SAXException {
     buf.append(ch, start, length);
   }
 
   public void startElement(String uri, String localName,
                            String qName, Attributes attributes)
-          throws SAXException {
+    throws SAXException {
     buf.setLength(0);
   }
 
   public void endElement(String uri, String localName, String qName)
-          throws SAXException {
+    throws SAXException {
     switch (localName) {
       case "valid":
         valid(buf.toString());
@@ -93,8 +89,7 @@ public class TestDriver extends DefaultHandler {
     regex = null;
     try {
       regex = engine.compile(str);
-    }
-    catch (RegexSyntaxException e) {
+    } catch (RegexSyntaxException e) {
       error("unexpected error: " + e.getMessage() + ": " + display(str, e.getPosition()));
     }
   }
@@ -105,8 +100,8 @@ public class TestDriver extends DefaultHandler {
     try {
       engine.compile(str);
       error("failed to detect error in regex: " + display(str, -1));
+    } catch (RegexSyntaxException e) {
     }
-    catch (RegexSyntaxException e) { }
   }
 
   private void valid(String str) {

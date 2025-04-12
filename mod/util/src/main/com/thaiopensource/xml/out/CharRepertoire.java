@@ -20,7 +20,7 @@ public class CharRepertoire {
 
   public static CharRepertoire getInstance(String enc)
     throws UnsupportedEncodingException {
-    "x".getBytes(enc);		// check whether encoding supported
+    "x".getBytes(enc);    // check whether encoding supported
     return new CharRepertoire(enc);
   }
 
@@ -36,8 +36,7 @@ public class CharRepertoire {
     if (contains2(c)) {
       charTable[i][c & 0xFF] = IN;
       return true;
-    }
-    else {
+    } else {
       charTable[i][c & 0xFF] = OUT;
       return false;
     }
@@ -45,10 +44,9 @@ public class CharRepertoire {
 
   private boolean contains2(char c) {
     try {
-      String s = new String(new String(new char[]{ c }).getBytes(enc), enc);
+      String s = new String(new String(new char[]{c}).getBytes(enc), enc);
       return s.length() == 1 && s.charAt(0) == c;
-    }
-    catch (UnsupportedEncodingException e) {
+    } catch (UnsupportedEncodingException e) {
       return false;
     }
   }
@@ -58,8 +56,7 @@ public class CharRepertoire {
     try {
       String s = new String(new String(new char[]{c1, c2}).getBytes(enc), enc);
       return s.length() == 2 && s.charAt(0) == c1 && s.charAt(1) == c2;
-    }
-    catch (UnsupportedEncodingException | RuntimeException e) {
+    } catch (UnsupportedEncodingException | RuntimeException e) {
       return false;
     }
     // work around gcj bug (libgcj/9802)

@@ -1,18 +1,12 @@
 package com.thaiopensource.validate.picl;
 
-import com.thaiopensource.validate.Validator;
-import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.util.Localizer;
 import com.thaiopensource.util.PropertyMap;
+import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.Validator;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.LocatorImpl;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Attributes;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.Locator;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
 
 import java.util.Stack;
 
@@ -113,11 +107,11 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
   }
 
   public String getLocalName(int i) {
-    return ((OpenElement)openElements.elementAt(i)).localName;
+    return ((OpenElement) openElements.elementAt(i)).localName;
   }
 
   public String getNamespaceUri(int i) {
-    return ((OpenElement)openElements.elementAt(i)).namespaceUri;
+    return ((OpenElement) openElements.elementAt(i)).namespaceUri;
   }
 
   public boolean isAttribute() {
@@ -127,12 +121,12 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
   public void registerPattern(Pattern pattern, SelectionHandler handler) {
     // XXX what about case where it matches dot?
     activePatterns.push(new ActivePattern(openElements.size(), pattern, handler));
-    ((OpenElement)openElements.peek()).nActivePatterns += 1;
+    ((OpenElement) openElements.peek()).nActivePatterns += 1;
   }
 
   public void registerValueHandler(ValueHandler handler) {
     valueHandlers.push(handler);
-    ((OpenElement)openElements.peek()).nValueHandlers += 1;
+    ((OpenElement) openElements.peek()).nValueHandlers += 1;
   }
 
   public void setDocumentLocator(Locator locator) {
@@ -149,8 +143,7 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
     openElements.push(new OpenElement("", "#root"));
     try {
       constraint.activate(this);
-    }
-    catch (WrappedSAXException e) {
+    } catch (WrappedSAXException e) {
       throw e.exception;
     }
   }
@@ -158,21 +151,20 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
   public void endDocument() throws SAXException {
     try {
       popOpenElement();
-    }
-    catch (WrappedSAXException e) {
+    } catch (WrappedSAXException e) {
       throw e.exception;
     }
   }
 
   public void startElement(String uri, String localName,
                            String qName, Attributes attributes)
-          throws SAXException {
+    throws SAXException {
     try {
       openElements.push(new OpenElement(uri, localName));
       for (int i = 0, len = valueHandlers.size(); i < len; i++)
-        ((ValueHandler)valueHandlers.elementAt(i)).tag(this);
+        ((ValueHandler) valueHandlers.elementAt(i)).tag(this);
       for (int i = 0, len = activePatterns.size(); i < len; i++) {
-        ActivePattern ap = (ActivePattern)activePatterns.elementAt(i);
+        ActivePattern ap = (ActivePattern) activePatterns.elementAt(i);
         if (ap.pattern.matches(this, ap.rootDepth))
           ap.handler.selectElement(this, this, this);
       }
@@ -180,51 +172,48 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
       for (int i = 0, len = attributes.getLength(); i < len; i++) {
         attributePath.set(attributes, i);
         for (int j = 0; j < nActivePatterns; j++) {
-          ActivePattern ap = (ActivePattern)activePatterns.elementAt(j);
+          ActivePattern ap = (ActivePattern) activePatterns.elementAt(j);
           if (ap.pattern.matches(attributePath, ap.rootDepth))
             ap.handler.selectAttribute(this, attributePath, attributes.getValue(i));
         }
       }
-    }
-    catch (WrappedSAXException e) {
+    } catch (WrappedSAXException e) {
       throw e.exception;
     }
   }
 
   public void endElement(String uri, String localName, String qName)
-          throws SAXException {
+    throws SAXException {
     try {
       popOpenElement();
-    }
-    catch (WrappedSAXException e) {
+    } catch (WrappedSAXException e) {
       throw e.exception;
     }
   }
 
   public void characters(char ch[], int start, int length)
-          throws SAXException {
+    throws SAXException {
     try {
       for (int i = 0, len = valueHandlers.size(); i < len; i++)
-        ((ValueHandler)valueHandlers.elementAt(i)).characters(this, ch, start, length);
-    }
-    catch (WrappedSAXException e) {
+        ((ValueHandler) valueHandlers.elementAt(i)).characters(this, ch, start, length);
+    } catch (WrappedSAXException e) {
       throw e.exception;
     }
   }
 
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException {
+    throws SAXException {
     characters(ch, start, length);
   }
 
   private void popOpenElement() {
-    OpenElement top = (OpenElement)openElements.pop();
+    OpenElement top = (OpenElement) openElements.pop();
     for (int i = 0; i < top.nValueHandlers; i++) {
-      ValueHandler h = (ValueHandler)valueHandlers.pop();
+      ValueHandler h = (ValueHandler) valueHandlers.pop();
       h.valueComplete(this);
     }
     for (int i = 0; i < top.nActivePatterns; i++) {
-      ActivePattern ap = (ActivePattern)activePatterns.pop();
+      ActivePattern ap = (ActivePattern) activePatterns.pop();
       ap.handler.selectComplete(this);
     }
   }
@@ -234,8 +223,7 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
       locator = this.locator;
     try {
       eh.error(new SAXParseException(localizer.message(key), locator));
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       throw new WrappedSAXException(e);
     }
   }
@@ -245,8 +233,7 @@ class ValidatorImpl extends DefaultHandler implements Validator, Path, PatternMa
       locator = this.locator;
     try {
       eh.error(new SAXParseException(localizer.message(key, arg), locator));
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       throw new WrappedSAXException(e);
     }
   }

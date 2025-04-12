@@ -4,9 +4,9 @@ import org.relaxng.datatype.ValidationContext;
 
 class Base64BinaryDatatype extends BinaryDatatype {
   static private final byte[] weightTable = makeWeightTable();
-  static private final byte INVALID = (byte)-1;
-  static private final byte WHITESPACE = (byte)-2;
-  static private final byte PADDING = (byte)-3;
+  static private final byte INVALID = (byte) -1;
+  static private final byte WHITESPACE = (byte) -2;
+  static private final byte PADDING = (byte) -3;
 
   // for efficiency, don't assume whitespace normalized
   boolean lexicallyAllows(String str) {
@@ -27,39 +27,39 @@ class Base64BinaryDatatype extends BinaryDatatype {
         return -1;
       int w = weightTable[c];
       switch (w) {
-      case WHITESPACE:
-        break;
-      case PADDING:
-        if (++nPadding > 2)
+        case WHITESPACE:
+          break;
+        case PADDING:
+          if (++nPadding > 2)
+            return -1;
+          break;
+        case INVALID:
           return -1;
-        break;
-      case INVALID:
-        return -1;
-      default:
-        if (nPadding > 0)
-          return -1;
-        lastCharWeight = w;
-        nChars++;
-        break;
+        default:
+          if (nPadding > 0)
+            return -1;
+          lastCharWeight = w;
+          nChars++;
+          break;
       }
     }
     if (((nChars + nPadding) & 0x3) != 0)
       return -1;
     switch (nPadding) {
-    case 1:
-      // 1 padding char; last quartet specifies 2 bytes = 16 bits = 6 + 6 + 4 bits
-      // lastChar must have 6 - 4 = 2 unused bits
-      if ((lastCharWeight & 0x3) != 0)
-        return -1;
-      break;
-    case 2:
-      // 2 padding chars; last quartet specifies 1 byte = 8 bits = 6 + 2 bits
-      // lastChar must have 6 - 2 = 4 unused bits
-      if ((lastCharWeight & 0xF) != 0)
-        return -1;
-      break;
+      case 1:
+        // 1 padding char; last quartet specifies 2 bytes = 16 bits = 6 + 6 + 4 bits
+        // lastChar must have 6 - 4 = 2 unused bits
+        if ((lastCharWeight & 0x3) != 0)
+          return -1;
+        break;
+      case 2:
+        // 2 padding chars; last quartet specifies 1 byte = 8 bits = 6 + 2 bits
+        // lastChar must have 6 - 2 = 4 unused bits
+        if ((lastCharWeight & 0xF) != 0)
+          return -1;
+        break;
     }
-    return ((nChars + nPadding) >> 2)*3 - nPadding;
+    return ((nChars + nPadding) >> 2) * 3 - nPadding;
   }
 
   Object getValue(String str, ValidationContext vc) {
@@ -77,7 +77,7 @@ class Base64BinaryDatatype extends BinaryDatatype {
         if (++nBytesAccum == 4) {
           for (int shift = 16; shift >= 0; shift -= 8) {
             if (valueIndex < nBytes)
-              value[valueIndex++] = (byte)((accum >> shift) & 0xFF);
+              value[valueIndex++] = (byte) ((accum >> shift) & 0xFF);
           }
           nBytesAccum = 0;
           accum = 0;

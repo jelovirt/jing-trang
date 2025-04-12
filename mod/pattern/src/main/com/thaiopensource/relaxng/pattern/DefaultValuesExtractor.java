@@ -1,11 +1,11 @@
 package com.thaiopensource.relaxng.pattern;
 
+import com.thaiopensource.util.VoidValue;
+import com.thaiopensource.xml.util.Name;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
-import com.thaiopensource.util.VoidValue;
-import com.thaiopensource.xml.util.Name;
 
 /**
  * Extracts the default values for attributes and notifies a
@@ -20,11 +20,12 @@ public class DefaultValuesExtractor {
   public static interface DefaultValuesListener {
     /**
      * The callback/notification method.
-     * @param elementName The local name of the element.
-     * @param elementNamespace The element namespace.
-     * @param attributeName The local name of the attribute.
+     *
+     * @param elementName        The local name of the element.
+     * @param elementNamespace   The element namespace.
+     * @param attributeName      The local name of the attribute.
      * @param attributeNamepsace The attribute namespace.
-     * @param value The default value.
+     * @param value              The default value.
      */
     public void defaultValue(String elementName, String elementNamespace, String attributeName, String attributeNamepsace, String value);
   }
@@ -52,6 +53,7 @@ public class DefaultValuesExtractor {
 
   /**
    * Trigger the parsing.
+   *
    * @param p The start pattern.
    */
   public void parsePattern(Pattern p) {
@@ -70,42 +72,114 @@ public class DefaultValuesExtractor {
 
   /**
    * Base class for pattern visitors.
+   *
    * @author george
    */
   class BaseVisitor implements PatternFunction<VoidValue>, NameClassVisitor {
     // ** Pattern visitor methods.** //
-    public VoidValue caseElement(ElementPattern p)          {return VoidValue.VOID;}
-    public VoidValue caseAttribute(AttributePattern p)      {return VoidValue.VOID;}
+    public VoidValue caseElement(ElementPattern p) {
+      return VoidValue.VOID;
+    }
 
-    public VoidValue caseError(ErrorPattern p)              {return VoidValue.VOID;}
-    public VoidValue caseEmpty(EmptyPattern p)              {return VoidValue.VOID;}
-    public VoidValue caseNotAllowed(NotAllowedPattern p)    {return VoidValue.VOID;}
-    public VoidValue caseGroup(GroupPattern g)              {g.getOperand1().apply(this);g.getOperand2().apply(this);return VoidValue.VOID;}
-    public VoidValue caseInterleave(InterleavePattern i)    {i.getOperand1().apply(this);i.getOperand2().apply(this);return VoidValue.VOID;}
-    public VoidValue caseChoice(ChoicePattern c)            {c.getOperand1().apply(this);c.getOperand2().apply(this);return VoidValue.VOID;}
-    public VoidValue caseOneOrMore(OneOrMorePattern p)      {p.getOperand().apply(this);return VoidValue.VOID;}
-    public VoidValue caseData(DataPattern d)                {return VoidValue.VOID;}
-    public VoidValue caseDataExcept(DataExceptPattern p)    {return VoidValue.VOID;}
-    public VoidValue caseValue(ValuePattern p)              {return VoidValue.VOID;}
-    public VoidValue caseText(TextPattern t)                {return VoidValue.VOID;}
-    public VoidValue caseList(ListPattern l)                {return VoidValue.VOID;}
-    public VoidValue caseRef(RefPattern p)                  {p.getPattern().apply(this);return VoidValue.VOID;}
-    public VoidValue caseAfter(AfterPattern p)              {return VoidValue.VOID;}
+    public VoidValue caseAttribute(AttributePattern p) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseError(ErrorPattern p) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseEmpty(EmptyPattern p) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseNotAllowed(NotAllowedPattern p) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseGroup(GroupPattern g) {
+      g.getOperand1().apply(this);
+      g.getOperand2().apply(this);
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseInterleave(InterleavePattern i) {
+      i.getOperand1().apply(this);
+      i.getOperand2().apply(this);
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseChoice(ChoicePattern c) {
+      c.getOperand1().apply(this);
+      c.getOperand2().apply(this);
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseOneOrMore(OneOrMorePattern p) {
+      p.getOperand().apply(this);
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseData(DataPattern d) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseDataExcept(DataExceptPattern p) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseValue(ValuePattern p) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseText(TextPattern t) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseList(ListPattern l) {
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseRef(RefPattern p) {
+      p.getPattern().apply(this);
+      return VoidValue.VOID;
+    }
+
+    public VoidValue caseAfter(AfterPattern p) {
+      return VoidValue.VOID;
+    }
 
     // ** NameClass visitor methods.** //
-    public void visitName(Name name)                        {}
+    public void visitName(Name name) {
+    }
 
-    public void visitChoice(NameClass nc1, NameClass nc2)   {nc1.accept(this);nc2.accept(this);}
-    public void visitNsName(String ns)                      {}
-    public void visitNsNameExcept(String ns, NameClass nc)  {}
-    public void visitAnyName()                              {}
-    public void visitAnyNameExcept(NameClass nc)            {}
-    public void visitNull()                                 {}
-    public void visitError()                                {}
+    public void visitChoice(NameClass nc1, NameClass nc2) {
+      nc1.accept(this);
+      nc2.accept(this);
+    }
+
+    public void visitNsName(String ns) {
+    }
+
+    public void visitNsNameExcept(String ns, NameClass nc) {
+    }
+
+    public void visitAnyName() {
+    }
+
+    public void visitAnyNameExcept(NameClass nc) {
+    }
+
+    public void visitNull() {
+    }
+
+    public void visitError() {
+    }
   }
 
   /**
    * Adds element patterns to the patterns list.
+   *
    * @author george
    */
   class ElementContentVisitor extends BaseVisitor {
@@ -154,20 +228,23 @@ public class DefaultValuesExtractor {
   class AttributesVisitor extends BaseVisitor {
     private String defaultValue;
     private final List<Name> elements;
+
     /**
      * @param elements The parent element names for the visited attributes.
      */
     public AttributesVisitor(List<Name> elements) {
       this.elements = elements;
     }
+
     @Override
     public VoidValue caseAttribute(AttributePattern p) {
-      defaultValue =  p.getDefaultValue();
+      defaultValue = p.getDefaultValue();
       if (defaultValue != null) {
         p.getNameClass().accept(this);
       }
       return VoidValue.VOID;
     }
+
     @Override
     public void visitName(Name name) {
       for (Name eName : elements) {

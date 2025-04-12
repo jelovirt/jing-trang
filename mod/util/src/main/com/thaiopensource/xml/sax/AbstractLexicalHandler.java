@@ -1,7 +1,7 @@
 package com.thaiopensource.xml.sax;
 
-import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 public class AbstractLexicalHandler implements LexicalHandler {
   public void startDTD(String s, String s1, String s2) throws SAXException {

@@ -25,7 +25,7 @@ class NsNameClass implements NameClass {
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof NsNameClass))
       return false;
-    return namespaceUri.equals(((NsNameClass)obj).namespaceUri);
+    return namespaceUri.equals(((NsNameClass) obj).namespaceUri);
   }
 
   public void accept(NameClassVisitor visitor) {

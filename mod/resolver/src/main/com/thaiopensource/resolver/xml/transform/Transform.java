@@ -1,10 +1,6 @@
 package com.thaiopensource.resolver.xml.transform;
 
-import com.thaiopensource.resolver.AbstractResolver;
-import com.thaiopensource.resolver.Identifier;
-import com.thaiopensource.resolver.Input;
-import com.thaiopensource.resolver.Resolver;
-import com.thaiopensource.resolver.ResolverException;
+import com.thaiopensource.resolver.*;
 import com.thaiopensource.resolver.xml.sax.SAX;
 import com.thaiopensource.resolver.xml.sax.SAXInput;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
@@ -22,10 +18,12 @@ import java.io.IOException;
  *
  */
 public class Transform {
-  private Transform() { }
+  private Transform() {
+  }
 
   /**
    * Creates a URIResolver that returns a SAXSource.
+   *
    * @param resolver
    * @return
    */
@@ -34,11 +32,9 @@ public class Transform {
     return (href, base) -> {
       try {
         return saxResolver.resolve(href, base);
-      }
-      catch (SAXException e) {
+      } catch (SAXException e) {
         throw toTransformerException(e);
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
         throw new TransformerException(e);
       }
     };
@@ -52,14 +48,13 @@ public class Transform {
         Source source;
         try {
           source = uriResolver.resolve(id.getUriReference(), id.getBase());
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
           throw toResolverException(e);
         }
         if (source == null)
           return;
         if (source instanceof SAXSource) {
-          setInput(input, (SAXSource)source);
+          setInput(input, (SAXSource) source);
           return;
         }
         InputSource in = SAXSource.sourceToInputSource(source);
@@ -77,7 +72,7 @@ public class Transform {
     XMLReader reader = source.getXMLReader();
     if (reader != null) {
       if (input instanceof SAXInput)
-        ((SAXInput)input).setXMLReader(reader);
+        ((SAXInput) input).setXMLReader(reader);
     }
     InputSource in = source.getInputSource();
     if (in != null)
@@ -88,7 +83,7 @@ public class Transform {
     Exception wrapped = SAX.getWrappedException(e);
     if (wrapped != null) {
       if (wrapped instanceof TransformerException)
-        return (TransformerException)wrapped;
+        return (TransformerException) wrapped;
       return new TransformerException(wrapped);
     }
     return new TransformerException(e);
@@ -98,7 +93,7 @@ public class Transform {
     Throwable wrapped = getWrappedException(e);
     if (wrapped != null) {
       if (wrapped instanceof ResolverException)
-        return (ResolverException)wrapped;
+        return (ResolverException) wrapped;
       return new ResolverException(wrapped);
     }
     return new ResolverException(e);

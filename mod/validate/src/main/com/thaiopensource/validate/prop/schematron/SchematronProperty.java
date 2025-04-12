@@ -1,19 +1,14 @@
 package com.thaiopensource.validate.prop.schematron;
 
-import com.thaiopensource.validate.StringPropertyId;
-import com.thaiopensource.validate.FlagPropertyId;
-import com.thaiopensource.validate.Option;
-import com.thaiopensource.validate.FlagOption;
-import com.thaiopensource.validate.StringOption;
-import com.thaiopensource.validate.OptionArgumentFormatException;
-import com.thaiopensource.validate.SchemaReader;
+import com.thaiopensource.validate.*;
 import com.thaiopensource.xml.util.Naming;
 
 /**
  * Properties for controlling schema reading and validation specific to Schematron.
  */
 public class SchematronProperty {
-  private SchematronProperty() { }
+  private SchematronProperty() {
+  }
 
   /**
    * PropertyId that specifies the Schematron phase to use.

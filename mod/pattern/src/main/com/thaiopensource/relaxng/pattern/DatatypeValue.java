@@ -18,7 +18,7 @@ class DatatypeValue {
   public boolean equals(Object obj) {
     if (!(obj instanceof DatatypeValue))
       return false;
-    DatatypeValue other = (DatatypeValue)obj;
+    DatatypeValue other = (DatatypeValue) obj;
     if (other.dt != dt)
       return false;
     return dt.sameValue(value, other.value);

@@ -1,8 +1,8 @@
 package com.thaiopensource.validate.xerces;
 
 import org.apache.xerces.util.ErrorHandlerWrapper;
-import org.apache.xerces.xni.parser.XMLParseException;
 import org.apache.xerces.xni.XNIException;
+import org.apache.xerces.xni.parser.XMLParseException;
 import org.xml.sax.ErrorHandler;
 
 class SAXXMLErrorHandler extends ErrorHandlerWrapper {

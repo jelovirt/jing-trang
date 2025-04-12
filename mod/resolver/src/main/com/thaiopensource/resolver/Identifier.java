@@ -20,6 +20,7 @@ public class Identifier {
 
   /**
    * Must return non-null
+   *
    * @return
    */
   public String getUriReference() {
@@ -27,7 +28,6 @@ public class Identifier {
   }
 
   /**
-   *
    * @return maybe null
    */
   public String getBase() {

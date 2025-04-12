@@ -1,8 +1,8 @@
 package com.thaiopensource.validate.picl;
 
+import com.thaiopensource.util.Localizer;
 import com.thaiopensource.util.PropertyMap;
 import com.thaiopensource.util.SinglePropertyMap;
-import com.thaiopensource.util.Localizer;
 import com.thaiopensource.validate.IncorrectSchemaException;
 import com.thaiopensource.validate.Schema;
 import com.thaiopensource.validate.ValidateProperty;
@@ -11,12 +11,12 @@ import com.thaiopensource.validate.auto.SchemaFuture;
 import com.thaiopensource.xml.sax.CountingErrorHandler;
 import com.thaiopensource.xml.sax.DelegatingContentHandler;
 import com.thaiopensource.xml.util.WellKnownNamespaces;
+import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
 
-import java.util.Vector;
 import java.util.Stack;
+import java.util.Vector;
 
 class SchemaParser extends DelegatingContentHandler implements SchemaFuture, NamespaceContext {
   private final Vector constraints = new Vector();
@@ -41,14 +41,14 @@ class SchemaParser extends DelegatingContentHandler implements SchemaFuture, Nam
   }
 
   public void startDocument()
-          throws SAXException {
+    throws SAXException {
     super.startDocument();
     prefixes.push("xml");
     prefixes.push(WellKnownNamespaces.XML);
   }
 
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException {
+    throws SAXException {
     if (prefix == null)
       prefix = "";
     prefixes.push(prefix);
@@ -59,7 +59,7 @@ class SchemaParser extends DelegatingContentHandler implements SchemaFuture, Nam
   }
 
   public void endPrefixMapping(String prefix)
-          throws SAXException {
+    throws SAXException {
     prefixes.pop();
     prefixes.pop();
     super.endPrefixMapping(prefix);
@@ -67,7 +67,7 @@ class SchemaParser extends DelegatingContentHandler implements SchemaFuture, Nam
 
   public void startElement(String namespaceURI, String localName,
                            String qName, Attributes atts)
-          throws SAXException {
+    throws SAXException {
     super.startElement(namespaceURI, localName, qName, atts);
     if (ceh.getHadErrorOrFatalError())
       return;
@@ -80,11 +80,9 @@ class SchemaParser extends DelegatingContentHandler implements SchemaFuture, Nam
       if (ref != null) {
         Pattern refPattern = patternParser.parse(ref, locator, this);
         constraints.addElement(new KeyRefConstraint(keyPattern, refPattern));
-      }
-      else
+      } else
         constraints.addElement(new KeyConstraint(keyPattern));
-    }
-    catch (InvalidPatternException e) {
+    } catch (InvalidPatternException e) {
     }
   }
 
@@ -93,11 +91,11 @@ class SchemaParser extends DelegatingContentHandler implements SchemaFuture, Nam
       throw new IncorrectSchemaException();
     Constraint constraint;
     if (constraints.size() == 1)
-      constraint = (Constraint)constraints.elementAt(0);
+      constraint = (Constraint) constraints.elementAt(0);
     else {
       Constraint[] v = new Constraint[constraints.size()];
       for (int i = 0; i < v.length; i++)
-        v[i] = (Constraint)constraints.elementAt(i);
+        v[i] = (Constraint) constraints.elementAt(i);
       constraint = new MultiConstraint(v);
     }
     return new SchemaImpl(properties, constraint);
@@ -110,7 +108,7 @@ class SchemaParser extends DelegatingContentHandler implements SchemaFuture, Nam
   public String getNamespaceUri(String prefix) {
     for (int i = prefixes.size(); i > 0; i -= 2) {
       if (prefixes.elementAt(i - 2).equals(prefix))
-        return (String)prefixes.elementAt(i - 1);
+        return (String) prefixes.elementAt(i - 1);
     }
     return null;
   }

@@ -21,7 +21,7 @@ class PatternRestrictDatatype extends RestrictDatatype {
     super.checkLexicallyAllows(str);
     if (!pattern.matches(str))
       throw new DatatypeException(localizer().message("pattern_violation",
-                                                      getDescriptionForRestriction(),
-                                                      patternString));
+        getDescriptionForRestriction(),
+        patternString));
   }
 }

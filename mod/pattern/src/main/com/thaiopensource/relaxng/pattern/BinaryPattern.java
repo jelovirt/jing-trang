@@ -26,7 +26,7 @@ abstract class BinaryPattern extends Pattern {
   boolean samePattern(Pattern other) {
     if (getClass() != other.getClass())
       return false;
-    BinaryPattern b = (BinaryPattern)other;
+    BinaryPattern b = (BinaryPattern) other;
     return p1 == b.p1 && p2 == b.p2;
   }
 

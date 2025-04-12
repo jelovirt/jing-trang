@@ -14,12 +14,14 @@ public abstract class ValidatorHandler2 extends ValidatorHandler implements DTDH
 
   /**
    * Sets the DTD handler that receives the validation result.
+   *
    * @param dtdHandler the DTD handler
    */
   abstract public void setDTDHandler(DTDHandler dtdHandler);
 
   /**
    * Gets the DTD handler that receives the validation result.
+   *
    * @return the DTDHandler
    */
   abstract public DTDHandler getDTDHandler();

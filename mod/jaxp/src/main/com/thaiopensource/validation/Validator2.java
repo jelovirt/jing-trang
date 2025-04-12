@@ -12,10 +12,12 @@ import java.net.URL;
  * Adds some convenience methods to Validator.
  */
 abstract public class Validator2 extends Validator {
-  protected Validator2() { }
+  protected Validator2() {
+  }
 
   /**
    * Validate a file.
+   *
    * @param file the file to validate; must not be null.
    */
   public void validate(File file) throws SAXException, IOException {
@@ -24,6 +26,7 @@ abstract public class Validator2 extends Validator {
 
   /**
    * Validate a URL.
+   *
    * @param url the URL to validate
    */
   public void validate(URL url) throws SAXException, IOException {

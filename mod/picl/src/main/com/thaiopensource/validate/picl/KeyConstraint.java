@@ -2,9 +2,9 @@ package com.thaiopensource.validate.picl;
 
 import org.xml.sax.Locator;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Enumeration;
 
 class KeyConstraint implements Constraint {
   private final Pattern key;
@@ -15,12 +15,13 @@ class KeyConstraint implements Constraint {
 
   static class KeyIndex {
     private final Hashtable table;
+
     KeyIndex() {
       table = new Hashtable();
     }
 
     KeyInfo lookupCreate(Object key) {
-      KeyInfo info = (KeyInfo)table.get(key);
+      KeyInfo info = (KeyInfo) table.get(key);
       if (info == null) {
         info = new KeyInfo();
         table.put(key, info);
@@ -54,8 +55,7 @@ class KeyConstraint implements Constraint {
         info.firstKeyLocator = locator;
         info.pendingRefLocators = null;
         info.representation = representation;
-      }
-      else
+      } else
         ec.error(locator, "duplicate_key", representation);
     }
   }

@@ -1,20 +1,14 @@
 package com.thaiopensource.validate.auto;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXParseException;
+import com.thaiopensource.util.Localizer;
+import com.thaiopensource.util.PropertyMap;
+import com.thaiopensource.validate.IncorrectSchemaException;
+import com.thaiopensource.validate.Schema;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
 import java.util.Vector;
-
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.IncorrectSchemaException;
-import com.thaiopensource.util.Localizer;
-import com.thaiopensource.util.PropertyMap;
 
 public class AutoSchemaReceiver implements SchemaReceiver {
   private final PropertyMap properties;
@@ -41,14 +35,14 @@ public class AutoSchemaReceiver implements SchemaReceiver {
 
     public void startElement(String uri, String localName,
                              String qName, Attributes attributes)
-            throws SAXException {
+      throws SAXException {
       SchemaReceiverFactory srf = properties.get(SchemaReceiverFactory.PROPERTY);
       SchemaReceiver sr = srf.createSchemaReceiver(uri, properties);
       if (sr == null) {
         Localizer localizer = new Localizer(AutoSchemaReceiver.class);
         String detail = ("".equals(uri)
-                         ? localizer.message("no_namespace")
-                         : localizer.message("unknown_namespace", uri));
+          ? localizer.message("no_namespace")
+          : localizer.message("unknown_namespace", uri));
         throw new SAXParseException(detail, locator);
       }
       sf = sr.installHandlers(xr);
@@ -63,8 +57,8 @@ public class AutoSchemaReceiver implements SchemaReceiver {
       contentHandler.startDocument();
       contentHandler = xr.getContentHandler();
       for (int i = 0, len = prefixMappings.size(); i < len; i += 2) {
-        contentHandler.startPrefixMapping((String)prefixMappings.elementAt(i),
-                                          (String)prefixMappings.elementAt(i + 1));
+        contentHandler.startPrefixMapping((String) prefixMappings.elementAt(i),
+          (String) prefixMappings.elementAt(i + 1));
         contentHandler = xr.getContentHandler();
       }
       contentHandler.startElement(uri, localName, qName, attributes);

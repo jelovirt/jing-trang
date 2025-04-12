@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 
 public class BuildException extends RuntimeException {
   private final Throwable cause;
+
   public BuildException(Throwable cause) {
     if (cause == null)
       throw new NullPointerException("null cause");
@@ -18,7 +19,7 @@ public class BuildException extends RuntimeException {
   public static BuildException fromSAXException(SAXException e) {
     Exception inner = e.getException();
     if (inner instanceof BuildException)
-      return (BuildException)inner;
+      return (BuildException) inner;
     return new BuildException(e);
   }
 
@@ -27,7 +28,7 @@ public class BuildException extends RuntimeException {
       Throwable t = e.unwrap();
       if (t != null) {
         if (t instanceof BuildException)
-          throw (BuildException)t;
+          throw (BuildException) t;
         throw new BuildException(t);
       }
     }

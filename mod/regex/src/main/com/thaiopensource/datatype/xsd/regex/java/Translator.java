@@ -153,24 +153,24 @@ public class Translator {
     new CharRange(0x20000, 0x2A6D6),
     new CharRange(0x2F800, 0x2FA1F),
     new CharRange(0xE0000, 0xE007F),
-    new Union(new CharClass[] {
+    new Union(new CharClass[]{
       new CharRange(0xE000, 0xF8FF),
       new CharRange(0xF0000, 0xFFFFD),
       new CharRange(0x100000, 0x10FFFD)
     })
   };
 
-  static private final CharClass DOT = new Complement(new Union(new CharClass[] { new SingleChar('\n'), new SingleChar('\r') }));
+  static private final CharClass DOT = new Complement(new Union(new CharClass[]{new SingleChar('\n'), new SingleChar('\r')}));
 
   static private final CharClass ESC_d = new Property("Nd");
 
   static private final CharClass ESC_D = new Complement(ESC_d);
 
-  static private final CharClass ESC_W = new Union(new CharClass[] {new Property("P"), new Property("Z"), new Property("C")});
+  static private final CharClass ESC_W = new Union(new CharClass[]{new Property("P"), new Property("Z"), new Property("C")});
 
   static private final CharClass ESC_w = new Complement(ESC_W);
 
-  static private final CharClass ESC_s = new Union(new CharClass[] {
+  static private final CharClass ESC_s = new Union(new CharClass[]{
     new SingleChar(' '),
     new SingleChar('\n'),
     new SingleChar('\r'),
@@ -180,14 +180,14 @@ public class Translator {
   static private final CharClass ESC_S = new Complement(ESC_s);
 
   static private final CharClass ESC_i = makeCharClass(NamingExceptions.NMSTRT_CATEGORIES,
-                                                       NamingExceptions.NMSTRT_INCLUDES,
-                                                       NamingExceptions.NMSTRT_EXCLUDE_RANGES);
+    NamingExceptions.NMSTRT_INCLUDES,
+    NamingExceptions.NMSTRT_EXCLUDE_RANGES);
 
   static private final CharClass ESC_I = new Complement(ESC_i);
 
   static private final CharClass ESC_c = makeCharClass(NamingExceptions.NMCHAR_CATEGORIES,
-                                                       NamingExceptions.NMCHAR_INCLUDES,
-                                                       NamingExceptions.NMCHAR_EXCLUDE_RANGES);
+    NamingExceptions.NMCHAR_INCLUDES,
+    NamingExceptions.NMCHAR_EXCLUDE_RANGES);
 
   static private final CharClass ESC_C = new Complement(ESC_c);
 
@@ -210,7 +210,7 @@ public class Translator {
    * @param regexp a String containing a regular expression in the syntax of XML Schemas Part 2
    * @return a String containing a regular expression in the syntax of java.util.regex.Pattern
    * @throws RegexSyntaxException if <code>regexp</code> is not a regular expression in the
-   * syntax of XML Schemas Part 2
+   *                              syntax of XML Schemas Part 2
    * @see java.util.regex.Pattern
    * @see <a href="http://www.w3.org/TR/xmlschema-2/#regexs">XML Schema Part 2</a>
    */
@@ -251,16 +251,16 @@ public class Translator {
 
   private void translateQuantifier() throws RegexSyntaxException {
     switch (curChar) {
-    case '*':
-    case '?':
-    case '+':
-      copyCurChar();
-      return;
-    case '{':
-      copyCurChar();
-      translateQuantity();
-      expect('}');
-      copyCurChar();
+      case '*':
+      case '?':
+      case '+':
+        copyCurChar();
+        return;
+      case '{':
+        copyCurChar();
+        translateQuantity();
+        expect('}');
+        copyCurChar();
     }
   }
 
@@ -270,8 +270,7 @@ public class Translator {
     try {
       lowerValue = Integer.parseInt(lower);
       result.append(lower);
-    }
-    catch (NumberFormatException e) {
+    } catch (NumberFormatException e) {
       // JDK 1.4 cannot handle ranges bigger than this
       result.append(Integer.MAX_VALUE);
     }
@@ -284,8 +283,7 @@ public class Translator {
           result.append(upper);
           if (lowerValue < 0 || upperValue < lowerValue)
             throw makeException("invalid_quantity_range");
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
           result.append(Integer.MAX_VALUE);
           if (lowerValue < 0 && new BigDecimal(lower).compareTo(new BigDecimal(upper)) > 0)
             throw makeException("invalid_quantity_range");
@@ -336,7 +334,7 @@ public class Translator {
     }
 
     public int compareTo(Object o) {
-      Range other = (Range)o;
+      Range other = (Range) o;
       if (this.min < other.min)
         return -1;
       if (this.min > other.min)
@@ -345,7 +343,7 @@ public class Translator {
     }
   }
 
-  static abstract class CharClass  {
+  static abstract class CharClass {
 
     private final int containsBmp;
     // if it contains ALL and containsBmp != NONE, then the generated class for containsBmp must
@@ -374,70 +372,44 @@ public class Translator {
 
     final void outputMungeSurrogates(StringBuffer buf) {
       switch (containsNonBmp) {
-      case NONE:
-        if (containsBmp == NONE)
-          buf.append(NOT_ALLOWED_CLASS);
-        else
-          outputDirect(buf);
-        break;
-      case ALL:
-        buf.append('(');
-        if (containsBmp == NONE) {
-          buf.append(SURROGATES1_CLASS);
-          buf.append(SURROGATES2_CLASS);
-        }
-        else {
-          outputDirect(buf);
-          buf.append(SURROGATES2_CLASS);
-          buf.append('?');
-        }
-        buf.append(')');
-        break;
-      case SOME:
-        buf.append('(');
-        boolean needSep = false;
-        if (containsBmp != NONE) {
-          needSep = true;
-          outputDirect(buf);
-        }
-        List ranges = new Vector();
-        addNonBmpRanges(ranges);
-        sortRangeList(ranges);
-        String hi = highSurrogateRanges(ranges);
-        if (hi.length() > 0) {
-          if (needSep)
-            buf.append('|');
+        case NONE:
+          if (containsBmp == NONE)
+            buf.append(NOT_ALLOWED_CLASS);
           else
-            needSep = true;
-          buf.append('[');
-          for (int i = 0, len = hi.length(); i < len; i += 2) {
-            char min = hi.charAt(i);
-            char max = hi.charAt(i + 1);
-            if (min == max)
-              buf.append(min);
-            else {
-              buf.append(min);
-              buf.append('-');
-              buf.append(max);
-            }
+            outputDirect(buf);
+          break;
+        case ALL:
+          buf.append('(');
+          if (containsBmp == NONE) {
+            buf.append(SURROGATES1_CLASS);
+            buf.append(SURROGATES2_CLASS);
+          } else {
+            outputDirect(buf);
+            buf.append(SURROGATES2_CLASS);
+            buf.append('?');
           }
-          buf.append(']');
-          buf.append(SURROGATES2_CLASS);
-        }
-        String lo = lowSurrogateRanges(ranges);
-        for (int i = 0, len = lo.length(); i < len; i += 3) {
-          if (needSep)
-            buf.append('|');
-          else
+          buf.append(')');
+          break;
+        case SOME:
+          buf.append('(');
+          boolean needSep = false;
+          if (containsBmp != NONE) {
             needSep = true;
-          buf.append(lo.charAt(i));
-          char min = lo.charAt(i + 1);
-          char max = lo.charAt(i + 2);
-          if (min == max && (i + 3 >= len || lo.charAt(i + 3) != lo.charAt(i)))
-            buf.append(min);
-          else {
+            outputDirect(buf);
+          }
+          List ranges = new Vector();
+          addNonBmpRanges(ranges);
+          sortRangeList(ranges);
+          String hi = highSurrogateRanges(ranges);
+          if (hi.length() > 0) {
+            if (needSep)
+              buf.append('|');
+            else
+              needSep = true;
             buf.append('[');
-            for (;;) {
+            for (int i = 0, len = hi.length(); i < len; i += 2) {
+              char min = hi.charAt(i);
+              char max = hi.charAt(i + 1);
               if (min == max)
                 buf.append(min);
               else {
@@ -445,19 +417,44 @@ public class Translator {
                 buf.append('-');
                 buf.append(max);
               }
-              if (i + 3 >= len || lo.charAt(i + 3) != lo.charAt(i))
-                break;
-              i += 3;
-              min = lo.charAt(i + 1);
-              max = lo.charAt(i + 2);
             }
             buf.append(']');
+            buf.append(SURROGATES2_CLASS);
           }
-        }
-        if (!needSep)
-          buf.append(NOT_ALLOWED_CLASS);
-        buf.append(')');
-        break;
+          String lo = lowSurrogateRanges(ranges);
+          for (int i = 0, len = lo.length(); i < len; i += 3) {
+            if (needSep)
+              buf.append('|');
+            else
+              needSep = true;
+            buf.append(lo.charAt(i));
+            char min = lo.charAt(i + 1);
+            char max = lo.charAt(i + 2);
+            if (min == max && (i + 3 >= len || lo.charAt(i + 3) != lo.charAt(i)))
+              buf.append(min);
+            else {
+              buf.append('[');
+              for (; ; ) {
+                if (min == max)
+                  buf.append(min);
+                else {
+                  buf.append(min);
+                  buf.append('-');
+                  buf.append(max);
+                }
+                if (i + 3 >= len || lo.charAt(i + 3) != lo.charAt(i))
+                  break;
+                i += 3;
+                min = lo.charAt(i + 1);
+                max = lo.charAt(i + 2);
+              }
+              buf.append(']');
+            }
+          }
+          if (!needSep)
+            buf.append(NOT_ALLOWED_CLASS);
+          buf.append(')');
+          break;
       }
     }
 
@@ -512,6 +509,7 @@ public class Translator {
     }
 
     abstract void outputDirect(StringBuffer buf);
+
     abstract void outputComplementDirect(StringBuffer buf);
 
     int singleChar() {
@@ -528,11 +526,11 @@ public class Translator {
       int fromIndex = 0;
       int len = ranges.size();
       while (fromIndex < len) {
-        Range r = (Range)ranges.get(fromIndex);
+        Range r = (Range) ranges.get(fromIndex);
         int min = r.getMin();
         int max = r.getMax();
         while (++fromIndex < len) {
-          Range r2 = (Range)ranges.get(fromIndex);
+          Range r2 = (Range) ranges.get(fromIndex);
           if (r2.getMin() > max + 1)
             break;
           if (r2.getMax() > max)
@@ -569,6 +567,7 @@ public class Translator {
         buf.append(']');
       }
     }
+
     abstract void inClassOutputDirect(StringBuffer buf);
 
     static void outputWide(StringBuffer buf, int c) {
@@ -579,6 +578,7 @@ public class Translator {
 
   static class SingleChar extends SimpleCharClass {
     private final char c;
+
     SingleChar(char c) {
       super(SOME, NONE);
       this.c = c;
@@ -629,29 +629,27 @@ public class Translator {
 
     CharRange(int lower, int upper) {
       super(lower < NONBMP_MIN ? SOME : NONE,
-            // don't use ALL here, because that requires that the BMP class contains high surrogates
-            upper >= NONBMP_MIN ? SOME : NONE);
+        // don't use ALL here, because that requires that the BMP class contains high surrogates
+        upper >= NONBMP_MIN ? SOME : NONE);
       this.lower = lower;
       this.upper = upper;
     }
 
     void inClassOutputDirect(StringBuffer buf) {
       if (lower < NONBMP_MIN) {
-        if (isJavaMetaChar((char)lower))
+        if (isJavaMetaChar((char) lower))
           buf.append('\\');
-        buf.append((char)lower);
-      }
-      else if (surrogatesDirect)
+        buf.append((char) lower);
+      } else if (surrogatesDirect)
         outputWide(buf, lower);
       else
         throw new RuntimeException("BMP output botch");
       buf.append('-');
       if (upper < NONBMP_MIN) {
-        if (isJavaMetaChar((char)upper))
+        if (isJavaMetaChar((char) upper))
           buf.append('\\');
-        buf.append((char)upper);
-      }
-      else if (surrogatesDirect)
+        buf.append((char) upper);
+      } else if (surrogatesDirect)
         outputWide(buf, upper);
       else
         buf.append('\uFFFF');
@@ -691,11 +689,12 @@ public class Translator {
   static class Subtraction extends CharClass {
     private final CharClass cc1;
     private final CharClass cc2;
+
     Subtraction(CharClass cc1, CharClass cc2) {
       // min corresponds to intersection
       // complement corresponds to negation
       super(Math.min(cc1.getContainsBmp(), -cc2.getContainsBmp()),
-            Math.min(cc1.getContainsNonBmp(), -cc2.getContainsNonBmp()));
+        Math.min(cc1.getContainsNonBmp(), -cc2.getContainsNonBmp()));
       this.cc1 = cc1;
       this.cc2 = cc2;
     }
@@ -725,7 +724,7 @@ public class Translator {
       Iterator negIter = negList.iterator();
       Range negRange;
       if (negIter.hasNext())
-        negRange = (Range)negIter.next();
+        negRange = (Range) negIter.next();
       else
         negRange = null;
       for (Object o : posList) {
@@ -802,13 +801,12 @@ public class Translator {
         }
       }
       for (int i = 0; i < len; i++) {
-        CharClass cc = (CharClass)members.get(i);
+        CharClass cc = (CharClass) members.get(i);
         if ((surrogatesDirect || cc.getContainsBmp() != NONE) && !(cc instanceof SimpleCharClass)) {
           if (first) {
             buf.append('[');
             first = false;
-          }
-          else
+          } else
             buf.append("&&");
           // can't have any members that are ALL, because that would make this ALL, which violates
           // the precondition for outputComplementDirect
@@ -841,6 +839,7 @@ public class Translator {
 
   static class Complement extends CharClass {
     private final CharClass cc;
+
     Complement(CharClass cc) {
       super(-cc.getContainsBmp(), -cc.getContainsNonBmp());
       this.cc = cc;
@@ -872,41 +871,41 @@ public class Translator {
 
   private boolean translateAtom() throws RegexSyntaxException {
     switch (curChar) {
-    case EOS:
-      if (!eos)
+      case EOS:
+        if (!eos)
+          break;
+        // fall through
+      case '?':
+      case '*':
+      case '+':
+      case ')':
+      case '{':
+      case '}':
+      case '|':
+      case ']':
+        return false;
+      case '(':
+        copyCurChar();
+        translateRegExp();
+        expect(')');
+        copyCurChar();
+        return true;
+      case '\\':
+        advance();
+        parseEsc().output(result);
+        return true;
+      case '[':
+        advance();
+        parseCharClassExpr().output(result);
+        return true;
+      case '.':
+        DOT.output(result);
+        advance();
+        return true;
+      case '$':
+      case '^':
+        result.append('\\');
         break;
-      // fall through
-    case '?':
-    case '*':
-    case '+':
-    case ')':
-    case '{':
-    case '}':
-    case '|':
-    case ']':
-      return false;
-    case '(':
-      copyCurChar();
-      translateRegExp();
-      expect(')');
-      copyCurChar();
-      return true;
-    case '\\':
-      advance();
-      parseEsc().output(result);
-      return true;
-    case '[':
-      advance();
-      parseCharClassExpr().output(result);
-      return true;
-    case '.':
-      DOT.output(result);
-      advance();
-      return true;
-    case '$':
-    case '^':
-      result.append('\\');
-      break;
     }
     copyCurChar();
     return true;
@@ -939,8 +938,7 @@ public class Translator {
       else if (min == max - 1) {
         excludeList.add(new SingleChar(min));
         excludeList.add(new SingleChar(max));
-      }
-      else
+      } else
         excludeList.add(new CharRange(min, max));
     }
     if (surrogatesDirect)
@@ -950,68 +948,68 @@ public class Translator {
 
   private CharClass parseEsc() throws RegexSyntaxException {
     switch (curChar) {
-    case 'n':
-      advance();
-      return new SingleChar('\n');
-    case 'r':
-      advance();
-      return new SingleChar('\r');
-    case 't':
-      advance();
-      return new SingleChar('\t');
-    case '\\':
-    case '|':
-    case '.':
-    case '-':
-    case '^':
-    case '?':
-    case '*':
-    case '+':
-    case '(':
-    case ')':
-    case '{':
-    case '}':
-    case '[':
-    case ']':
-      break;
-    case 's':
-      advance();
-      return ESC_s;
-    case 'S':
-      advance();
-      return ESC_S;
-    case 'i':
-      advance();
-      return ESC_i;
-    case 'I':
-      advance();
-      return ESC_I;
-    case 'c':
-      advance();
-      return ESC_c;
-    case 'C':
-      advance();
-      return ESC_C;
-    case 'd':
-      advance();
-      return ESC_d;
-    case 'D':
-      advance();
-      return ESC_D;
-    case 'w':
-      advance();
-      return ESC_w;
-    case 'W':
-      advance();
-      return ESC_W;
-    case 'p':
-      advance();
-      return parseProp();
-    case 'P':
-      advance();
-      return new Complement(parseProp());
-    default:
-      throw makeException("bad_escape");
+      case 'n':
+        advance();
+        return new SingleChar('\n');
+      case 'r':
+        advance();
+        return new SingleChar('\r');
+      case 't':
+        advance();
+        return new SingleChar('\t');
+      case '\\':
+      case '|':
+      case '.':
+      case '-':
+      case '^':
+      case '?':
+      case '*':
+      case '+':
+      case '(':
+      case ')':
+      case '{':
+      case '}':
+      case '[':
+      case ']':
+        break;
+      case 's':
+        advance();
+        return ESC_s;
+      case 'S':
+        advance();
+        return ESC_S;
+      case 'i':
+        advance();
+        return ESC_i;
+      case 'I':
+        advance();
+        return ESC_I;
+      case 'c':
+        advance();
+        return ESC_c;
+      case 'C':
+        advance();
+        return ESC_C;
+      case 'd':
+        advance();
+        return ESC_d;
+      case 'D':
+        advance();
+        return ESC_D;
+      case 'w':
+        advance();
+        return ESC_w;
+      case 'W':
+        advance();
+        return ESC_W;
+      case 'p':
+        advance();
+        return parseProp();
+      case 'P':
+        advance();
+        return new Complement(parseProp());
+      default:
+        throw makeException("bad_escape");
     }
     CharClass tem = new SingleChar(curChar);
     advance();
@@ -1021,7 +1019,7 @@ public class Translator {
   private CharClass parseProp() throws RegexSyntaxException {
     expect('{');
     int start = pos;
-    for (;;) {
+    for (; ; ) {
       advance();
       if (curChar == '}')
         break;
@@ -1031,28 +1029,28 @@ public class Translator {
     String propertyName = regExp.substring(start, pos - 1);
     advance();
     switch (propertyName.length()) {
-    case 0:
-      throw makeException("empty_property_name");
-    case 2:
-      int sci = subCategories.indexOf(propertyName);
-      if (sci < 0 || sci % 2 == 1)
-        throw makeException("bad_category");
-      return getSubCategoryCharClass(sci / 2);
-    case 1:
-      int ci = categories.indexOf(propertyName.charAt(0));
-      if (ci < 0)
-        throw makeException("bad_category", propertyName);
-      return getCategoryCharClass(ci);
-    default:
-      if (!propertyName.startsWith("Is"))
-        break;
-      String blockName = propertyName.substring(2);
-      for (int i = 0; i < specialBlockNames.length; i++)
-        if (blockName.equals(specialBlockNames[i]))
-          return specialBlockCharClasses[i];
-      if (!isBlock(blockName))
-        throw makeException("bad_block_name", blockName);
-      return new Property( "In" + blockName);
+      case 0:
+        throw makeException("empty_property_name");
+      case 2:
+        int sci = subCategories.indexOf(propertyName);
+        if (sci < 0 || sci % 2 == 1)
+          throw makeException("bad_category");
+        return getSubCategoryCharClass(sci / 2);
+      case 1:
+        int ci = categories.indexOf(propertyName.charAt(0));
+        if (ci < 0)
+          throw makeException("bad_category", propertyName);
+        return getCategoryCharClass(ci);
+      default:
+        if (!propertyName.startsWith("Is"))
+          break;
+        String blockName = propertyName.substring(2);
+        for (int i = 0; i < specialBlockNames.length; i++)
+          if (blockName.equals(specialBlockNames[i]))
+            return specialBlockCharClasses[i];
+        if (!isBlock(blockName))
+          throw makeException("bad_block_name", blockName);
+        return new Property("In" + blockName);
     }
     throw makeException("bad_property_name", propertyName);
   }
@@ -1084,8 +1082,7 @@ public class Translator {
     if (curChar == '^') {
       advance();
       compl = true;
-    }
-    else
+    } else
       compl = false;
     List members = new Vector();
     do {
@@ -1101,7 +1098,7 @@ public class Translator {
         if (lower.singleChar() > upper.singleChar())
           throw makeException("invalid_range");
         members.set(members.size() - 1,
-                    new CharRange(lower.singleChar(), upper.singleChar()));
+          new CharRange(lower.singleChar(), upper.singleChar()));
         if (curChar == '-') {
           advance();
           expect('[');
@@ -1111,7 +1108,7 @@ public class Translator {
     } while (curChar != ']');
     CharClass result;
     if (members.size() == 1)
-      result = (CharClass)members.get(0);
+      result = (CharClass) members.get(0);
     else
       result = new Union(members);
     if (compl)
@@ -1127,17 +1124,17 @@ public class Translator {
 
   private CharClass parseCharClassEscOrXmlChar() throws RegexSyntaxException {
     switch (curChar) {
-    case EOS:
-      if (eos)
-        expect(']');
-      break;
-    case '\\':
-      advance();
-      return parseEsc();
-    case '[':
-    case ']':
-    case '-':
-      throw makeException("should_quote", new String(new char[]{curChar}));
+      case EOS:
+        if (eos)
+          expect(']');
+        break;
+      case '\\':
+        advance();
+        return parseEsc();
+      case '[':
+      case ']':
+      case '-':
+        throw makeException("should_quote", new String(new char[]{curChar}));
     }
     CharClass tem;
     if (Utf16.isSurrogate(curChar)) {
@@ -1148,8 +1145,7 @@ public class Translator {
       if (!Utf16.isSurrogate2(curChar))
         throw makeException("invalid_surrogate");
       tem = new WideSingleChar(Utf16.scalarValue(c1, curChar));
-    }
-    else
+    } else
       tem = new SingleChar(curChar);
     advance();
     return tem;
@@ -1165,23 +1161,23 @@ public class Translator {
 
   static private boolean isJavaMetaChar(char c) {
     switch (c) {
-    case '\\':
-    case '^':
-    case '?':
-    case '*':
-    case '+':
-    case '(':
-    case ')':
-    case '{':
-    case '}':
-    case '|':
-    case '[':
-    case ']':
-    case '-':
-    case '&':
-    case '$':
-    case '.':
-      return true;
+      case '\\':
+      case '^':
+      case '?':
+      case '*':
+      case '+':
+      case '(':
+      case ')':
+      case '{':
+      case '}':
+      case '|':
+      case '[':
+      case ']':
+      case '-':
+      case '&':
+      case '$':
+      case '.':
+        return true;
     }
     return false;
   }
@@ -1208,10 +1204,10 @@ public class Translator {
 
   static private CharClass computeCategoryCharClass(char code) {
     List classes = new Vector();
-    classes.add(new Property(new String(new char[] { code })));
+    classes.add(new Property(new String(new char[]{code})));
     if (!surrogatesDirect) {
       for (int ci = Categories.CATEGORY_NAMES.indexOf(code); ci >= 0; ci = Categories.CATEGORY_NAMES.indexOf(code, ci + 1)) {
-        int[] addRanges = Categories.CATEGORY_RANGES[ci/2];
+        int[] addRanges = Categories.CATEGORY_RANGES[ci / 2];
         for (int i = 0; i < addRanges.length; i += 2)
           classes.add(new CharRange(addRanges[i], addRanges[i + 1]));
       }
@@ -1225,7 +1221,7 @@ public class Translator {
     if (code == 'C')
       classes.add(computeSubCategoryCharClass("Cn")); // JDK 1.4 leaves Cn out of C?
     if (classes.size() == 1)
-      return (CharClass)classes.get(0);
+      return (CharClass) classes.get(0);
     return new Union(classes);
   }
 
@@ -1244,8 +1240,8 @@ public class Translator {
         for (int i = 0; i < Categories.CATEGORY_RANGES.length; i++)
           for (int j = 0; j < Categories.CATEGORY_RANGES[i].length; j += 2)
             assignedRanges.add(new CharRange(Categories.CATEGORY_RANGES[i][j],
-                                             Categories.CATEGORY_RANGES[i][j + 1]));
-        base = new Union(new CharClass[] { base, new CharRange(NONBMP_MIN, NONBMP_MAX) });
+              Categories.CATEGORY_RANGES[i][j + 1]));
+        base = new Union(new CharClass[]{base, new CharRange(NONBMP_MIN, NONBMP_MAX)});
       }
       return new Subtraction(base, new Union(assignedRanges));
     }
@@ -1254,7 +1250,7 @@ public class Translator {
     if (!surrogatesDirect) {
       int sci = Categories.CATEGORY_NAMES.indexOf(name);
       if (sci >= 0) {
-        int[] addRanges = Categories.CATEGORY_RANGES[sci/2];
+        int[] addRanges = Categories.CATEGORY_RANGES[sci / 2];
         for (int i = 0; i < addRanges.length; i += 2)
           classes.add(new CharRange(addRanges[i], addRanges[i + 1]));
       }

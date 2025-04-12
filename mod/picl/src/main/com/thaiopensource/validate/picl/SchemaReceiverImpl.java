@@ -22,7 +22,7 @@ class SchemaReceiverImpl implements SchemaReceiver {
 
   SchemaReceiverImpl(PropertyMap properties) {
     this.properties = SinglePropertyMap.newInstance(ValidateProperty.ERROR_HANDLER,
-                                                    properties.get(ValidateProperty.ERROR_HANDLER));
+      properties.get(ValidateProperty.ERROR_HANDLER));
   }
 
   public SchemaFuture installHandlers(XMLReader xr) throws SAXException {
@@ -38,12 +38,10 @@ class SchemaReceiverImpl implements SchemaReceiver {
       URL nrlSchemaUrl = getResource(resourceName);
       try {
         piclSchema = CompactSchemaReader.getInstance().createSchema(new InputSource(nrlSchemaUrl.toString()),
-                                                                    properties);
-      }
-      catch (IncorrectSchemaException e) {
+          properties);
+      } catch (IncorrectSchemaException e) {
         throw new SAXException("unexpected internal error in RNC schema for picl");
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
         throw new SAXException(e);
       }
     }

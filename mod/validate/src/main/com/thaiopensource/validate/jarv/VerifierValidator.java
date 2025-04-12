@@ -22,7 +22,7 @@ public class VerifierValidator implements Validator {
     }
 
     public void startDocument()
-            throws SAXException {
+      throws SAXException {
       throw storedException;
     }
   }
@@ -35,8 +35,7 @@ public class VerifierValidator implements Validator {
       verifier.setEntityResolver(er);
     try {
       handler = verifier.getVerifierHandler();
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       handler = new ExceptionReportHandler(e);
     }
   }
@@ -44,8 +43,7 @@ public class VerifierValidator implements Validator {
   public void reset() {
     try {
       handler = verifier.getVerifierHandler();
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       handler = new ExceptionReportHandler(e);
     }
   }

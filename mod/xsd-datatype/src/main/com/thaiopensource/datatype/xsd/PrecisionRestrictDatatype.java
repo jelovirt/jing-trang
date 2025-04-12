@@ -13,20 +13,20 @@ class PrecisionRestrictDatatype extends ValueRestrictDatatype {
   }
 
   void checkRestriction(Object obj) throws DatatypeException {
-    final int actualPrecision = getPrecision((BigDecimal)obj);
+    final int actualPrecision = getPrecision((BigDecimal) obj);
     if (actualPrecision > precision) {
       String message;
       if (precision == 1)
         message = localizer().message("precision_1_violation",
-                                      getDescriptionForRestriction(),
-                                      actualPrecision);
+          getDescriptionForRestriction(),
+          actualPrecision);
       else
         message = localizer().message("precision_violation",
-                                      new Object[] {
-                                              getDescriptionForRestriction(),
-                                              precision,
-                                              actualPrecision
-                                      });
+          new Object[]{
+            getDescriptionForRestriction(),
+            precision,
+            actualPrecision
+          });
       throw new DatatypeException(message);
     }
   }

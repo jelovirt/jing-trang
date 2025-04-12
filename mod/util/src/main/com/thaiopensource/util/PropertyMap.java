@@ -18,8 +18,12 @@ public interface PropertyMap {
       throw new IndexOutOfBoundsException();
     }
   };
+
   <T> T get(PropertyId<T> pid);
+
   boolean contains(PropertyId<?> pid);
+
   int size();
+
   PropertyId<?> getKey(int i);
 }

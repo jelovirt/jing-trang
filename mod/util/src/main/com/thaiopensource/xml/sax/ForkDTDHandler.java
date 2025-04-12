@@ -15,7 +15,7 @@ public class ForkDTDHandler implements DTDHandler {
   public void notationDecl(String name,
                            String publicId,
                            String systemId)
-          throws SAXException {
+    throws SAXException {
     dh1.notationDecl(name, publicId, systemId);
     dh2.notationDecl(name, publicId, systemId);
   }
@@ -24,7 +24,7 @@ public class ForkDTDHandler implements DTDHandler {
                                  String publicId,
                                  String systemId,
                                  String notationName)
-          throws SAXException {
+    throws SAXException {
     dh1.unparsedEntityDecl(name, publicId, systemId, notationName);
     dh2.unparsedEntityDecl(name, publicId, systemId, notationName);
   }

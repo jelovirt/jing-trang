@@ -1,13 +1,6 @@
 package com.thaiopensource.relaxng.parse.sax;
 
-import com.thaiopensource.relaxng.parse.Annotations;
-import com.thaiopensource.relaxng.parse.BuildException;
-import com.thaiopensource.relaxng.parse.CommentList;
-import com.thaiopensource.relaxng.parse.IllegalSchemaException;
-import com.thaiopensource.relaxng.parse.IncludedGrammar;
-import com.thaiopensource.relaxng.parse.SchemaBuilder;
-import com.thaiopensource.relaxng.parse.Scope;
-import com.thaiopensource.relaxng.parse.SubParseable;
+import com.thaiopensource.relaxng.parse.*;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
 import com.thaiopensource.util.Uri;
 import org.xml.sax.ErrorHandler;
@@ -18,12 +11,11 @@ import javax.xml.transform.sax.SAXSource;
 import java.io.IOException;
 
 public class SAXParseable<P, NC, L, EA, CL extends CommentList<L>, A extends Annotations<L, EA, CL>>
-        extends SAXSubParser<P, NC, L, EA, CL, A> implements SubParseable<P, NC, L, EA, CL, A> {
+  extends SAXSubParser<P, NC, L, EA, CL, A> implements SubParseable<P, NC, L, EA, CL, A> {
   private final SAXSource source;
 
   /**
-   *
-   * @param source  XMLReader must be non-null
+   * @param source   XMLReader must be non-null
    * @param resolver
    * @param eh
    */
@@ -38,27 +30,23 @@ public class SAXParseable<P, NC, L, EA, CL extends CommentList<L>, A extends Ann
       SchemaParser<P, NC, L, EA, CL, A> sp = new SchemaParser<>(xr, eh, schemaBuilder, null, scope);
       xr.parse(source.getInputSource());
       return sp.getParsedPattern();
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       throw BuildException.fromSAXException(e);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new BuildException(e);
     }
   }
 
   public P parseAsInclude(SchemaBuilder<P, NC, L, EA, CL, A> schemaBuilder, IncludedGrammar<P, L, EA, CL, A> g)
-          throws BuildException, IllegalSchemaException {
+    throws BuildException, IllegalSchemaException {
     try {
       XMLReader xr = source.getXMLReader();
       SchemaParser<P, NC, L, EA, CL, A> sp = new SchemaParser<>(xr, eh, schemaBuilder, g, g);
       xr.parse(source.getInputSource());
       return sp.getParsedPattern();
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       throw BuildException.fromSAXException(e);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new BuildException(e);
     }
   }

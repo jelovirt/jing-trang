@@ -16,6 +16,6 @@ class MaxLengthRestrictDatatype extends ValueRestrictDatatype {
     int actualLength = measure.getLength(obj);
     if (actualLength > length)
       throw new DatatypeException(localizer().message("max_length_violation",
-                                                      new Object[] { getDescriptionForRestriction(), length, actualLength }));
+        new Object[]{getDescriptionForRestriction(), length, actualLength}));
   }
 }

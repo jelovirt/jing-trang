@@ -1,10 +1,10 @@
 package com.thaiopensource.xml.out;
 
-import java.io.Writer;
-import java.io.IOException;
-import java.io.CharConversionException;
-
 import com.thaiopensource.util.Utf16;
+
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.io.Writer;
 
 public class XmlWriter {
   static final private String indentString = "  ";
@@ -46,17 +46,17 @@ public class XmlWriter {
 
   public void startElement(String name) throws IOException {
     switch (state) {
-    case IN_START_TAG:
-      writer.write('>');
-      writer.write(newline);
-      indent();
-      break;
-    case OTHER:
-      indent();
-      // fall through
-    case AFTER_DATA:
-      state = IN_START_TAG;
-      break;
+      case IN_START_TAG:
+        writer.write('>');
+        writer.write(newline);
+        indent();
+        break;
+      case OTHER:
+        indent();
+        // fall through
+      case AFTER_DATA:
+        state = IN_START_TAG;
+        break;
     }
     writer.write('<');
     outputMarkup(name);
@@ -66,17 +66,17 @@ public class XmlWriter {
   public void endElement() throws IOException {
     String name = pop();
     switch (state) {
-    case IN_START_TAG:
-      writer.write("/>");
-      break;
-    case OTHER:
-      indent();
-      // fall through
-    case AFTER_DATA:
-      writer.write("</");
-      outputMarkup(name);
-      writer.write('>');
-      break;
+      case IN_START_TAG:
+        writer.write("/>");
+        break;
+      case OTHER:
+        indent();
+        // fall through
+      case AFTER_DATA:
+        writer.write("</");
+        outputMarkup(name);
+        writer.write('>');
+        break;
     }
     writer.write(newline);
     state = OTHER;
@@ -139,13 +139,12 @@ public class XmlWriter {
     for (int i = 0; i < len; i++) {
       char c = str.charAt(i);
       if (Utf16.isSurrogate1(c)) {
-	if (i == len || !Utf16.isSurrogate2(str.charAt(i)))
-	  throw new CharConversionException("surrogate pair integrity failure");
-	if (!cr.contains(c, str.charAt(i)))
-	  throw new CharConversionException();
-      }
-      else if (!cr.contains(c))
-	throw new CharConversionException();
+        if (i == len || !Utf16.isSurrogate2(str.charAt(i)))
+          throw new CharConversionException("surrogate pair integrity failure");
+        if (!cr.contains(c, str.charAt(i)))
+          throw new CharConversionException();
+      } else if (!cr.contains(c))
+        throw new CharConversionException();
     }
     outputLines(str);
   }
@@ -154,11 +153,11 @@ public class XmlWriter {
     while (str.length() > 0) {
       int i = str.indexOf('\n');
       if (i < 0) {
-	writer.write(str);
-	break;
+        writer.write(str);
+        break;
       }
       if (i > 0)
-	writer.write(str.substring(0, i));
+        writer.write(str.substring(0, i));
       writer.write(newline);
       str = str.substring(i + 1);
     }
@@ -170,50 +169,50 @@ public class XmlWriter {
     for (int i = 0; i < len; i++) {
       char c = str.charAt(i);
       switch (c) {
-      case '<':
-	writer.write("&lt;");
-	break;
-      case '>':
-	writer.write("&gt;");
-	break;
-      case '&':
-	writer.write("&amp;");
-	break;
-      case '"':
-	writer.write("&quot;");
-	break;
-      case '\r':
-	writer.write("&#xD;");
-	break;
-      case '\t':
-	if (inAttribute)
-	  writer.write("&#x9;");
-	else
-	  writer.write('\t');
-	break;
-      case '\n':
-	if (inAttribute)
-	  writer.write("&#xA;");
-	else
-	  writer.write(newline);
-	break;
-      default:
-	if (Utf16.isSurrogate1(c)) {
-	  ++i;
-	  if (i < len) {
-	    char c2 = str.charAt(i);
-	    if (Utf16.isSurrogate2(c)) {
-	      charRef(Utf16.scalarValue(c, c2));
-	      break;
-	    }
-	  }
-	  throw new CharConversionException("surrogate pair integrity failure");
-	}
-	if (cr.contains(c) && !useCharRef)
-	  writer.write(c);
-	else
-	  charRef(c);
-	break;
+        case '<':
+          writer.write("&lt;");
+          break;
+        case '>':
+          writer.write("&gt;");
+          break;
+        case '&':
+          writer.write("&amp;");
+          break;
+        case '"':
+          writer.write("&quot;");
+          break;
+        case '\r':
+          writer.write("&#xD;");
+          break;
+        case '\t':
+          if (inAttribute)
+            writer.write("&#x9;");
+          else
+            writer.write('\t');
+          break;
+        case '\n':
+          if (inAttribute)
+            writer.write("&#xA;");
+          else
+            writer.write(newline);
+          break;
+        default:
+          if (Utf16.isSurrogate1(c)) {
+            ++i;
+            if (i < len) {
+              char c2 = str.charAt(i);
+              if (Utf16.isSurrogate2(c)) {
+                charRef(Utf16.scalarValue(c, c2));
+                break;
+              }
+            }
+            throw new CharConversionException("surrogate pair integrity failure");
+          }
+          if (cr.contains(c) && !useCharRef)
+            writer.write(c);
+          else
+            charRef(c);
+          break;
       }
     }
   }
@@ -222,11 +221,11 @@ public class XmlWriter {
     writer.write("&#x");
     int nDigits = c > 0xFFFF ? 6 : 4;
     for (int i = 0; i < nDigits; i++)
-      writer.write("0123456789ABCDEF".charAt((c >> (4*(nDigits - 1 - i)))
-					     & 0xF));
+      writer.write("0123456789ABCDEF".charAt((c >> (4 * (nDigits - 1 - i)))
+        & 0xF));
     writer.write(";");
   }
-    
+
   private void indent() throws IOException {
     for (int i = 0; i < level; i++)
       writer.write(indentString);
@@ -240,7 +239,7 @@ public class XmlWriter {
     }
     stack[level++] = name;
   }
-  
+
   private final String pop() {
     return stack[--level];
   }

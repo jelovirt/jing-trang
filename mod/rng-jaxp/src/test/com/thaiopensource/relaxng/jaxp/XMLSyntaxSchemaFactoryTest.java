@@ -28,8 +28,8 @@ public class XMLSyntaxSchemaFactoryTest extends SchemaFactoryImplTest {
   protected String element(String name, String[] contentPatterns) {
     StringBuilder builder = new StringBuilder();
     builder.append("<element xmlns='" + NS + "' name='")
-            .append(name)
-            .append("'>");
+      .append(name)
+      .append("'>");
     for (String contentPattern : contentPatterns) builder.append(contentPattern);
     if (contentPatterns.length == 0)
       builder.append("<empty/>");

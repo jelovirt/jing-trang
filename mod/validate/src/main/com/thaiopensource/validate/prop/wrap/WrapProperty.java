@@ -5,7 +5,8 @@ import com.thaiopensource.xml.util.Name;
 
 public class WrapProperty {
   public static final PropertyId<Name> ATTRIBUTE_OWNER
-          = PropertyId.newInstance("ATTRIBUTE_OWNER", Name.class);
+    = PropertyId.newInstance("ATTRIBUTE_OWNER", Name.class);
 
-  private WrapProperty() { }
+  private WrapProperty() {
+  }
 }

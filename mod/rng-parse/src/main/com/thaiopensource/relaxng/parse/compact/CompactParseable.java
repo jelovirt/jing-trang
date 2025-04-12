@@ -1,30 +1,15 @@
 package com.thaiopensource.relaxng.parse.compact;
 
-import com.thaiopensource.relaxng.parse.Annotations;
-import com.thaiopensource.relaxng.parse.BuildException;
-import com.thaiopensource.relaxng.parse.CommentList;
-import com.thaiopensource.relaxng.parse.IllegalSchemaException;
-import com.thaiopensource.relaxng.parse.IncludedGrammar;
-import com.thaiopensource.relaxng.parse.SchemaBuilder;
-import com.thaiopensource.relaxng.parse.Scope;
-import com.thaiopensource.relaxng.parse.SubParseable;
-import com.thaiopensource.resolver.Identifier;
-import com.thaiopensource.resolver.Input;
-import com.thaiopensource.resolver.MediaTypedIdentifier;
-import com.thaiopensource.resolver.Resolver;
-import com.thaiopensource.resolver.ResolverException;
+import com.thaiopensource.relaxng.parse.*;
+import com.thaiopensource.resolver.*;
 import com.thaiopensource.util.Uri;
 import com.thaiopensource.xml.util.EncodingMap;
 import org.xml.sax.ErrorHandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackInputStream;
-import java.io.Reader;
+import java.io.*;
 
 public class CompactParseable<P, NC, L, EA, CL extends CommentList<L>, A extends Annotations<L, EA, CL>>
-        implements SubParseable<P, NC, L, EA, CL, A> {
+  implements SubParseable<P, NC, L, EA, CL, A> {
   private final Input in;
   private final Resolver resolver;
   private final ErrorHandler eh;
@@ -45,18 +30,16 @@ public class CompactParseable<P, NC, L, EA, CL extends CommentList<L>, A extends
     Input input = new Input();
     try {
       resolver.resolve(id, input);
-    }
-    catch (ResolverException e) {
+    } catch (ResolverException e) {
       throw BuildException.fromResolverException(e);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new BuildException(e);
     }
     return new CompactParseable<>(input, resolver, eh);
   }
 
   public P parseAsInclude(SchemaBuilder<P, NC, L, EA, CL, A> sb, IncludedGrammar<P, L, EA, CL, A> g)
-          throws BuildException, IllegalSchemaException {
+    throws BuildException, IllegalSchemaException {
     return new CompactSyntax<>(makeReader(in), in.getUri(), sb, eh).parseInclude(g);
   }
 
@@ -87,11 +70,9 @@ public class CompactParseable<P, NC, L, EA, CL extends CommentList<L>, A extends
         reader = new InputStreamReader(byteStream, encoding);
       }
       return reader;
-    }
-    catch (ResolverException e) {
+    } catch (ResolverException e) {
       throw BuildException.fromResolverException(e);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new BuildException(e);
     }
   }

@@ -44,7 +44,7 @@ class ListDatatype extends DatatypeBase implements Measure {
   }
 
   public int getLength(Object obj) {
-    return ((Object[])obj).length;
+    return ((Object[]) obj).length;
   }
 
   public boolean isContextDependent() {
@@ -59,20 +59,20 @@ class ListDatatype extends DatatypeBase implements Measure {
   }
 
   public int valueHashCode(Object obj) {
-    Object[] items = (Object[])obj;
+    Object[] items = (Object[]) obj;
     int hc = 0;
     for (Object item : items) hc ^= itemType.valueHashCode(item);
     return hc;
   }
 
   public boolean sameValue(Object obj1, Object obj2) {
-    Object[] items1 = (Object[])obj1;
-    Object[] items2 = (Object[])obj2;
+    Object[] items1 = (Object[]) obj1;
+    Object[] items2 = (Object[]) obj2;
     if (items1.length != items2.length)
       return false;
     for (int i = 0; i < items1.length; i++)
       if (!itemType.sameValue(items1[i], items2[i]))
-	return false;
+        return false;
     return true;
   }
 }

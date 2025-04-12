@@ -16,18 +16,18 @@ public class CategoryTest {
 
   private final Regex[] categoryPosRegexes = new Regex[categories.length()];
   private final Regex[] categoryNegRegexes = new Regex[categories.length()];
-  private final Regex[] subCategoryPosRegexes = new Regex[subCategories.length()/2];
-  private final Regex[] subCategoryNegRegexes = new Regex[subCategories.length()/2];
+  private final Regex[] subCategoryPosRegexes = new Regex[subCategories.length() / 2];
+  private final Regex[] subCategoryNegRegexes = new Regex[subCategories.length() / 2];
 
   static public void main(String[] args) throws IOException, RegexSyntaxException,
-          ClassNotFoundException, IllegalAccessException, InstantiationException {
+    ClassNotFoundException, IllegalAccessException, InstantiationException {
     if (args.length != 2) {
       System.err.println("usage: " + CategoryTest.class.getName() + " engineClass UnicodeData");
       System.exit(2);
     }
     BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(args[1])));
     Class<?> cls = CategoryTest.class.getClassLoader().loadClass(args[0]);
-    RegexEngine engine = (RegexEngine)cls.newInstance();
+    RegexEngine engine = (RegexEngine) cls.newInstance();
     int nFail = new CategoryTest(engine).testAll(r);
     System.err.println(nFail + " tests failed");
     System.exit(nFail > 0 ? 1 : 0);
@@ -41,14 +41,14 @@ public class CategoryTest {
     }
     for (int i = 0, len = subCategories.length(); i < len; i += 2) {
       String name = subCategories.substring(i, i + 2);
-      subCategoryPosRegexes[i/2] = engine.compile("\\p{" + name + "}");
-      subCategoryNegRegexes[i/2] = engine.compile("\\P{" + name + "}");
+      subCategoryPosRegexes[i / 2] = engine.compile("\\p{" + name + "}");
+      subCategoryNegRegexes[i / 2] = engine.compile("\\P{" + name + "}");
     }
   }
 
   int testAll(BufferedReader r) throws IOException {
     int lastCode = -1;
-    for (;;) {
+    for (; ; ) {
       String line = r.readLine();
       if (line == null)
         break;
@@ -81,21 +81,21 @@ public class CategoryTest {
     }
     for (int i = 0, len = categories.length(); i < len; i++)
       check(ch, categoryPosRegexes[i], categoryNegRegexes[i],
-            category.charAt(0) == categories.charAt(i),
-            categories.substring(i, i + 1));
+        category.charAt(0) == categories.charAt(i),
+        categories.substring(i, i + 1));
     for (int i = 0, len = subCategories.length(); i < len; i += 2)
-      check(ch, subCategoryPosRegexes[i/2], subCategoryNegRegexes[i/2],
-            category.equals(subCategories.substring(i, i + 2)),
-            subCategories.substring(i, i + 2));
+      check(ch, subCategoryPosRegexes[i / 2], subCategoryNegRegexes[i / 2],
+        category.equals(subCategories.substring(i, i + 2)),
+        subCategories.substring(i, i + 2));
   }
 
   void check(int ch, Regex pos, Regex neg, boolean inPos, String cat) {
     String str;
     if (ch > 0xFFFF)
-      str = new String(new char[]{ Utf16.surrogate1(ch), Utf16.surrogate2(ch) });
+      str = new String(new char[]{Utf16.surrogate1(ch), Utf16.surrogate2(ch)});
     else
-      str = new String(new char[]{ (char)ch });
-    if (pos.matches(str) != inPos )
+      str = new String(new char[]{(char) ch});
+    if (pos.matches(str) != inPos)
       fail(ch, cat);
     if (neg.matches(str) != !inPos)
       fail(ch, "-" + cat);
@@ -110,16 +110,19 @@ public class CategoryTest {
 
   static boolean isXmlChar(int code) {
     switch (code) {
-    case '\r': case '\n': case '\t':
-      return true;
-    case 0xFFFE: case 0xFFFF:
-      return false;
-    default:
-      if (code < 0x20)
+      case '\r':
+      case '\n':
+      case '\t':
+        return true;
+      case 0xFFFE:
+      case 0xFFFF:
         return false;
-      if (code >= 0xD800 && code < 0xE000)
-        return false;
-      return true;
+      default:
+        if (code < 0x20)
+          return false;
+        if (code >= 0xD800 && code < 0xE000)
+          return false;
+        return true;
     }
   }
 }

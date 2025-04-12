@@ -3,12 +3,7 @@ package com.thaiopensource.validate.auto;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
 import com.thaiopensource.util.PropertyMap;
 import com.thaiopensource.util.PropertyMapBuilder;
-import com.thaiopensource.validate.AbstractSchemaReader;
-import com.thaiopensource.validate.IncorrectSchemaException;
-import com.thaiopensource.validate.Option;
-import com.thaiopensource.validate.ResolverFactory;
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.*;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -30,7 +25,7 @@ public class AutoSchemaReader extends AbstractSchemaReader {
   }
 
   public Schema createSchema(SAXSource source, PropertyMap properties)
-          throws IOException, SAXException, IncorrectSchemaException {
+    throws IOException, SAXException, IncorrectSchemaException {
     if (properties.get(SchemaReceiverFactory.PROPERTY) != srf) {
       PropertyMapBuilder builder = new PropertyMapBuilder(properties);
       builder.put(SchemaReceiverFactory.PROPERTY, srf);
@@ -47,9 +42,8 @@ public class AutoSchemaReader extends AbstractSchemaReader {
       RewindableReader rewindableReader = new RewindableReader(in.getCharacterStream());
       in.setCharacterStream(rewindableReader);
       in2.setCharacterStream(rewindableReader);
-      rewindable = rewindableReader;    
-    }
-    else {
+      rewindable = rewindableReader;
+    } else {
       InputStream byteStream = in.getByteStream();
       RewindableInputStream rewindableByteStream = new RewindableInputStream(byteStream);
       in.setByteStream(rewindableByteStream);
@@ -68,24 +62,20 @@ public class AutoSchemaReader extends AbstractSchemaReader {
       try {
         xr.parse(in);
         return sf.getSchema();
-      }
-      catch (ReparseException e) {
+      } catch (ReparseException e) {
         rewindable.rewind();
         rewindable.willNotRewind();
         return e.reparse(new SAXSource(xr, in2));
-      }
-      finally {
+      } finally {
         rewindable.willNotRewind();
       }
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       // Work around broken SAX parsers that catch and wrap runtime exceptions thrown by handlers
       Exception nested = e.getException();
       if (nested instanceof RuntimeException)
-        sf.unwrapException((RuntimeException)nested);
+        sf.unwrapException((RuntimeException) nested);
       throw e;
-    }
-    catch (RuntimeException e) {
+    } catch (RuntimeException e) {
       throw sf.unwrapException(e);
     }
   }

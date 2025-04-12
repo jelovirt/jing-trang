@@ -59,7 +59,7 @@ public class Context extends DtdContext implements MatchContext {
     PrefixMapping tem = prefixMapping;
     do {
       if (namespaceURI.equals(tem.namespaceURI) &&
-          tem.namespaceURI == resolveNamespacePrefix(tem.prefix))
+        tem.namespaceURI == resolveNamespacePrefix(tem.prefix))
         return tem.prefix;
       tem = tem.previous;
     } while (tem != null);

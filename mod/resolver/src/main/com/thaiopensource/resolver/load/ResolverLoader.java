@@ -24,22 +24,21 @@ public class ResolverLoader {
         }
       }
       obj = loader.loadClass(className).newInstance();
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new ResolverLoadException(e);
     }
     if (obj instanceof Resolver)
-      return (Resolver)obj;
+      return (Resolver) obj;
     Resolver entityResolver = null;
     Resolver uriResolver = null;
     if (obj instanceof URIResolver)
-      uriResolver = Transform.createResolver((URIResolver)obj);
+      uriResolver = Transform.createResolver((URIResolver) obj);
     if (obj instanceof EntityResolver)
-      entityResolver = SAX.createResolver((EntityResolver)obj, uriResolver == null);
+      entityResolver = SAX.createResolver((EntityResolver) obj, uriResolver == null);
     if (uriResolver == null) {
       if (entityResolver == null)
         throw new ResolverLoadException(className +
-                                        " not an instance of javax.xml.transform.URIResolver or org.xml.sax.EntityResolver");
+          " not an instance of javax.xml.transform.URIResolver or org.xml.sax.EntityResolver");
       return entityResolver;
     }
     if (entityResolver == null)

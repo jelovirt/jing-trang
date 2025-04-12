@@ -10,31 +10,11 @@ import org.apache.xerces.impl.validation.EntityState;
 import org.apache.xerces.impl.validation.ValidationManager;
 import org.apache.xerces.impl.xs.XMLSchemaValidator;
 import org.apache.xerces.impl.xs.XSMessageFormatter;
-import org.apache.xerces.util.ErrorHandlerWrapper;
-import org.apache.xerces.util.NamespaceSupport;
-import org.apache.xerces.util.ParserConfigurationSettings;
-import org.apache.xerces.util.SymbolTable;
-import org.apache.xerces.util.XMLAttributesImpl;
-import org.apache.xerces.util.XMLSymbols;
-import org.apache.xerces.xni.NamespaceContext;
-import org.apache.xerces.xni.QName;
-import org.apache.xerces.xni.XMLAttributes;
-import org.apache.xerces.xni.XMLLocator;
-import org.apache.xerces.xni.XMLResourceIdentifier;
-import org.apache.xerces.xni.XMLString;
-import org.apache.xerces.xni.XNIException;
+import org.apache.xerces.util.*;
+import org.apache.xerces.xni.*;
 import org.apache.xerces.xni.grammars.XMLGrammarPool;
-import org.apache.xerces.xni.parser.XMLComponent;
-import org.apache.xerces.xni.parser.XMLEntityResolver;
-import org.apache.xerces.xni.parser.XMLErrorHandler;
-import org.apache.xerces.xni.parser.XMLInputSource;
-import org.apache.xerces.xni.parser.XMLParseException;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.apache.xerces.xni.parser.*;
+import org.xml.sax.*;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -76,7 +56,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   ValidatorImpl(SymbolTable symbolTable, XMLGrammarPool grammarPool, PropertyMap properties) {
     this.symbolTable = symbolTable;
     XMLErrorHandler errorHandlerWrapper = new ErrorHandlerWrapper(properties.get(ValidateProperty.ERROR_HANDLER));
-    components = new XMLComponent[] { errorReporter, schemaValidator, entityManager };
+    components = new XMLComponent[]{errorReporter, schemaValidator, entityManager};
     for (XMLComponent component : components) {
       addRecognizedFeatures(component.getRecognizedFeatures());
       addRecognizedProperties(component.getRecognizedProperties());
@@ -150,28 +130,26 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   }
 
   public void startDocument()
-          throws SAXException {
+    throws SAXException {
     try {
       schemaValidator.startDocument(locator == null ? null : this, null, namespaceContext, null);
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void endDocument()
-          throws SAXException {
+    throws SAXException {
     try {
       schemaValidator.endDocument(null);
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void startElement(String namespaceURI, String localName,
                            String qName, Attributes atts)
-          throws SAXException {
+    throws SAXException {
     try {
       if (!pushedContext)
         namespaceContext.pushContext();
@@ -179,30 +157,28 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
         pushedContext = false;
       for (int i = 0, len = atts.getLength(); i < len; i++)
         attributes.addAttribute(makeQName(atts.getURI(i), atts.getLocalName(i), atts.getQName(i)),
-                                symbolTable.addSymbol(atts.getType(i)),
-                                atts.getValue(i));
+          symbolTable.addSymbol(atts.getType(i)),
+          atts.getValue(i));
       schemaValidator.startElement(makeQName(namespaceURI, localName, qName), attributes, null);
       attributes.removeAllAttributes();
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void endElement(String namespaceURI, String localName,
                          String qName)
-          throws SAXException {
+    throws SAXException {
     try {
       schemaValidator.endElement(makeQName(namespaceURI, localName, qName), null);
       namespaceContext.popContext();
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException {
+    throws SAXException {
     try {
       if (!pushedContext) {
         namespaceContext.pushContext();
@@ -219,44 +195,41 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
           uri = symbolTable.addSymbol(uri);
       }
       namespaceContext.declarePrefix(prefix, uri);
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void endPrefixMapping(String prefix)
-          throws SAXException {
+    throws SAXException {
     // do nothing
   }
 
   public void characters(char ch[], int start, int length)
-          throws SAXException {
+    throws SAXException {
     try {
       schemaValidator.characters(new XMLString(ch, start, length), null);
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException {
+    throws SAXException {
     try {
       schemaValidator.ignorableWhitespace(new XMLString(ch, start, length), null);
-    }
-    catch (XNIException e) {
+    } catch (XNIException e) {
       throw toSAXException(e);
     }
   }
 
   public void processingInstruction(String target, String data)
-          throws SAXException {
+    throws SAXException {
     // do nothing
   }
 
   public void skippedEntity(String name)
-          throws SAXException {
+    throws SAXException {
     // do nothing
   }
 
@@ -267,8 +240,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
       namespaceURI = null;
       prefix = XMLSymbols.EMPTY_STRING;
       qName = localName;
-    }
-    else {
+    } else {
       namespaceURI = symbolTable.addSymbol(namespaceURI);
       if (qName.isEmpty()) {
         prefix = namespaceContext.getPrefix(namespaceURI);
@@ -278,8 +250,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
           qName = localName; // XXX what to do?
         else
           qName = symbolTable.addSymbol(prefix + ":" + localName);
-      }
-      else {
+      } else {
         qName = symbolTable.addSymbol(qName);
         int colon = qName.indexOf(':');
         if (colon > 0)
@@ -292,7 +263,7 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
   }
 
   public XMLInputSource resolveEntity(XMLResourceIdentifier resourceIdentifier)
-          throws XNIException, IOException {
+    throws XNIException, IOException {
     return null;
   }
 
@@ -334,21 +305,21 @@ class ValidatorImpl extends ParserConfigurationSettings implements Validator, Co
 
   static SAXException toSAXException(XNIException e) {
     if (e instanceof XMLParseException) {
-      XMLParseException pe = (XMLParseException)e;
+      XMLParseException pe = (XMLParseException) e;
       return new SAXParseException(pe.getMessage(),
-                                   pe.getPublicId(),
-                                   pe.getExpandedSystemId(),
-                                   pe.getLineNumber(),
-                                   pe.getColumnNumber(),
-                                   pe.getException());
+        pe.getPublicId(),
+        pe.getExpandedSystemId(),
+        pe.getLineNumber(),
+        pe.getColumnNumber(),
+        pe.getException());
     }
     Exception nested = e.getException();
     if (nested == null)
       return new SAXException(e.getMessage());
     if (nested instanceof SAXException)
-      return (SAXException)nested;
+      return (SAXException) nested;
     if (nested instanceof RuntimeException)
-      throw (RuntimeException)nested;
+      throw (RuntimeException) nested;
     return new SAXException(nested);
   }
 }

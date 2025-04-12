@@ -22,8 +22,8 @@ class ValuePattern extends StringPattern {
       return false;
     if (!(other instanceof ValuePattern))
       return false;
-    return (dt.equals(((ValuePattern)other).dt)
-	    && dt.sameValue(obj, ((ValuePattern)other).obj));
+    return (dt.equals(((ValuePattern) other).dt)
+      && dt.sameValue(obj, ((ValuePattern) other).obj));
   }
 
   <T> T apply(PatternFunction<T> f) {
@@ -33,8 +33,8 @@ class ValuePattern extends StringPattern {
   void checkRestrictions(int context, DuplicateAttributeDetector dad, Alphabet alpha)
     throws RestrictionViolationException {
     switch (context) {
-    case START_CONTEXT:
-      throw new RestrictionViolationException("start_contains_value");
+      case START_CONTEXT:
+        throw new RestrictionViolationException("start_contains_value");
     }
   }
 

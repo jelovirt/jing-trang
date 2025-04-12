@@ -2,8 +2,8 @@ package com.thaiopensource.validate.picl;
 
 import org.xml.sax.Locator;
 
-import java.util.Vector;
 import java.util.Enumeration;
+import java.util.Vector;
 
 class KeyRefConstraint extends KeyConstraint {
   private final Pattern ref;
@@ -29,13 +29,13 @@ class KeyRefConstraint extends KeyConstraint {
     }
 
     public void selectComplete(ErrorContext ec) {
-      for (Enumeration e = index.keys(); e.hasMoreElements();) {
+      for (Enumeration e = index.keys(); e.hasMoreElements(); ) {
         Object key = e.nextElement();
         KeyInfo info = index.lookupCreate(key);
         if (info.pendingRefLocators == null)
           continue;
         for (int i = 0, len = info.pendingRefLocators.size(); i < len; i++) {
-          Locator loc = (Locator)info.pendingRefLocators.elementAt(i);
+          Locator loc = (Locator) info.pendingRefLocators.elementAt(i);
           ec.error(loc, "undefined_key", info.representation);
         }
       }

@@ -3,28 +3,12 @@ package com.thaiopensource.validate.rng.impl;
 import com.thaiopensource.datatype.DatatypeLibraryLoader;
 import com.thaiopensource.relaxng.parse.IllegalSchemaException;
 import com.thaiopensource.relaxng.parse.Parseable;
-import com.thaiopensource.relaxng.pattern.AnnotationsImpl;
-import com.thaiopensource.relaxng.pattern.CommentListImpl;
-import com.thaiopensource.relaxng.pattern.FeasibleTransform;
-import com.thaiopensource.relaxng.pattern.IdTypeMap;
-import com.thaiopensource.relaxng.pattern.IdTypeMapBuilder;
-import com.thaiopensource.relaxng.pattern.NameClass;
-import com.thaiopensource.relaxng.pattern.Pattern;
-import com.thaiopensource.relaxng.pattern.PatternDumper;
-import com.thaiopensource.relaxng.pattern.SchemaBuilderImpl;
-import com.thaiopensource.relaxng.pattern.SchemaPatternBuilder;
+import com.thaiopensource.relaxng.pattern.*;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
 import com.thaiopensource.util.PropertyId;
 import com.thaiopensource.util.PropertyMap;
 import com.thaiopensource.util.VoidValue;
-import com.thaiopensource.validate.AbstractSchema;
-import com.thaiopensource.validate.AbstractSchemaReader;
-import com.thaiopensource.validate.CombineSchema;
-import com.thaiopensource.validate.IncorrectSchemaException;
-import com.thaiopensource.validate.Option;
-import com.thaiopensource.validate.ResolverFactory;
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.*;
 import com.thaiopensource.validate.prop.rng.RngProperty;
 import com.thaiopensource.validate.prop.wrap.WrapProperty;
 import org.relaxng.datatype.DatatypeLibraryFactory;
@@ -49,7 +33,7 @@ public abstract class SchemaReaderImpl extends AbstractSchemaReader {
   };
 
   public Schema createSchema(SAXSource source, PropertyMap properties)
-          throws IOException, SAXException, IncorrectSchemaException {
+    throws IOException, SAXException, IncorrectSchemaException {
     SchemaPatternBuilder spb = new SchemaPatternBuilder();
     SAXResolver resolver = ResolverFactory.createResolver(properties);
     ErrorHandler eh = properties.get(ValidateProperty.ERROR_HANDLER);
@@ -58,10 +42,9 @@ public abstract class SchemaReaderImpl extends AbstractSchemaReader {
       dlf = new DatatypeLibraryLoader();
     try {
       Pattern start = SchemaBuilderImpl.parse(createParseable(source, resolver, eh, properties), eh, dlf, spb,
-                                              properties.contains(WrapProperty.ATTRIBUTE_OWNER));
+        properties.contains(WrapProperty.ATTRIBUTE_OWNER));
       return wrapPattern(start, spb, properties);
-    }
-    catch (IllegalSchemaException e) {
+    } catch (IllegalSchemaException e) {
       throw new IncorrectSchemaException();
     }
   }
@@ -83,8 +66,7 @@ public abstract class SchemaReaderImpl extends AbstractSchemaReader {
       if (pid == RngProperty.SIMPLIFIED_SCHEMA) {
         String simplifiedSchema = PatternDumper.toString(start);
         return pid.getValueClass().cast(simplifiedSchema);
-      }
-      else
+      } else
         return base.get(pid);
     }
 
@@ -105,7 +87,7 @@ public abstract class SchemaReaderImpl extends AbstractSchemaReader {
     if (properties.contains(RngProperty.FEASIBLE))
       start = FeasibleTransform.transform(spb, start);
     properties = new SimplifiedSchemaPropertyMap(AbstractSchema.filterProperties(properties, supportedPropertyIds),
-                                                 start);
+      start);
     Schema schema = new PatternSchema(spb, start, properties);
     if (spb.hasIdTypes() && properties.contains(RngProperty.CHECK_ID_IDREF)) {
       ErrorHandler eh = properties.get(ValidateProperty.ERROR_HANDLER);
@@ -123,6 +105,6 @@ public abstract class SchemaReaderImpl extends AbstractSchemaReader {
   }
 
   protected abstract Parseable<Pattern, NameClass, Locator, VoidValue, CommentListImpl, AnnotationsImpl> createParseable(SAXSource source, SAXResolver resolver, ErrorHandler eh, PropertyMap properties)
-          throws SAXException;
+    throws SAXException;
 
 }

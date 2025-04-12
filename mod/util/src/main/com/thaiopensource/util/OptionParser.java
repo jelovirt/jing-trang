@@ -10,9 +10,11 @@ public class OptionParser {
 
   private static final char OPTION_CHAR = '-';
 
-  public static class MissingArgumentException extends Exception { }
+  public static class MissingArgumentException extends Exception {
+  }
 
-  public static class InvalidOptionException extends Exception { }
+  public static class InvalidOptionException extends Exception {
+  }
 
   public OptionParser(String optionSpec, String[] args) {
     this.optionSpec = optionSpec;
@@ -35,19 +37,19 @@ public class OptionParser {
   public boolean moveToNextOption()
     throws InvalidOptionException, MissingArgumentException {
     if (currentOptionIndex > 0
-	&& currentOptionIndex == args[argIndex].length()) {
+      && currentOptionIndex == args[argIndex].length()) {
       currentOptionIndex = 0;
       argIndex++;
     }
     if (currentOptionIndex == 0) {
       if (argIndex >= args.length)
-	return false;
+        return false;
       String arg = args[argIndex];
       if (arg.length() < 2 || arg.charAt(0) != OPTION_CHAR)
-	return false;
+        return false;
       if (arg.length() == 2 && arg.charAt(1) == OPTION_CHAR) {
-	argIndex++;
-	return false;
+        argIndex++;
+        return false;
       }
       currentOptionIndex = 1;
     }
@@ -58,17 +60,15 @@ public class OptionParser {
       throw new InvalidOptionException();
     if (i + 1 < optionSpec.length() && optionSpec.charAt(i + 1) == ':') {
       if (currentOptionIndex < args[argIndex].length()) {
-	optionArg = args[argIndex].substring(currentOptionIndex);
-	currentOptionIndex = 0;
-	argIndex++;
-      }
-      else if (argIndex + 1 < args.length) {
-	optionArg = args[++argIndex];
-	++argIndex;
-	currentOptionIndex = 0;
-      }
-      else
-	throw new MissingArgumentException();
+        optionArg = args[argIndex].substring(currentOptionIndex);
+        currentOptionIndex = 0;
+        argIndex++;
+      } else if (argIndex + 1 < args.length) {
+        optionArg = args[++argIndex];
+        ++argIndex;
+        currentOptionIndex = 0;
+      } else
+        throw new MissingArgumentException();
     }
     return true;
   }
@@ -87,20 +87,18 @@ public class OptionParser {
     OptionParser opts = new OptionParser(optSpec, args);
     try {
       while (opts.moveToNextOption()) {
-	System.err.print("option " + opts.getOptionChar());
-	String arg = opts.getOptionArg();
-	if (arg == null)
-	  System.err.println(" (no argument)");
-	else
-	  System.err.println(" arg=" + arg);
+        System.err.print("option " + opts.getOptionChar());
+        String arg = opts.getOptionArg();
+        if (arg == null)
+          System.err.println(" (no argument)");
+        else
+          System.err.println(" arg=" + arg);
       }
       args = opts.getRemainingArgs();
       for (String arg : args) System.err.println("arg=" + arg);
-    }
-    catch (OptionParser.MissingArgumentException e) {
+    } catch (OptionParser.MissingArgumentException e) {
       System.err.println("missing argument for option " + opts.getOptionChar());
-    }
-    catch (OptionParser.InvalidOptionException e) {
+    } catch (OptionParser.InvalidOptionException e) {
       System.err.println("invalid option " + opts.getOptionChar());
     }
   }

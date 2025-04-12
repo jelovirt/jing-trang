@@ -14,7 +14,7 @@ abstract class PathPattern extends Pattern {
 
   boolean matches(Path path, int rootDepth) {
     return (isAttribute() == path.isAttribute()
-            && matchSegment(path, rootDepth, path.length() - rootDepth, 0, names.length >> 1, false));
+      && matchSegment(path, rootDepth, path.length() - rootDepth, 0, names.length >> 1, false));
   }
 
   private boolean matchSegment(Path path, int pathStartIndex, int pathLength,
@@ -23,8 +23,8 @@ abstract class PathPattern extends Pattern {
     if (patternLength > pathLength)
       return false;
     while (patternLength > 0
-           && (ignoreRightmostDescendantsOrSelf
-               || !descendantsOrSelf[patternStartIndex + patternLength])) {
+      && (ignoreRightmostDescendantsOrSelf
+      || !descendantsOrSelf[patternStartIndex + patternLength])) {
       if (!matchStep(path, pathStartIndex + pathLength - 1, patternStartIndex + patternLength - 1))
         return false;
       pathLength--;
@@ -50,7 +50,7 @@ abstract class PathPattern extends Pattern {
   private boolean matchStep(Path path, int pathIndex, int patternIndex) {
     patternIndex *= 2;
     return (matchName(path.getNamespaceUri(pathIndex), names[patternIndex])
-            && matchName(path.getLocalName(pathIndex), names[patternIndex + 1]));
+      && matchName(path.getLocalName(pathIndex), names[patternIndex + 1]));
   }
 
   private static boolean matchName(String str, String pattern) {

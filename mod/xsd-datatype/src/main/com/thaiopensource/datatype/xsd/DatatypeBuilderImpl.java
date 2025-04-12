@@ -19,8 +19,8 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
   }
 
   public void addParameter(String name,
-			   String value,
-			   ValidationContext context) throws DatatypeException {
+                           String value,
+                           ValidationContext context) throws DatatypeException {
     switch (name) {
       case "pattern":
         addPatternParam(value);
@@ -67,10 +67,9 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
   private void addPatternParam(String value) throws DatatypeException {
     try {
       base = new PatternRestrictDatatype(base,
-					 library.getRegexEngine().compile(value),
-                                         value);
-    }
-    catch (RegexSyntaxException e) {
+        library.getRegexEngine().compile(value),
+        value);
+    } catch (RegexSyntaxException e) {
       int pos = e.getPosition();
       if (pos == RegexSyntaxException.UNKNOWN_POSITION)
         pos = DatatypeException.UNKNOWN;
@@ -81,29 +80,29 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
   private void addMinInclusiveParam(String value, ValidationContext context)
     throws DatatypeException {
     base = new MinInclusiveRestrictDatatype(base,
-					    getLimit(value, context),
-                                            value);
+      getLimit(value, context),
+      value);
   }
 
   private void addMaxInclusiveParam(String value, ValidationContext context)
     throws DatatypeException {
     base = new MaxInclusiveRestrictDatatype(base,
-					    getLimit(value, context),
-                                            value);
+      getLimit(value, context),
+      value);
   }
 
   private void addMinExclusiveParam(String value, ValidationContext context)
     throws DatatypeException {
     base = new MinExclusiveRestrictDatatype(base,
-					    getLimit(value, context),
-                                            value);
+      getLimit(value, context),
+      value);
   }
 
   private void addMaxExclusiveParam(String value, ValidationContext context)
     throws DatatypeException {
     base = new MaxExclusiveRestrictDatatype(base,
-					    getLimit(value, context),
-                                            value);
+      getLimit(value, context),
+      value);
   }
 
   private Object getLimit(String str, ValidationContext context)
@@ -114,8 +113,7 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
     try {
       base.checkLexicallyAllows(str);
       return base.getValue(str, context);
-    }
-    catch (DatatypeException e) {
+    } catch (DatatypeException e) {
       throw new DatatypeException(localizer.message("invalid_limit", str, e.getMessage()));
     }
   }
@@ -190,8 +188,7 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
       return -1;
     try {
       return Integer.parseInt(str);
-    }
-    catch (NumberFormatException e) {
+    } catch (NumberFormatException e) {
       // Map out of range integers to MAX_VALUE
       return Integer.MAX_VALUE;
     }

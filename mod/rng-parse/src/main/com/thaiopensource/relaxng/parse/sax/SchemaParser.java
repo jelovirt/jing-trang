@@ -1,50 +1,23 @@
 package com.thaiopensource.relaxng.parse.sax;
 
-import com.thaiopensource.relaxng.parse.Annotations;
-import com.thaiopensource.relaxng.parse.CommentList;
-import com.thaiopensource.relaxng.parse.Context;
-import com.thaiopensource.relaxng.parse.DataPatternBuilder;
-import com.thaiopensource.relaxng.parse.Div;
-import com.thaiopensource.relaxng.parse.ElementAnnotationBuilder;
-import com.thaiopensource.relaxng.parse.Grammar;
-import com.thaiopensource.relaxng.parse.GrammarSection;
-import com.thaiopensource.relaxng.parse.IllegalSchemaException;
-import com.thaiopensource.relaxng.parse.Include;
-import com.thaiopensource.relaxng.parse.IncludedGrammar;
-import com.thaiopensource.relaxng.parse.ParsedPatternFuture;
-import com.thaiopensource.relaxng.parse.SchemaBuilder;
-import com.thaiopensource.relaxng.parse.Scope;
+import com.thaiopensource.relaxng.parse.*;
 import com.thaiopensource.util.Localizer;
 import com.thaiopensource.util.Uri;
 import com.thaiopensource.xml.sax.AbstractLexicalHandler;
 import com.thaiopensource.xml.sax.XmlBaseHandler;
 import com.thaiopensource.xml.util.Naming;
 import com.thaiopensource.xml.util.WellKnownNamespaces;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
-        CommentListImpl extends CommentList<Location>,
-        AnnotationsImpl extends Annotations<Location, ElementAnnotation, CommentListImpl>>
-        implements ParsedPatternFuture<Pattern> {
+  CommentListImpl extends CommentList<Location>,
+  AnnotationsImpl extends Annotations<Location, ElementAnnotation, CommentListImpl>>
+  implements ParsedPatternFuture<Pattern> {
   private static final String relaxngURIPrefix =
-          WellKnownNamespaces.RELAX_NG.substring(0, WellKnownNamespaces.RELAX_NG.lastIndexOf('/') + 1);
+    WellKnownNamespaces.RELAX_NG.substring(0, WellKnownNamespaces.RELAX_NG.lastIndexOf('/') + 1);
   static final String relaxng10URI = WellKnownNamespaces.RELAX_NG;
   private static final Localizer localizer = new Localizer(SchemaParser.class);
 
@@ -107,6 +80,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
   static class SavedContext extends AbstractContext {
     private final String baseUri;
+
     SavedContext(AbstractContext context) {
       super(context);
       this.baseUri = context.getBaseUri();
@@ -141,11 +115,22 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
         comments = schemaBuilder.makeCommentList();
       comments.addComment(value, makeLocation());
     }
-    public void processingInstruction(String target, String date) { }
-    public void skippedEntity(String name) { }
-    public void ignorableWhitespace(char[] ch, int start, int len) { }
-    public void startDocument() { }
-    public void endDocument() { }
+
+    public void processingInstruction(String target, String date) {
+    }
+
+    public void skippedEntity(String name) {
+    }
+
+    public void ignorableWhitespace(char[] ch, int start, int len) {
+    }
+
+    public void startDocument() {
+    }
+
+    public void endDocument() {
+    }
+
     public void startPrefixMapping(String prefix, String uri) {
       context.prefixMapping = new PrefixMapping(prefix, uri, context.prefixMapping);
     }
@@ -174,6 +159,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     }
 
     abstract State create();
+
     abstract State createChildState(String localName) throws SAXException;
 
     RootState toRootState() {
@@ -193,8 +179,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       if (parent.comments != null) {
         annotations = schemaBuilder.makeAnnotations(parent.comments, getContext());
         parent.comments = null;
-      }
-      else if (parent.toRootState() != null)
+      } else if (parent.toRootState() != null)
         annotations = schemaBuilder.makeAnnotations(null, getContext());
     }
 
@@ -207,31 +192,30 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     }
 
     public void startElement(String namespaceURI,
-			     String localName,
-			     String qName,
-			     Attributes atts) throws SAXException {
+                             String localName,
+                             String qName,
+                             Attributes atts) throws SAXException {
       xmlBaseHandler.startElement();
       if (isRelaxNGElement(namespaceURI)) {
-	State state = createChildState(localName);
-	if (state == null) {
-	  xr.setContentHandler(new Skipper(this));
-	  return;
-	}
-	state.setParent(this);
-	state.set();
-	state.attributes(atts);
-      }
-      else {
-	checkForeignElement();
+        State state = createChildState(localName);
+        if (state == null) {
+          xr.setContentHandler(new Skipper(this));
+          return;
+        }
+        state.setParent(this);
+        state.set();
+        state.attributes(atts);
+      } else {
+        checkForeignElement();
         ForeignElementHandler feh = new ForeignElementHandler(this, getComments());
         feh.startElement(namespaceURI, localName, qName, atts);
-	xr.setContentHandler(feh);
+        xr.setContentHandler(feh);
       }
     }
 
     public void endElement(String namespaceURI,
-			   String localName,
-			   String qName) throws SAXException {
+                           String localName,
+                           String qName) throws SAXException {
       xmlBaseHandler.endElement();
       parent.set();
       end();
@@ -254,41 +238,40 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     void attributes(Attributes atts) throws SAXException {
       int len = atts.getLength();
       for (int i = 0; i < len; i++) {
-	String uri = atts.getURI(i);
-	if (uri.length() == 0) {
-	  String name = atts.getLocalName(i);
-    switch (name) {
-      case "name":
-        setName(atts.getValue(i).trim());
-        break;
-      case "ns":
-        ns = atts.getValue(i);
-        break;
-      case "datatypeLibrary":
-        datatypeLibrary = atts.getValue(i);
-        checkUri(datatypeLibrary);
-        if (!datatypeLibrary.isEmpty()
-          && !Uri.isAbsolute(datatypeLibrary))
-          error("relative_datatype_library");
-        if (Uri.hasFragmentId(datatypeLibrary))
-          error("fragment_identifier_datatype_library");
-        datatypeLibrary = Uri.escapeDisallowedChars(datatypeLibrary);
-        break;
-      default:
-        setOtherAttribute(name, atts.getValue(i));
-        break;
-    }
-	}
-	else if (uri.equals(relaxngURI))
-	  error("qualified_attribute", atts.getLocalName(i));
-	else if (uri.equals(WellKnownNamespaces.XML)
-		 && atts.getLocalName(i).equals("base"))
-	  xmlBaseHandler.xmlBaseAttribute(atts.getValue(i));
+        String uri = atts.getURI(i);
+        if (uri.length() == 0) {
+          String name = atts.getLocalName(i);
+          switch (name) {
+            case "name":
+              setName(atts.getValue(i).trim());
+              break;
+            case "ns":
+              ns = atts.getValue(i);
+              break;
+            case "datatypeLibrary":
+              datatypeLibrary = atts.getValue(i);
+              checkUri(datatypeLibrary);
+              if (!datatypeLibrary.isEmpty()
+                && !Uri.isAbsolute(datatypeLibrary))
+                error("relative_datatype_library");
+              if (Uri.hasFragmentId(datatypeLibrary))
+                error("fragment_identifier_datatype_library");
+              datatypeLibrary = Uri.escapeDisallowedChars(datatypeLibrary);
+              break;
+            default:
+              setOtherAttribute(name, atts.getValue(i));
+              break;
+          }
+        } else if (uri.equals(relaxngURI))
+          error("qualified_attribute", atts.getLocalName(i));
+        else if (uri.equals(WellKnownNamespaces.XML)
+          && atts.getLocalName(i).equals("base"))
+          xmlBaseHandler.xmlBaseAttribute(atts.getValue(i));
         else {
           if (annotations == null)
             annotations = schemaBuilder.makeAnnotations(null, getContext());
           annotations.addAttribute(uri, atts.getLocalName(i), findPrefix(atts.getQName(i), uri),
-                                   atts.getValue(i), startLocation);
+            atts.getValue(i), startLocation);
         }
       }
       endAttributes();
@@ -304,7 +287,9 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       // XXX cannot happen; throw exception
     }
 
-    public void startDocument() { }
+    public void startDocument() {
+    }
+
     public void endDocument() {
       if (comments != null && startPattern != null) {
         startPattern = schemaBuilder.commentAfterPattern(startPattern, comments);
@@ -314,16 +299,16 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     public void characters(char[] ch, int start, int len) throws SAXException {
       for (int i = 0; i < len; i++) {
-	switch(ch[start + i]) {
-	case ' ':
-	case '\r':
-	case '\n':
-	case '\t':
-	  break;
-	default:
-	  error("illegal_characters_ignored");
-	  break;
-	}
+        switch (ch[start + i]) {
+          case ' ':
+          case '\r':
+          case '\n':
+          case '\t':
+            break;
+          default:
+            error("illegal_characters_ignored");
+            break;
+        }
       }
     }
 
@@ -367,16 +352,16 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
         builderStack.push(builder);
       Location loc = makeLocation();
       builder = schemaBuilder.makeElementAnnotationBuilder(namespaceURI,
-                                                           localName,
-                                                           findPrefix(qName, namespaceURI),
-                                                           loc,
-                                                           getComments(),
-                                                           getContext());
+        localName,
+        findPrefix(qName, namespaceURI),
+        loc,
+        getComments(),
+        getContext());
       int len = atts.getLength();
       for (int i = 0; i < len; i++) {
-	String uri = atts.getURI(i);
+        String uri = atts.getURI(i);
         builder.addAttribute(uri, atts.getLocalName(i), findPrefix(atts.getQName(i), uri),
-                             atts.getValue(i), loc);
+          atts.getValue(i), loc);
       }
     }
 
@@ -389,8 +374,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       if (builderStack.empty()) {
         nextState.endForeignChild(ea);
         nextState.set();
-      }
-      else {
+      } else {
         builder = builderStack.pop();
         builder.addElement(ea);
       }
@@ -427,17 +411,17 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     }
 
     public void startElement(String namespaceURI,
-			     String localName,
-			     String qName,
-			     Attributes atts) throws SAXException {
+                             String localName,
+                             String qName,
+                             Attributes atts) throws SAXException {
       ++level;
     }
 
     public void endElement(String namespaceURI,
-			   String localName,
-			   String qName) throws SAXException {
+                           String localName,
+                           String qName) throws SAXException {
       if (--level == 0)
-	nextState.set();
+        nextState.set();
     }
 
     public void comment(String value) {
@@ -470,8 +454,8 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State createChildState(String localName) throws SAXException {
       State state = patternMap.get(localName);
       if (state == null) {
-	error("expected_pattern", localName);
-	return null;
+        error("expected_pattern", localName);
+        return null;
       }
       return state.create();
     }
@@ -492,18 +476,18 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
         super.endForeignChild(ea);
       else
         childPatterns.set(nChildPatterns - 1,
-                          schemaBuilder.annotateAfterPattern(childPatterns.get(nChildPatterns - 1), ea));
+          schemaBuilder.annotateAfterPattern(childPatterns.get(nChildPatterns - 1), ea));
     }
 
     void end() throws SAXException {
       if (childPatterns.size() == 0) {
-	error("missing_children");
-	endPatternChild(schemaBuilder.makeErrorPattern());
+        error("missing_children");
+        endPatternChild(schemaBuilder.makeErrorPattern());
       }
       if (comments != null) {
         int nChildPatterns = childPatterns.size();
         childPatterns.set(nChildPatterns - 1,
-                          schemaBuilder.commentAfterPattern(childPatterns.get(nChildPatterns - 1), comments));
+          schemaBuilder.commentAfterPattern(childPatterns.get(nChildPatterns - 1), comments));
         comments = null;
       }
       sendPatternToParent(buildPattern(childPatterns, startLocation, annotations));
@@ -534,6 +518,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State create() {
       return new OneOrMoreState();
     }
+
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) throws SAXException {
       return schemaBuilder.makeOneOrMore(super.buildPattern(patterns, loc, null), loc, anno);
     }
@@ -543,6 +528,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State create() {
       return new OptionalState();
     }
+
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) throws SAXException {
       return schemaBuilder.makeOptional(super.buildPattern(patterns, loc, null), loc, anno);
     }
@@ -552,6 +538,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State create() {
       return new ListState();
     }
+
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) throws SAXException {
       return schemaBuilder.makeList(super.buildPattern(patterns, loc, null), loc, anno);
     }
@@ -561,6 +548,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State create() {
       return new ChoiceState();
     }
+
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) throws SAXException {
       return schemaBuilder.makeChoice(patterns, loc, anno);
     }
@@ -570,6 +558,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State create() {
       return new InterleaveState();
     }
+
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) {
       return schemaBuilder.makeInterleave(patterns, loc, anno);
     }
@@ -579,6 +568,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State create() {
       return new MixedState();
     }
+
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) throws SAXException {
       return schemaBuilder.makeMixed(super.buildPattern(patterns, loc, null), loc, anno);
     }
@@ -603,11 +593,10 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void endAttributes() throws SAXException {
       if (name != null) {
-	nameClass = expandName(name, getNs(), null);
+        nameClass = expandName(name, getNs(), null);
         nameClassWasAttribute = true;
-      }
-      else
-	new NameClassChildState(this, this).set();
+      } else
+        new NameClassChildState(this, this).set();
     }
 
     State create() {
@@ -649,9 +638,9 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     State createChildState(String localName) throws SAXException {
       if (grammar == null)
-	return super.createChildState(localName);
+        return super.createChildState(localName);
       if (localName.equals("grammar"))
-	return new MergeGrammarState(grammar);
+        return new MergeGrammarState(grammar);
       error("expected_grammar", localName);
       return null;
     }
@@ -666,11 +655,11 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     boolean isRelaxNGElement(String uri) throws SAXException {
       if (!uri.startsWith(relaxngURIPrefix))
-	return false;
+        return false;
       if (!uri.equals(WellKnownNamespaces.RELAX_NG))
-	warning("wrong_uri_version",
-		WellKnownNamespaces.RELAX_NG.substring(relaxngURIPrefix.length()),
-		uri.substring(relaxngURIPrefix.length()));
+        warning("wrong_uri_version",
+          WellKnownNamespaces.RELAX_NG.substring(relaxngURIPrefix.length()),
+          uri.substring(relaxngURIPrefix.length()));
       relaxngURI = uri;
       return true;
     }
@@ -717,9 +706,9 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void setOtherAttribute(String name, String value) throws SAXException {
       if (name.equals("type"))
-	type = checkNCName(value.trim());
+        type = checkNCName(value.trim());
       else
-	super.setOtherAttribute(name, value);
+        super.setOtherAttribute(name, value);
     }
 
     public void characters(char[] ch, int start, int len) {
@@ -744,12 +733,12 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     Pattern makePattern(String datatypeLibrary, String type) {
       return schemaBuilder.makeValue(datatypeLibrary,
-                                     type,
-                                     buf.toString(),
-                                     getContext(),
-                                     getNs(),
-                                     startLocation,
-                                     annotations);
+        type,
+        buf.toString(),
+        getContext(),
+        getNs(),
+        startLocation,
+        annotations);
     }
 
   }
@@ -765,14 +754,14 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     State createChildState(String localName) throws SAXException {
       if (localName.equals("param")) {
-	if (except != null)
-	  error("param_after_except");
-	return new ParamState(dpb);
+        if (except != null)
+          error("param_after_except");
+        return new ParamState(dpb);
       }
       if (localName.equals("except")) {
-	if (except != null)
-	  error("multiple_except");
-	return new ChoiceState();
+        if (except != null)
+          error("multiple_except");
+        return new ChoiceState();
       }
       error("expected_param_except", localName);
       return null;
@@ -780,16 +769,16 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void setOtherAttribute(String name, String value) throws SAXException {
       if (name.equals("type"))
-	type = checkNCName(value.trim());
+        type = checkNCName(value.trim());
       else
-	super.setOtherAttribute(name, value);
+        super.setOtherAttribute(name, value);
     }
 
     void endAttributes() throws SAXException {
       if (type == null)
-	error("missing_type_attribute");
+        error("missing_type_attribute");
       else
-	dpb = schemaBuilder.makeDataPatternBuilder(datatypeLibrary, type, startLocation);
+        dpb = schemaBuilder.makeDataPatternBuilder(datatypeLibrary, type, startLocation);
     }
 
     void endForeignChild(ElementAnnotation ea) {
@@ -803,8 +792,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
           p = dpb.makePattern(except, startLocation, annotations);
         else
           p = dpb.makePattern(startLocation, annotations);
-      }
-      else
+      } else
         p = schemaBuilder.makeErrorPattern();
       // XXX need to capture comments
       parent.endPatternChild(p);
@@ -835,7 +823,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void endAttributes() throws SAXException {
       if (name == null)
-	error("missing_name_attribute");
+        error("missing_name_attribute");
     }
 
     State createChildState(String localName) throws SAXException {
@@ -853,7 +841,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void end() throws SAXException {
       if (name == null)
-	return;
+        return;
       if (dpb == null)
         return;
       mergeLeadingComments();
@@ -880,16 +868,15 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void endAttributes() throws SAXException {
       if (name != null) {
-	String nsUse;
-	if (ns != null)
-	  nsUse = ns;
-	else
-	  nsUse = "";
-	nameClass = expandName(name, nsUse, null);
+        String nsUse;
+        if (ns != null)
+          nsUse = ns;
+        else
+          nsUse = "";
+        nameClass = expandName(name, nsUse, null);
         nameClassWasAttribute = true;
-      }
-      else
-	new NameClassChildState(this, this).set();
+      } else
+        new NameClassChildState(this, this).set();
     }
 
     void endForeignChild(ElementAnnotation ea) {
@@ -901,7 +888,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void end() throws SAXException {
       if (childPatterns.size() == 0)
-	endPatternChild(schemaBuilder.makeText(startLocation, null));
+        endPatternChild(schemaBuilder.makeText(startLocation, null));
       super.end();
     }
 
@@ -912,7 +899,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State createChildState(String localName) throws SAXException {
       State tem = super.createChildState(localName);
       if (tem != null && childPatterns.size() != 0)
-	error("attribute_multi_pattern");
+        error("attribute_multi_pattern");
       return tem;
     }
 
@@ -921,7 +908,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   abstract class SinglePatternContainerState extends PatternContainerState {
     State createChildState(String localName) throws SAXException {
       if (childPatterns.size() == 0)
-	return super.createChildState(localName);
+        return super.createChildState(localName);
       error("too_many_children");
       return null;
     }
@@ -930,7 +917,8 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
   class GrammarSectionState extends State {
     GrammarSection<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> section;
 
-    GrammarSectionState() { }
+    GrammarSectionState() {
+    }
 
     GrammarSectionState(GrammarSection<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> section) {
       this.section = section;
@@ -953,7 +941,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
           break;
       }
       if (localName.equals("div"))
-	return new DivState(section.makeDiv());
+        return new DivState(section.makeDiv());
       error("expected_define", localName);
       // XXX better errors
       return null;
@@ -973,6 +961,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
   class DivState extends GrammarSectionState {
     final Div<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> div;
+
     DivState(Div<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> div) {
       super(div);
       this.div = div;
@@ -996,16 +985,15 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void setOtherAttribute(String name, String value) throws SAXException {
       if (name.equals("href")) {
-	href = value;
-	checkUriNoFragmentId(href);
-      }
-      else
-	super.setOtherAttribute(name, value);
+        href = value;
+        checkUriNoFragmentId(href);
+      } else
+        super.setOtherAttribute(name, value);
     }
 
     void endAttributes() throws SAXException {
       if (href == null)
-	error("missing_href_attribute");
+        error("missing_href_attribute");
       else
         base = xmlBaseHandler.getBaseUri();
     }
@@ -1015,8 +1003,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       if (href != null) {
         try {
           include.endInclude(href, base, getNs(), startLocation, annotations);
-        }
-        catch (IllegalSchemaException e) {
+        } catch (IllegalSchemaException e) {
         }
       }
     }
@@ -1024,6 +1011,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
   class MergeGrammarState extends GrammarSectionState {
     final IncludedGrammar<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> grammar;
+
     MergeGrammarState(IncludedGrammar<Pattern, Location, ElementAnnotation, CommentListImpl, AnnotationsImpl> grammar) {
       super(grammar);
       this.grammar = grammar;
@@ -1064,7 +1052,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void endAttributes() throws SAXException {
       if (name == null)
-	error("missing_name_attribute");
+        error("missing_name_attribute");
     }
 
     void setName(String name) throws SAXException {
@@ -1101,16 +1089,15 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void setOtherAttribute(String name, String value) throws SAXException {
       if (name.equals("href")) {
-	href = value;
-	checkUriNoFragmentId(href);
-      }
-      else
-	super.setOtherAttribute(name, value);
+        href = value;
+        checkUriNoFragmentId(href);
+      } else
+        super.setOtherAttribute(name, value);
     }
 
     void endAttributes() throws SAXException {
       if (href == null)
-	error("missing_href_attribute");
+        error("missing_href_attribute");
       else
         base = xmlBaseHandler.getBaseUri();
     }
@@ -1119,13 +1106,13 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       if (href != null) {
         try {
           return schemaBuilder.makeExternalRef(href,
-                                               base,
-                                               getNs(),
-                                               scope,
-                                               startLocation,
-                                               annotations);
+            base,
+            getNs(),
+            scope,
+            startLocation,
+            annotations);
+        } catch (IllegalSchemaException e) {
         }
-        catch (IllegalSchemaException e) { }
       }
       return schemaBuilder.makeErrorPattern();
     }
@@ -1141,16 +1128,15 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void setOtherAttribute(String name, String value) throws SAXException {
       if (name.equals("combine")) {
-	value = value.trim();
-	if (value.equals("choice"))
-	  combine = GrammarSection.COMBINE_CHOICE;
-	else if (value.equals("interleave"))
-	  combine = GrammarSection.COMBINE_INTERLEAVE;
-	else
-	  error("combine_attribute_bad_value", value);
-      }
-      else
-	super.setOtherAttribute(name, value);
+        value = value.trim();
+        if (value.equals("choice"))
+          combine = GrammarSection.COMBINE_CHOICE;
+        else if (value.equals("interleave"))
+          combine = GrammarSection.COMBINE_INTERLEAVE;
+        else
+          error("combine_attribute_bad_value", value);
+      } else
+        super.setOtherAttribute(name, value);
     }
 
     Pattern buildPattern(List<Pattern> patterns, Location loc, AnnotationsImpl anno) throws SAXException {
@@ -1175,12 +1161,12 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     void endAttributes() throws SAXException {
       if (name == null)
-	error("missing_name_attribute");
+        error("missing_name_attribute");
     }
 
     void sendPatternToParent(Pattern p) {
       if (name != null)
-	section.define(name, combine, p, startLocation, annotations);
+        section.define(name, combine, p, startLocation, annotations);
     }
 
   }
@@ -1202,7 +1188,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State createChildState(String localName) throws SAXException {
       State tem = super.createChildState(localName);
       if (tem != null && childPatterns.size() != 0)
-	error("start_multi_pattern");
+        error("start_multi_pattern");
       return tem;
     }
 
@@ -1212,8 +1198,8 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     State createChildState(String localName) throws SAXException {
       State state = nameClassMap.get(localName);
       if (state == null) {
-	error("expected_name_class", localName);
-	return null;
+        error("expected_name_class", localName);
+        return null;
       }
       return state.create();
     }
@@ -1300,9 +1286,9 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     State createChildState(String localName) throws SAXException {
       if (localName.equals("except")) {
-	if (except != null)
-	  error("multiple_except");
-	return new NameClassChoiceState(getContext());
+        if (except != null)
+          error("multiple_except");
+        return new NameClassChoiceState(getContext());
       }
       error("expected_except", localName);
       return null;
@@ -1314,9 +1300,9 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     NameClass makeNameClass() {
       if (except == null)
-	return makeNameClassNoExcept();
+        return makeNameClassNoExcept();
       else
-	return makeNameClassExcept(except);
+        return makeNameClassExcept(except);
     }
 
     NameClass makeNameClassNoExcept() {
@@ -1372,7 +1358,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
       super.setParent(parent);
       NameClassChoiceState parentChoice = parent.toNameClassChoiceState();
       if (parentChoice != null)
-	this.context = parentChoice.context;
+        this.context = parentChoice.context;
     }
 
     State create() {
@@ -1381,18 +1367,17 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     State createChildState(String localName) throws SAXException {
       if (localName.equals("anyName")) {
-	if (context >= ANY_NAME_CONTEXT) {
-	  error(context == ANY_NAME_CONTEXT
-		? "any_name_except_contains_any_name"
-		: "ns_name_except_contains_any_name");
-	  return null;
-	}
-      }
-      else if (localName.equals("nsName")) {
-	if (context == NS_NAME_CONTEXT) {
-	  error("ns_name_except_contains_ns_name");
-	  return null;
-	}
+        if (context >= ANY_NAME_CONTEXT) {
+          error(context == ANY_NAME_CONTEXT
+            ? "any_name_except_contains_any_name"
+            : "ns_name_except_contains_any_name");
+          return null;
+        }
+      } else if (localName.equals("nsName")) {
+        if (context == NS_NAME_CONTEXT) {
+          error("ns_name_except_contains_ns_name");
+          return null;
+        }
       }
       return super.createChildState(localName);
     }
@@ -1407,19 +1392,19 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
         super.endForeignChild(ea);
       else
         nameClasses.set(nNameClasses - 1,
-                        schemaBuilder.annotateAfterNameClass(nameClasses.get(nNameClasses - 1), ea));
+          schemaBuilder.annotateAfterNameClass(nameClasses.get(nNameClasses - 1), ea));
     }
 
     void end() throws SAXException {
       if (nameClasses.size() == 0) {
-	error("missing_name_class");
-	parent.endNameClassChild(schemaBuilder.makeErrorNameClass());
-	return;
+        error("missing_name_class");
+        parent.endNameClassChild(schemaBuilder.makeErrorNameClass());
+        return;
       }
       if (comments != null) {
         int nNameClasses = nameClasses.size();
         nameClasses.set(nNameClasses - 1,
-                        schemaBuilder.commentAfterNameClass(nameClasses.get(nNameClasses - 1), comments));
+          schemaBuilder.commentAfterNameClass(nameClasses.get(nNameClasses - 1), comments));
         comments = null;
       }
       parent.endNameClassChild(schemaBuilder.makeNameClassChoice(nameClasses, startLocation, annotations));
@@ -1538,8 +1523,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     if (schemaBuilder.usesComments()) {
       try {
         xr.setProperty("http://xml.org/sax/properties/lexical-handler", new LexicalHandlerImpl());
-      }
-      catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+      } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
         warning("no_comment_support", xr.getClass().getName());
       }
     }
@@ -1566,7 +1550,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
 
     public void comment(char[] chars, int start, int length) throws SAXException {
       if (!inDtd)
-        ((CommentHandler)xr.getContentHandler()).comment(new String(chars, start, length));
+        ((CommentHandler) xr.getContentHandler()).comment(new String(chars, start, length));
     }
   }
 
@@ -1578,7 +1562,7 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     String localName = checkNCName(name.substring(ic + 1));
     for (PrefixMapping tem = context.prefixMapping; tem != null; tem = tem.next)
       if (tem.prefix.equals(prefix))
-	return schemaBuilder.makeName(tem.uri, localName, prefix, null, anno);
+        return schemaBuilder.makeName(tem.uri, localName, prefix, null, anno);
     error("undefined_prefix", prefix);
     return schemaBuilder.makeName("", localName, null, null, anno);
   }
@@ -1591,14 +1575,14 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
           prefix = p.prefix;
           break;
         }
-    }
-    else {
+    } else {
       int off = qName.indexOf(':');
       if (off > 0)
         prefix = qName.substring(0, off);
     }
     return prefix;
   }
+
   private String checkNCName(String str) throws SAXException {
     if (!Naming.isNcname(str))
       error("invalid_ncname", str);
@@ -1609,8 +1593,8 @@ class SchemaParser<Pattern, NameClass, Location, ElementAnnotation,
     if (locator == null)
       return null;
     return schemaBuilder.makeLocation(locator.getSystemId(),
-				      locator.getLineNumber(),
-				      locator.getColumnNumber());
+      locator.getLineNumber(),
+      locator.getColumnNumber());
   }
 
   private void checkUriNoFragmentId(String s) throws SAXException {

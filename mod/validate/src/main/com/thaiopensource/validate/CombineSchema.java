@@ -1,9 +1,6 @@
 package com.thaiopensource.validate;
 
 import com.thaiopensource.util.PropertyMap;
-import com.thaiopensource.validate.AbstractSchema;
-import com.thaiopensource.validate.Schema;
-import com.thaiopensource.validate.Validator;
 
 public class CombineSchema extends AbstractSchema {
   private final Schema schema1;
@@ -17,6 +14,6 @@ public class CombineSchema extends AbstractSchema {
 
   public Validator createValidator(PropertyMap properties) {
     return new CombineValidator(schema1.createValidator(properties),
-                                schema2.createValidator(properties));
+      schema2.createValidator(properties));
   }
 }

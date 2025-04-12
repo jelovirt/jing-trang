@@ -2,6 +2,7 @@ package com.thaiopensource.datatype.xsd.regex;
 
 /**
  * A regular expression that can be matched against a string.
+ *
  * @see RegexEngine
  */
 public interface Regex {

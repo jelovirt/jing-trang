@@ -12,10 +12,10 @@ class LengthRestrictDatatype extends ValueRestrictDatatype {
     this.length = length;
   }
 
-   void checkRestriction(Object obj) throws DatatypeException {
+  void checkRestriction(Object obj) throws DatatypeException {
     int actualLength = measure.getLength(obj);
     if (actualLength != length)
       throw new DatatypeException(localizer().message("length_violation",
-                                                      new Object[] { getDescriptionForRestriction(), length, actualLength }));
+        new Object[]{getDescriptionForRestriction(), length, actualLength}));
   }
 }

@@ -8,8 +8,8 @@ public class StringSplitter {
     int len = str.length();
     int nTokens = 0;
     for (int i = 0; i < len; i++)
-     if (!isSpace(str.charAt(i)) && (i == 0 || isSpace(str.charAt(i - 1))))
-       nTokens++;
+      if (!isSpace(str.charAt(i)) && (i == 0 || isSpace(str.charAt(i - 1))))
+        nTokens++;
     String[] tokens = new String[nTokens];
     nTokens = 0;
     int tokenStart = -1;
@@ -19,9 +19,8 @@ public class StringSplitter {
           tokens[nTokens++] = str.substring(tokenStart, i);
           tokenStart = -1;
         }
-      }
-      else if (i == 0 || isSpace(str.charAt(i - 1)))
-       tokenStart = i;
+      } else if (i == 0 || isSpace(str.charAt(i - 1)))
+        tokenStart = i;
     }
     if (tokenStart >= 0)
       tokens[nTokens] = str.substring(tokenStart, len);
@@ -30,11 +29,11 @@ public class StringSplitter {
 
   private static boolean isSpace(char c) {
     switch (c) {
-    case ' ':
-    case '\r':
-    case '\n':
-    case '\t':
-      return true;
+      case ' ':
+      case '\r':
+      case '\n':
+      case '\t':
+        return true;
     }
     return false;
   }

@@ -47,7 +47,8 @@ public abstract class Pattern {
     this.contentType = EMPTY_CONTENT_TYPE;
   }
 
-  void checkRecursion(int depth) throws SAXException { }
+  void checkRecursion(int depth) throws SAXException {
+  }
 
   Pattern expand(SchemaPatternBuilder b) {
     return this;

@@ -6,10 +6,9 @@ import com.thaiopensource.util.PropertyMap;
  * A schema that can be used to validate an XML document. A single <code>Schema</code> object
  * is safe for concurrent access by multiple threads.
  *
+ * @author <a href="mailto:jjc@jclark.com">James Clark</a>
  * @see SchemaReader
  * @see Validator
- *
- * @author <a href="mailto:jjc@jclark.com">James Clark</a>
  */
 public interface Schema {
   /**
@@ -22,12 +21,12 @@ public interface Schema {
    * may support additional properties.
    *
    * @param properties a <code>PropertyMap</code> specifying the properties of the
-   * <code>Validator</code> to be created
+   *                   <code>Validator</code> to be created
    * @return a new <code>Validator</code> that can be used to validate an XML document
    * with respect to this schema; never <code>null</code>
-   *
    * @see ValidateProperty#ERROR_HANDLER
    */
   Validator createValidator(PropertyMap properties);
+
   PropertyMap getProperties();
 }

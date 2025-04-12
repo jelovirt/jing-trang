@@ -1,7 +1,7 @@
 package com.thaiopensource.util;
 
-import java.util.ResourceBundle;
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 public class Localizer {
   private final Class<?> cls;
@@ -17,12 +17,12 @@ public class Localizer {
 
   public String message(String key, Object arg) {
     return MessageFormat.format(getBundle().getString(key),
-				new Object[]{arg});
+      new Object[]{arg});
   }
 
   public String message(String key, Object arg1, Object arg2) {
     return MessageFormat.format(getBundle().getString(key),
-				new Object[]{arg1, arg2});
+      new Object[]{arg1, arg2});
   }
 
   public String message(String key, Object[] args) {
@@ -30,13 +30,13 @@ public class Localizer {
   }
 
   private ResourceBundle getBundle() {
-    if (bundle == null){
+    if (bundle == null) {
       String s = cls.getName();
       int i = s.lastIndexOf('.');
       if (i > 0)
-	s = s.substring(0, i + 1);
+        s = s.substring(0, i + 1);
       else
-	s = "";
+        s = "";
       bundle = ResourceBundle.getBundle(s + "resources.Messages");
     }
     return bundle;

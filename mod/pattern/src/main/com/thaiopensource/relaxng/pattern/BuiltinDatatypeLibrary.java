@@ -10,6 +10,7 @@ public class BuiltinDatatypeLibrary implements DatatypeLibrary {
     = new BuiltinDatatypeBuilder(new TokenDatatype());
   private final DatatypeBuilder stringDatatypeBuilder
     = new BuiltinDatatypeBuilder(new StringDatatype());
+
   public DatatypeBuilder createDatatypeBuilder(String type)
     throws DatatypeException {
     if (type.equals("token"))
@@ -18,6 +19,7 @@ public class BuiltinDatatypeLibrary implements DatatypeLibrary {
       return stringDatatypeBuilder;
     throw new DatatypeException();
   }
+
   public Datatype createDatatype(String type) throws DatatypeException {
     return createDatatypeBuilder(type).createDatatype();
   }

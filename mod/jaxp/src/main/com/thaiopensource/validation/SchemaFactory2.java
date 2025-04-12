@@ -1,17 +1,13 @@
 package com.thaiopensource.validation;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.InputSource;
 import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.*;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-import javax.xml.XMLConstants;
 import java.io.File;
 import java.net.URL;
 
@@ -19,6 +15,7 @@ import java.net.URL;
  * Extends the SchemaFactory abstract class.  All methods of SchemaFactory
  * that return a Schema are overridden to return a Schema2. Default implementations
  * of several methods are provided.
+ *
  * @see SchemaFactory
  */
 public abstract class SchemaFactory2 extends SchemaFactory {
@@ -29,6 +26,7 @@ public abstract class SchemaFactory2 extends SchemaFactory {
 
   /**
    * Create a new Schema from a SAXSource. Subclasses must implement this.
+   *
    * @see SchemaFactory#newSchema(Source)
    */
   public abstract Schema2 newSchema(SAXSource schema) throws SAXException;
@@ -41,6 +39,7 @@ public abstract class SchemaFactory2 extends SchemaFactory {
 
   /**
    * This implementation of SchemaFactory#newSchema simply throws UnsupportedOperationException.
+   *
    * @see SchemaFactory#newSchema
    */
   public Schema2 newSchema() throws SAXException {
@@ -51,7 +50,7 @@ public abstract class SchemaFactory2 extends SchemaFactory {
     if (source == null)
       throw new NullPointerException();
     if (source instanceof SAXSource)
-      return newSchema((SAXSource)source);
+      return newSchema((SAXSource) source);
     InputSource inputSource = SAXSource.sourceToInputSource(source);
     // XXX support other types of Source for the schema
     if (inputSource == null)
@@ -87,6 +86,7 @@ public abstract class SchemaFactory2 extends SchemaFactory {
    * Extends SchemaFactory.setFeature by implementing the secure processing feature.
    * The implementation simply sets an internal flag, which can be accessed using
    * getSecureProcessing.
+   *
    * @see SchemaFactory#setFeature
    * @see #getSecureProcessing
    */
@@ -101,6 +101,7 @@ public abstract class SchemaFactory2 extends SchemaFactory {
    * Extends SchemaFactory.setFeature by implementing the secure processing feature.
    * The implementation simply sets an internal flag, which can be accessed using
    * getSecureProcessing.
+   *
    * @see SchemaFactory#getFeature
    * @see #getSecureProcessing
    */
@@ -113,7 +114,7 @@ public abstract class SchemaFactory2 extends SchemaFactory {
   public void setSecureProcessing(boolean secureProcessing) {
     this.secureProcessing = secureProcessing;
   }
-  
+
   public boolean getSecureProcessing() {
     return secureProcessing;
   }

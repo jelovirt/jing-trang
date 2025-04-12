@@ -5,20 +5,10 @@ import com.thaiopensource.resolver.xml.ls.LS;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
 import com.thaiopensource.xml.sax.DraconianErrorHandler;
 import org.w3c.dom.ls.LSResourceResolver;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
@@ -59,17 +49,15 @@ class ValidatorImpl extends Validator2 {
       if (source instanceof SAXSource) {
         if (result != null && !(result instanceof SAXResult))
           throw new IllegalArgumentException();
-        doValidate((SAXSource)source, result);
-      }
-      else if (source instanceof StreamSource) {
+        doValidate((SAXSource) source, result);
+      } else if (source instanceof StreamSource) {
         if (result != null && !(result instanceof StreamResult))
           throw new IllegalArgumentException();
         doValidate(new SAXSource(SAXSource.sourceToInputSource(source)), result);
-      }
-      else if (source instanceof DOMSource) {
+      } else if (source instanceof DOMSource) {
         if (result != null && !(result instanceof DOMResult))
           throw new IllegalArgumentException();
-        doValidate((DOMSource)source, (DOMResult)result);
+        doValidate((DOMSource) source, (DOMResult) result);
       }
 //      else if (source instanceof StAXSource) {
 //        if (result != null && !(result instanceof StAXResult))
@@ -78,8 +66,7 @@ class ValidatorImpl extends Validator2 {
 //      }
       else
         throw new IllegalArgumentException("unsupported type of Source: " + source.getClass().getName());
-    }
-    catch (TransformerException e) {
+    } catch (TransformerException e) {
       // XXX unwrap if possible
       throw new SAXException(e);
     }
@@ -92,7 +79,7 @@ class ValidatorImpl extends Validator2 {
 //  }
 
   private void doValidate(DOMSource source, DOMResult result)
-          throws SAXException, IOException, TransformerException {
+    throws SAXException, IOException, TransformerException {
     // XXX transform source and result
     throw new IllegalArgumentException();
   }
@@ -101,18 +88,17 @@ class ValidatorImpl extends Validator2 {
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
     if (!transformerFactory.getFeature(SAXTransformerFactory.FEATURE))
       throw new SAXException("TransformerFactory must implement SAXTransformerFactory");
-    return ((SAXTransformerFactory)transformerFactory).newTransformerHandler();
+    return ((SAXTransformerFactory) transformerFactory).newTransformerHandler();
   }
 
   private void doValidate(SAXSource source, Result result)
-          throws SAXException, IOException, TransformerConfigurationException {
+    throws SAXException, IOException, TransformerConfigurationException {
     if (result == null)
       doValidate(source, null, null, null);
     else if (result instanceof SAXResult) {
-      SAXResult saxResult = (SAXResult)result;
+      SAXResult saxResult = (SAXResult) result;
       doValidate(source, saxResult.getHandler(), saxResult.getLexicalHandler(), null);
-    }
-    else {
+    } else {
       TransformerHandler identityHandler = getIdentityTransformerHandler();
       identityHandler.setResult(result);
       doValidate(source, identityHandler, identityHandler, identityHandler);
@@ -141,8 +127,7 @@ class ValidatorImpl extends Validator2 {
     // always set the lexical handler to avoid problems when reusing the XMLReader
     try {
       xr.setProperty(LEXICAL_HANDLER_PROPERTY, lexicalHandler);
-    }
-    catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+    } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
       // ignore it
     }
     xr.setContentHandler(handler);

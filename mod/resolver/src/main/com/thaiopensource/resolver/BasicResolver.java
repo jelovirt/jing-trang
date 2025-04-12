@@ -1,9 +1,9 @@
 package com.thaiopensource.resolver;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.io.IOException;
 
 /**
  *
@@ -29,8 +29,7 @@ public class BasicResolver implements Resolver {
     URI uri;
     try {
       uri = new URI(input.getUri());
-    }
-    catch (URISyntaxException e) {
+    } catch (URISyntaxException e) {
       throw new ResolverException(e);
     }
     if (!uri.isAbsolute())
@@ -51,8 +50,7 @@ public class BasicResolver implements Resolver {
           return new URI(base).resolve(uri).toString();
       }
       return uriRef;
-    }
-    catch (URISyntaxException e) {
+    } catch (URISyntaxException e) {
       throw new ResolverException(e);
     }
   }

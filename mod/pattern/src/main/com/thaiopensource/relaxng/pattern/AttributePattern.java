@@ -11,10 +11,10 @@ class AttributePattern extends Pattern {
 
   AttributePattern(NameClass nameClass, Pattern value, Locator loc, String defaultValue) {
     super(false,
-	  EMPTY_CONTENT_TYPE,
-	  combineHashCode(ATTRIBUTE_HASH_CODE,
-			  nameClass.hashCode(),
-			  value.hashCode()));
+      EMPTY_CONTENT_TYPE,
+      combineHashCode(ATTRIBUTE_HASH_CODE,
+        nameClass.hashCode(),
+        value.hashCode()));
     this.nameClass = nameClass;
     this.p = value;
     this.loc = loc;
@@ -32,28 +32,27 @@ class AttributePattern extends Pattern {
   void checkRestrictions(int context, DuplicateAttributeDetector dad, Alphabet alpha)
     throws RestrictionViolationException {
     switch (context) {
-    case START_CONTEXT:
-      throw new RestrictionViolationException("start_contains_attribute");
-    case ELEMENT_CONTEXT:
-      if (nameClass.isOpen())
-	throw new RestrictionViolationException("open_name_class_not_repeated");
-      break;
-    case ELEMENT_REPEAT_GROUP_CONTEXT:
-      throw new RestrictionViolationException("one_or_more_contains_group_contains_attribute");
-    case ELEMENT_REPEAT_INTERLEAVE_CONTEXT:
-      throw new RestrictionViolationException("one_or_more_contains_interleave_contains_attribute");
-    case LIST_CONTEXT:
-      throw new RestrictionViolationException("list_contains_attribute");
-    case ATTRIBUTE_CONTEXT:
-      throw new RestrictionViolationException("attribute_contains_attribute");
-    case DATA_EXCEPT_CONTEXT:
-      throw new RestrictionViolationException("data_except_contains_attribute");
+      case START_CONTEXT:
+        throw new RestrictionViolationException("start_contains_attribute");
+      case ELEMENT_CONTEXT:
+        if (nameClass.isOpen())
+          throw new RestrictionViolationException("open_name_class_not_repeated");
+        break;
+      case ELEMENT_REPEAT_GROUP_CONTEXT:
+        throw new RestrictionViolationException("one_or_more_contains_group_contains_attribute");
+      case ELEMENT_REPEAT_INTERLEAVE_CONTEXT:
+        throw new RestrictionViolationException("one_or_more_contains_interleave_contains_attribute");
+      case LIST_CONTEXT:
+        throw new RestrictionViolationException("list_contains_attribute");
+      case ATTRIBUTE_CONTEXT:
+        throw new RestrictionViolationException("attribute_contains_attribute");
+      case DATA_EXCEPT_CONTEXT:
+        throw new RestrictionViolationException("data_except_contains_attribute");
     }
     dad.addAttribute(nameClass);
     try {
       p.checkRestrictions(ATTRIBUTE_CONTEXT, null, null);
-    }
-    catch (RestrictionViolationException e) {
+    } catch (RestrictionViolationException e) {
       e.maybeSetLocator(loc);
       throw e;
     }
@@ -62,10 +61,10 @@ class AttributePattern extends Pattern {
   boolean samePattern(Pattern other) {
     if (!(other instanceof AttributePattern))
       return false;
-    AttributePattern ap = (AttributePattern)other;
+    AttributePattern ap = (AttributePattern) other;
     boolean sameDefaults = defaultValue == ap.defaultValue ? true :
-        (defaultValue != null ? defaultValue.equals(ap.defaultValue) : false);
-    return nameClass.equals(ap.nameClass)&& p == ap.p && sameDefaults;
+      (defaultValue != null ? defaultValue.equals(ap.defaultValue) : false);
+    return nameClass.equals(ap.nameClass) && p == ap.p && sameDefaults;
   }
 
   void checkRecursion(int depth) throws SAXException {
@@ -87,8 +86,9 @@ class AttributePattern extends Pattern {
   Locator getLocator() {
     return loc;
   }
+
   String getDefaultValue() {
     return defaultValue;
   }
-  
+
 }

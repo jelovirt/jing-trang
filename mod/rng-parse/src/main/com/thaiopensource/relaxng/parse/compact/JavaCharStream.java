@@ -3,8 +3,8 @@
    has been edited to fix some bugs. */
 package com.thaiopensource.relaxng.parse.compact;
 
-import com.thaiopensource.util.Utf16;
 import com.thaiopensource.relaxng.parse.BuildException;
+import com.thaiopensource.util.Utf16;
 
 import java.io.IOException;
 
@@ -17,45 +17,45 @@ public final class JavaCharStream {
 
   static int hexval(char c) {
     switch (c) {
-    case '0':
-      return 0;
-    case '1':
-      return 1;
-    case '2':
-      return 2;
-    case '3':
-      return 3;
-    case '4':
-      return 4;
-    case '5':
-      return 5;
-    case '6':
-      return 6;
-    case '7':
-      return 7;
-    case '8':
-      return 8;
-    case '9':
-      return 9;
+      case '0':
+        return 0;
+      case '1':
+        return 1;
+      case '2':
+        return 2;
+      case '3':
+        return 3;
+      case '4':
+        return 4;
+      case '5':
+        return 5;
+      case '6':
+        return 6;
+      case '7':
+        return 7;
+      case '8':
+        return 8;
+      case '9':
+        return 9;
 
-    case 'a':
-    case 'A':
-      return 10;
-    case 'b':
-    case 'B':
-      return 11;
-    case 'c':
-    case 'C':
-      return 12;
-    case 'd':
-    case 'D':
-      return 13;
-    case 'e':
-    case 'E':
-      return 14;
-    case 'f':
-    case 'F':
-      return 15;
+      case 'a':
+      case 'A':
+        return 10;
+      case 'b':
+      case 'B':
+        return 11;
+      case 'c':
+      case 'C':
+        return 12;
+      case 'd':
+      case 'D':
+        return 13;
+      case 'e':
+      case 'E':
+        return 14;
+      case 'f':
+      case 'F':
+        return 15;
     }
     return -1;
   }
@@ -82,8 +82,13 @@ public final class JavaCharStream {
   private int inBuf = 0;
   private int tabSize = 8;
 
-  protected void setTabSize(int i) { tabSize = i; }
-  protected int getTabSize(int i) { return tabSize; }
+  protected void setTabSize(int i) {
+    tabSize = i;
+  }
+
+  protected int getTabSize(int i) {
+    return tabSize;
+  }
 
   private void ExpandBuff(boolean wrapAround) {
     char[] newbuffer = new char[bufsize + 2048];
@@ -93,7 +98,7 @@ public final class JavaCharStream {
     if (wrapAround) {
       System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
       System.arraycopy(buffer, 0, newbuffer,
-                       bufsize - tokenBegin, bufpos);
+        bufsize - tokenBegin, bufpos);
       buffer = newbuffer;
 
       System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
@@ -105,8 +110,7 @@ public final class JavaCharStream {
       bufcolumn = newbufcolumn;
 
       bufpos += (bufsize - tokenBegin);
-    }
-    else {
+    } else {
       System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
       buffer = newbuffer;
 
@@ -135,11 +139,9 @@ public final class JavaCharStream {
         closed = true;
         inputStream.close();
         throw new EOFException();
-      }
-      else
+      } else
         maxNextCharInd += i;
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new BuildException(e);
     }
   }
@@ -178,11 +180,9 @@ public final class JavaCharStream {
       if (tokenBegin > 2048) {
         bufpos = 0;
         available = tokenBegin;
-      }
-      else
+      } else
         ExpandBuff(false);
-    }
-    else if (available > tokenBegin)
+    } else if (available > tokenBegin)
       available = bufsize;
     else if ((tokenBegin - available) < 2048)
       ExpandBuff(true);
@@ -199,15 +199,15 @@ public final class JavaCharStream {
     }
 
     switch (c) {
-    case NEWLINE_MARKER:
-      prevCharIsLF = true;
-      break;
-    case '\t':
-      column--;
-      column += (tabSize - (column % tabSize));
-      break;
-    default :
-      break;
+      case NEWLINE_MARKER:
+        prevCharIsLF = true;
+        break;
+      case '\t':
+        column--;
+        column += (tabSize - (column % tabSize));
+        break;
+      default:
+        break;
     }
 
     bufline[bufpos] = line;
@@ -229,47 +229,44 @@ public final class JavaCharStream {
     try {
       c = ReadChar();
       switch (c) {
-      case '\r':
-        c = NEWLINE_MARKER;
-        try {
-          if (PeekChar() == '\n')
-            ReadChar();
-        }
-        catch (EOFException e) {
-        }
-        break;
-      case '\n':
-        c = NEWLINE_MARKER;
-        break;
-      case '\t':
-        break;
-      default:
-        if (c >= 0x20) {
-          if (Utf16.isSurrogate(c)) {
-            if (Utf16.isSurrogate2(c))
-              throw new EscapeSyntaxException("illegal_surrogate_pair", line, column + 1);
-            if (++bufpos == available)
-              AdjustBuffSize();
-            buffer[bufpos] = c;
-            // UpdateLineColumn(c);
-            try {
-              c = ReadChar();
-            }
-            catch (EOFException e) {
-              throw new EscapeSyntaxException("illegal_surrogate_pair", line, column + 1);
-            }
-            if (!Utf16.isSurrogate2(c))
-              throw new EscapeSyntaxException("illegal_surrogate_pair", line, column + 2);
+        case '\r':
+          c = NEWLINE_MARKER;
+          try {
+            if (PeekChar() == '\n')
+              ReadChar();
+          } catch (EOFException e) {
           }
           break;
-        }
-        // fall through
-      case '\uFFFE':
-      case '\uFFFF':
-        throw new EscapeSyntaxException("illegal_char_code", line, column + 1);
+        case '\n':
+          c = NEWLINE_MARKER;
+          break;
+        case '\t':
+          break;
+        default:
+          if (c >= 0x20) {
+            if (Utf16.isSurrogate(c)) {
+              if (Utf16.isSurrogate2(c))
+                throw new EscapeSyntaxException("illegal_surrogate_pair", line, column + 1);
+              if (++bufpos == available)
+                AdjustBuffSize();
+              buffer[bufpos] = c;
+              // UpdateLineColumn(c);
+              try {
+                c = ReadChar();
+              } catch (EOFException e) {
+                throw new EscapeSyntaxException("illegal_surrogate_pair", line, column + 1);
+              }
+              if (!Utf16.isSurrogate2(c))
+                throw new EscapeSyntaxException("illegal_surrogate_pair", line, column + 2);
+            }
+            break;
+          }
+          // fall through
+        case '\uFFFE':
+        case '\uFFFF':
+          throw new EscapeSyntaxException("illegal_char_code", line, column + 1);
       }
-    }
-    catch (EOFException e) {
+    } catch (EOFException e) {
       if (bufpos == -1) {
         if (++bufpos == available)
           AdjustBuffSize();
@@ -285,13 +282,12 @@ public final class JavaCharStream {
     try {
       if (c != '\\' || PeekChar() != 'x')
         return c;
-    }
-    catch (EOFException e) {
+    } catch (EOFException e) {
       return c;
     }
 
     int xCnt = 1;
-    for (;;) {
+    for (; ; ) {
       ReadChar();
       if (++bufpos == available)
         AdjustBuffSize();
@@ -299,8 +295,7 @@ public final class JavaCharStream {
       UpdateLineColumn('x');
       try {
         c = PeekChar();
-      }
-      catch (EOFException e) {
+      } catch (EOFException e) {
         backup(xCnt);
         return '\\';
       }
@@ -336,19 +331,19 @@ public final class JavaCharStream {
       }
       column++; // for the '}'
       if (scalarValue <= 0xFFFF) {
-        c = (char)scalarValue;
+        c = (char) scalarValue;
         switch (c) {
-        case '\n':
-        case '\r':
-        case '\t':
-          break;
-        default:
-          if (c >= 0x20 && !Utf16.isSurrogate(c))
+          case '\n':
+          case '\r':
+          case '\t':
             break;
-          // fall through
-        case '\uFFFE':
-        case '\uFFFF':
-          throw new EscapeSyntaxException("illegal_char_code_ref", line, column);
+          default:
+            if (c >= 0x20 && !Utf16.isSurrogate(c))
+              break;
+            // fall through
+          case '\uFFFE':
+          case '\uFFFF':
+            throw new EscapeSyntaxException("illegal_char_code_ref", line, column);
         }
         buffer[bufpos] = c;
         return c;
@@ -363,15 +358,14 @@ public final class JavaCharStream {
       bufcolumn[bufpos] = bufcolumn[bufpos1];
       backup(1);
       return c;
-    }
-    catch (EOFException e) {
+    } catch (EOFException e) {
       throw new EscapeSyntaxException("incomplete_escape", line, column);
     }
   }
 
   /**
-   * @deprecated
    * @see #getEndColumn
+   * @deprecated
    */
 
   public int getColumn() {
@@ -379,8 +373,8 @@ public final class JavaCharStream {
   }
 
   /**
-   * @deprecated
    * @see #getEndLine
+   * @deprecated
    */
 
   public int getLine() {
@@ -411,7 +405,7 @@ public final class JavaCharStream {
   }
 
   public JavaCharStream(java.io.Reader dstream,
-                                   int startline, int startcolumn, int buffersize) {
+                        int startline, int startcolumn, int buffersize) {
     inputStream = dstream;
     line = startline;
     column = startcolumn - 1;
@@ -425,7 +419,7 @@ public final class JavaCharStream {
   }
 
   public JavaCharStream(java.io.Reader dstream,
-                                   int startline, int startcolumn) {
+                        int startline, int startcolumn) {
     this(dstream, startline, startcolumn, 4096);
   }
 
@@ -463,32 +457,32 @@ public final class JavaCharStream {
   }
 
   public JavaCharStream(java.io.InputStream dstream, String encoding,
-                                   int startline, int startcolumn, int buffersize)
-          throws java.io.UnsupportedEncodingException {
+                        int startline, int startcolumn, int buffersize)
+    throws java.io.UnsupportedEncodingException {
     this(encoding == null
-         ? new java.io.InputStreamReader(dstream)
-         : new java.io.InputStreamReader(dstream, encoding),
-         startline, startcolumn, buffersize);
+        ? new java.io.InputStreamReader(dstream)
+        : new java.io.InputStreamReader(dstream, encoding),
+      startline, startcolumn, buffersize);
   }
 
   public JavaCharStream(java.io.InputStream dstream, int startline,
-                                   int startcolumn, int buffersize) {
+                        int startcolumn, int buffersize) {
     this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
   }
 
   public JavaCharStream(java.io.InputStream dstream, String encoding, int startline,
-                                   int startcolumn)
-          throws java.io.UnsupportedEncodingException {
+                        int startcolumn)
+    throws java.io.UnsupportedEncodingException {
     this(dstream, encoding, startline, startcolumn, 4096);
   }
 
   public JavaCharStream(java.io.InputStream dstream, int startline,
-                                   int startcolumn) {
+                        int startcolumn) {
     this(dstream, startline, startcolumn, 4096);
   }
 
   public JavaCharStream(java.io.InputStream dstream, String encoding)
-          throws java.io.UnsupportedEncodingException {
+    throws java.io.UnsupportedEncodingException {
     this(dstream, encoding, 1, 1, 4096);
   }
 
@@ -498,10 +492,10 @@ public final class JavaCharStream {
 
   public void ReInit(java.io.InputStream dstream, String encoding,
                      int startline, int startcolumn, int buffersize)
-          throws java.io.UnsupportedEncodingException {
+    throws java.io.UnsupportedEncodingException {
     ReInit(encoding == null
-           ? new java.io.InputStreamReader(dstream)
-           : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
+      ? new java.io.InputStreamReader(dstream)
+      : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
   }
 
   public void ReInit(java.io.InputStream dstream, int startline,
@@ -511,7 +505,7 @@ public final class JavaCharStream {
 
   public void ReInit(java.io.InputStream dstream, String encoding, int startline,
                      int startcolumn)
-          throws java.io.UnsupportedEncodingException {
+    throws java.io.UnsupportedEncodingException {
     ReInit(dstream, encoding, startline, startcolumn, 4096);
   }
 
@@ -521,7 +515,7 @@ public final class JavaCharStream {
   }
 
   public void ReInit(java.io.InputStream dstream, String encoding)
-          throws java.io.UnsupportedEncodingException {
+    throws java.io.UnsupportedEncodingException {
     ReInit(dstream, encoding, 1, 1, 4096);
   }
 
@@ -535,8 +529,7 @@ public final class JavaCharStream {
     try {
       if (PeekChar() == BOM)
         ReadChar();
-    }
-    catch (EOFException e) {
+    } catch (EOFException e) {
     }
   }
 
@@ -545,7 +538,7 @@ public final class JavaCharStream {
       return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
     else
       return new String(buffer, tokenBegin, bufsize - tokenBegin) +
-              new String(buffer, 0, bufpos + 1);
+        new String(buffer, 0, bufpos + 1);
   }
 
   public char[] GetSuffix(int len) {
@@ -555,7 +548,7 @@ public final class JavaCharStream {
       System.arraycopy(buffer, bufpos - len + 1, ret, 0, len);
     else {
       System.arraycopy(buffer, bufsize - (len - bufpos - 1), ret, 0,
-                       len - bufpos - 1);
+        len - bufpos - 1);
       System.arraycopy(buffer, 0, ret, len - bufpos - 1, bufpos + 1);
     }
 
@@ -578,8 +571,7 @@ public final class JavaCharStream {
 
     if (bufpos >= tokenBegin) {
       len = bufpos - tokenBegin + inBuf + 1;
-    }
-    else {
+    } else {
       len = bufsize - tokenBegin + bufpos + 1 + inBuf;
     }
 
@@ -587,7 +579,7 @@ public final class JavaCharStream {
     int nextColDiff = 0, columnDiff = 0;
 
     while (i < len &&
-            bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
+      bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
       bufline[j] = newLine;
       nextColDiff = columnDiff + bufcolumn[k] - bufcolumn[j];
       bufcolumn[j] = newCol + columnDiff;

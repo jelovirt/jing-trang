@@ -48,7 +48,7 @@ public class XmlBaseHandler {
 
   private static String getBaseUri1(String baseUri, Entry stack) {
     if (stack == null
-	|| (baseUri != null && !baseUri.equals(stack.systemId)))
+      || (baseUri != null && !baseUri.equals(stack.systemId)))
       return baseUri;
     baseUri = stack.attValue;
     if (Uri.isAbsolute(baseUri))
