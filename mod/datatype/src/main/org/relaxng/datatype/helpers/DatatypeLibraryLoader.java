@@ -36,8 +36,6 @@ package org.relaxng.datatype.helpers;
 import org.relaxng.datatype.DatatypeLibrary;
 import org.relaxng.datatype.DatatypeLibraryFactory;
 
-import java.util.ServiceLoader;
-
 /**
  * Discovers the datatype library implementation from the classpath.
  *
@@ -46,15 +44,10 @@ import java.util.ServiceLoader;
  * from a given datatype library URI at run-time.
  */
 public class DatatypeLibraryLoader implements DatatypeLibraryFactory {
+  private final DatatypeLibraryFactory factory = new com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl();
 
   public DatatypeLibrary createDatatypeLibrary(String uri) {
-    ServiceLoader<DatatypeLibraryFactory> service = ServiceLoader.load(DatatypeLibraryFactory.class);
-    for (DatatypeLibraryFactory factory : service) {
-      DatatypeLibrary library = factory.createDatatypeLibrary(uri);
-      if (library != null)
-        return library;
-    }
-    return null;
+    return factory.createDatatypeLibrary(uri);
   }
 }
 
