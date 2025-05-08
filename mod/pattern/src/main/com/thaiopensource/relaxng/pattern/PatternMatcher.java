@@ -3,7 +3,6 @@ package com.thaiopensource.relaxng.pattern;
 import com.thaiopensource.datatype.Datatype2;
 import com.thaiopensource.relaxng.match.MatchContext;
 import com.thaiopensource.relaxng.match.Matcher;
-import com.thaiopensource.util.Equal;
 import com.thaiopensource.util.Localizer;
 import com.thaiopensource.xml.util.Name;
 import org.relaxng.datatype.Datatype;
@@ -62,11 +61,10 @@ public class PatternMatcher implements Cloneable, Matcher {
     PatternMatcher other = (PatternMatcher) obj;
     // don't need to test equality of shared, because the memos can only be ==
     // if the shareds are ==.
-    return (memo == other.memo
-      && hadError == other.hadError
-      && Equal.equal(errorMessage, other.errorMessage)
-      && ignoreNextEndTagOrAttributeValue == other.ignoreNextEndTagOrAttributeValue
-      && textTyped == other.textTyped);
+      return memo == other.memo
+             && hadError == other.hadError && (Objects.equals(errorMessage, other.errorMessage)
+                                               && ignoreNextEndTagOrAttributeValue == other.ignoreNextEndTagOrAttributeValue
+                                               && textTyped == other.textTyped);
   }
 
   public int hashCode() {
