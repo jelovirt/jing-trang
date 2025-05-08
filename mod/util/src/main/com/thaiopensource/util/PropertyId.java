@@ -30,18 +30,4 @@ public class PropertyId<T> {
   public String toString() {
     return name;
   }
-
-  /**
-   * @deprecated
-   */
-  public T get(PropertyMap map) {
-    return map.get(this);
-  }
-
-  /**
-   * @deprecated
-   */
-  public T put(PropertyMapBuilder builder, T value) {
-    return builder.put(this, value);
-  }
 }
